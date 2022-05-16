@@ -39,3 +39,20 @@ func (here *Db) GetCategory() []*clover.Document {
 	}
 	return result
 }
+
+func (here *Db) GetContentByCategory(name string, num int) []*clover.Document {
+	var docs []*clover.Document
+	var classes []*clover.Document
+	if here.existCategory(name) {
+		classes, _ = here.class.Where(clover.Field("belong-cat").Eq(name)).FindAll()
+	} else {
+		classes, _ = here.class.Where(clover.Field("name").Eq(name)).FindAll()
+	}
+	var ids []interface{}
+	for _, v := range classes {
+		id := v.Get("id")
+		ids = append(ids, id)
+	}
+	docs, _ = here.content.Where(clover.Field("id").In(ids...)).Limit(num).FindAll()
+	return docs
+}

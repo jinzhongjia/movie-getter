@@ -16,6 +16,7 @@ func (here *Manager) AddSource(name string, url string) {
 }
 
 type Movie struct {
+	Id          int    `json:"id"`
 	Name        string `json:"name"`
 	Pic         string `json:"pic"`
 	Actor       string `json:"actor"`
@@ -23,6 +24,7 @@ type Movie struct {
 	Duration    string `json:"duration"`
 	Description string `json:"description"`
 	Url         string `json:"url"`
+	Belong      string `json:"belong"`
 }
 
 func (here *Manager) Search(keyWords string) []Movie {
@@ -31,6 +33,7 @@ func (here *Manager) Search(keyWords string) []Movie {
 	docs := here.Db.SearchContent(names)
 	for _, doc := range docs {
 		movies = append(movies, Movie{
+			Id:          int(doc.Get("id").(int64)),
 			Name:        doc.Get("name").(string),
 			Pic:         doc.Get("pic").(string),
 			Actor:       doc.Get("actor").(string),
@@ -38,6 +41,7 @@ func (here *Manager) Search(keyWords string) []Movie {
 			Duration:    doc.Get("duration").(string),
 			Description: doc.Get("description").(string),
 			Url:         doc.Get("url").(string),
+			Belong:      doc.Get("belong").(string),
 		})
 	}
 	return movies
@@ -87,4 +91,19 @@ func (here *Manager) UpdateCategory(oldName string, newName string) error {
 // 分配采集类
 func (here *Manager) AllocateClass(id int, belong string, belong_cat string) error {
 	return here.Db.AllocateClass(id, belong, belong_cat)
+}
+
+func (here *Manager) GetContent(belong string, id int) Movie {
+	doc := here.Db.GetContent(belong, id)
+	return Movie{
+		Id:          int(doc.Get("id").(int64)),
+		Name:        doc.Get("name").(string),
+		Pic:         doc.Get("pic").(string),
+		Actor:       doc.Get("actor").(string),
+		Director:    doc.Get("director").(string),
+		Duration:    doc.Get("duration").(string),
+		Description: doc.Get("description").(string),
+		Url:         doc.Get("url").(string),
+		Belong:      doc.Get("belong").(string),
+	}
 }

@@ -69,4 +69,7 @@ func (here *Db) SearchContent(names []string) []*clover.Document {
 	return docs
 }
 
-
+func (here *Db) GetContent(belong string, id int) *clover.Document {
+	doc, _ := here.content.Where(clover.Field("belong").Eq(belong).And(clover.Field("id").Eq(id))).FindFirst()
+	return doc
+}
