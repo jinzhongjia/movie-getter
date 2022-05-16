@@ -40,4 +40,50 @@ func Router(r *gin.Engine, manager *manager.Manager) {
 		}
 		c.JSON(http.StatusOK, manager.GetContent(belong, id))
 	})
+
+	r.POST("/user/source/add", func(c *gin.Context) {
+		name := c.PostForm("name")
+		url := c.PostForm("url")
+		manager.AddSource(name, url)
+		c.Status(http.StatusOK)
+	})
+
+	r.POST("/user/source/del", func(c *gin.Context) {
+		url := c.PostForm("url")
+		err := manager.DelSource(url)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "err")
+			return
+		}
+		c.Status(http.StatusOK)
+	})
+
+	r.POST("/user/source/updateName", func(c *gin.Context) {
+		oldName := c.PostForm("oldName")
+		newName := c.PostForm("newName")
+		err := manager.UpdateSourceName(oldName, newName)
+		if err != nil {
+			c.String(http.StatusInternalServerError, "err")
+			return
+		}
+		c.Status(http.StatusOK)
+	})
+
+	r.POST("/movie/:category", func(c *gin.Context) {
+		category := c.Param("category")
+		numV := c.Param("num")
+		var num int
+		if numV == "" {
+			num = 20
+		} else {
+			var err error
+			num, err = strconv.Atoi(numV)
+			if err != nil {
+				c.String(http.StatusBadRequest, "wrong num")
+				return
+			}
+		}
+
+		c.JSON(http.StatusOK, manager.GetContentByCategory(category, num))
+	})
 }
