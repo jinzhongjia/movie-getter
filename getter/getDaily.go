@@ -27,6 +27,7 @@ func (here *Getter) GetDaily() {
 
 // 获取最近24小时更新的内容子执行
 func (here *Getter) getDaily() {
+	defer protect()
 	pgCount := here.getPgCountDaily()
 	for pg := 1; pg <= pgCount; pg++ {
 		// 请求最近列表

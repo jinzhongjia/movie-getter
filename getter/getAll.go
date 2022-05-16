@@ -24,6 +24,7 @@ func (here *Getter) GetAll() {
 }
 
 func (here *Getter) getAll() {
+	defer protect()
 	if here.pg > here.getPgCount() {
 		return
 	}
