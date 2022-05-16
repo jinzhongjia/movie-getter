@@ -83,3 +83,8 @@ func (here *Manager) DelCategory(name string) error {
 func (here *Manager) UpdateCategory(oldName string, newName string) error {
 	return here.Db.UpdateCategory(oldName, newName)
 }
+
+// 分配采集类
+func (here *Manager) AllocateClass(id int, belong string, belong_cat string) error {
+	return here.Db.AllocateClass(id, belong, belong_cat)
+}

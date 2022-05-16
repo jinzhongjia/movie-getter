@@ -15,6 +15,17 @@ func (here *Db) AddClass(name string, id int, belong string) bool {
 	return false
 }
 
+// 判断该类别是否采集
+func (here *Db) JudgeClass(id int, belong string) bool {
+	doc, _ := here.class.Where(clover.Field("id").Eq(id).And(clover.Field("belong").Eq(belong))).FindFirst()
+	return doc.Get("get").(bool)
+}
+
+// 分配采集类
+func (here *Db) AllocateClass(id int, belong string, belong_cat string) error {
+	return here.class.Where(clover.Field("id").Eq(id).And(clover.Field("belong").Eq(belong))).Update(map[string]interface{}{"belong-cat": belong_cat})
+}
+
 func (here *Db) existClass(id int, belong string) bool {
 	result, _ := here.category.Where(clover.Field("id").Eq(id).And(clover.Field("belong").Eq(belong))).Exists()
 	return result

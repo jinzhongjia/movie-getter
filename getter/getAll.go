@@ -67,11 +67,15 @@ func (here *Getter) getContent(id int) {
 	res, _ := http.Get(here.url + "?ac=detail&ids=" + strconv.Itoa(id))
 	body, _ := ioutil.ReadAll(res.Body)
 
-	// 获取影片名
-	name := gjson.Get(string(body), "list.0.vod_name").Value().(string)
-
 	// 获取所属采集类号
 	class := int(gjson.Get(string(body), "list.0.type_id").Value().(float64))
+
+	if !db.JudgeClass(class, here.alias) {
+		return
+	}
+
+	// 获取影片名
+	name := gjson.Get(string(body), "list.0.vod_name").Value().(string)
 
 	// 获取图片封面地址
 	pic := gjson.Get(string(body), "list.0.vod_pic").Value().(string)
