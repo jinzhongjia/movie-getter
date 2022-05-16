@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	database "movie/db"
-	"runtime"
 
 	"github.com/sirupsen/logrus"
 )
@@ -77,10 +76,7 @@ func run() map[string]*Getter {
 
 func protect() {
 	err := recover()
-	switch err.(type) {
-	case runtime.Error: // 运行时错误
-		fmt.Println("runtime error:", err)
-	default: // 非运行时错误
-		fmt.Println("error:", err)
+	if err != nil {
+		logrus.Error("采集发生错误", err)
 	}
 }
