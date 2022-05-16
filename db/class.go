@@ -10,6 +10,7 @@ func (here *Db) AddClass(name string, id int, belong string) bool {
 		doc.Set("belong", belong)
 		doc.Set("get", true)
 		doc.Set("belong-cat", "")
+		here.db.InsertOne("class", doc)
 		return true
 	}
 	return false
