@@ -22,7 +22,7 @@ func Router(r *gin.Engine, manager *manager.Manager) {
 	r.GET("/user/exit", func(ctx *gin.Context) {
 		manager.GetStop()
 		go func() {
-			time.Sleep(20 * time.Second)
+			time.Sleep(5 * time.Second)
 			manager.Close()
 			os.Exit(0)
 		}()
