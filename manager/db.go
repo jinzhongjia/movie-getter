@@ -107,3 +107,23 @@ func (here *Manager) GetContent(belong string, id int) Movie {
 		Belong:      doc.Get("belong").(string),
 	}
 }
+
+func (here *Manager) GetContentByCategory(name string, num int) []Movie {
+	var movies []Movie
+
+	docs := here.Db.GetContentByCategory(name, num)
+	for _, doc := range docs {
+		movies = append(movies, Movie{
+			Id:          int(doc.Get("id").(int64)),
+			Name:        doc.Get("name").(string),
+			Pic:         doc.Get("pic").(string),
+			Actor:       doc.Get("actor").(string),
+			Director:    doc.Get("director").(string),
+			Duration:    doc.Get("duration").(string),
+			Description: doc.Get("description").(string),
+			Url:         doc.Get("url").(string),
+			Belong:      doc.Get("belong").(string),
+		})
+	}
+	return movies
+}
