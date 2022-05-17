@@ -1,7 +1,7 @@
 package router
 
 import (
-	"movie/manager"
+	mm "movie/manager"
 	"net/http"
 	"os"
 	"strconv"
@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Router(r *gin.Engine, manager *manager.Manager) {
+func Router(r *gin.Engine, manager *mm.Manager) {
 	r.GET("/user/spider/stop", func(c *gin.Context) {
 		manager.GetStop()
 		c.String(http.StatusOK, "stop")
@@ -22,7 +22,7 @@ func Router(r *gin.Engine, manager *manager.Manager) {
 	r.GET("/user/exit", func(ctx *gin.Context) {
 		manager.GetStop()
 		go func() {
-			time.Sleep(5 * time.Second)
+			time.Sleep(3 * time.Second)
 			manager.Close()
 			os.Exit(0)
 		}()
@@ -59,6 +59,7 @@ func Router(r *gin.Engine, manager *manager.Manager) {
 	})
 
 	r.POST("/user/source/updateName", func(c *gin.Context) {
+		// 这里没写完
 		oldName := c.PostForm("oldName")
 		newName := c.PostForm("newName")
 		err := manager.UpdateSourceName(oldName, newName)
@@ -71,7 +72,7 @@ func Router(r *gin.Engine, manager *manager.Manager) {
 
 	r.POST("/movie/:category", func(c *gin.Context) {
 		category := c.Param("category")
-		numV := c.Param("num")
+		numV := c.PostForm("num")
 		var num int
 		if numV == "" {
 			num = 20
@@ -83,7 +84,8 @@ func Router(r *gin.Engine, manager *manager.Manager) {
 				return
 			}
 		}
-
-		c.JSON(http.StatusOK, manager.GetContentByCategory(category, num))
+		var movies []mm.Movie = []mm.Movie{}
+		movies = manager.GetContentByCategory(category, num)
+		c.JSON(http.StatusOK, movies)
 	})
 }

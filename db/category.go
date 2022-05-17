@@ -48,11 +48,38 @@ func (here *Db) GetContentByCategory(name string, num int) []*clover.Document {
 	} else {
 		classes, _ = here.class.Where(clover.Field("name").Eq(name)).FindAll()
 	}
-	var ids []interface{}
-	for _, v := range classes {
-		id := v.Get("id")
-		ids = append(ids, id)
+	var ids []struct {
+		id     int
+		belong string
 	}
-	docs, _ = here.content.Where(clover.Field("id").In(ids...)).Limit(num).FindAll()
+	for _, v := range classes {
+		id := int(v.Get("id").(int64))
+		belong := v.Get("belong").(string)
+		ids = append(ids, struct {
+			id     int
+			belong string
+		}{
+			id:     id,
+			belong: belong,
+		})
+	}
+	var condition *clover.Criteria = nil
+	for _, v := range ids {
+		if condition == nil {
+			condition = clover.Field("class").In(v.id).And(clover.Field("belong").Eq(v.belong))
+		} else {
+			condition = condition.Or(clover.Field("class").In(v.id).And(clover.Field("belong").Eq(v.belong)))
+		}
+
+	}
+	// fmt.Println(here.content.Where(clover.Field("class").Eq(3)).Count())
+	if condition != nil {
+		docs, _ = here.content.Where(condition).Limit(num).Sort(clover.SortOption{
+			Field:     "stamp",
+			Direction: 1,
+		}).FindAll()
+	}
+
+	// fmt.Println(len(docs))
 	return docs
 }
