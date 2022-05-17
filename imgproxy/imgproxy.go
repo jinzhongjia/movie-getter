@@ -1,4 +1,4 @@
-package imgproxy
+package imgProxy
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func img(c *gin.Context) {
+func Img(c *gin.Context) {
 
 	// 获取url参数
 	url := c.Query("url")
