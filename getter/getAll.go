@@ -56,7 +56,7 @@ func (here *Getter) getPgCount() int {
 
 // 获取list
 func (here *Getter) getList() []gjson.Result {
-	fmt.Println("爬取资源站“", here.name, "”，第", here.pg, "页")
+	fmt.Println("采集资源站“", here.name, "”，第", here.pg, "页")
 	res, _ := http.Get(here.url + "?ac=list&pg=" + strconv.Itoa(here.pg))
 	body, _ := ioutil.ReadAll(res.Body)
 	list := gjson.Get(string(body), "list.#.vod_id").Array()
