@@ -127,3 +127,28 @@ func (here *Manager) GetContentByCategory(name string, num int) []Movie {
 	}
 	return movies
 }
+
+type Source struct {
+	Name  string `json:"name"`
+	Url   string `json:"url"`
+	Alias string `json:"alias"`
+	Pg    int    `json:"pg"`
+}
+
+func (here *Manager) GetSource() []Source {
+	var sources []Source
+	docs := here.Db.GetSource()
+	for _, doc := range docs {
+		name := doc.Get("name").(string)
+		url := doc.Get("url").(string)
+		alias := doc.Get("alias").(string)
+		pg := int(doc.Get("pg").(int64))
+		sources = append(sources, Source{
+			Name:  name,
+			Url:   url,
+			Alias: alias,
+			Pg:    pg,
+		})
+	}
+	return sources
+}

@@ -1,6 +1,7 @@
 package getter
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -11,8 +12,10 @@ import (
 
 // 获取最近24小时更新的内容
 func (here *Getter) GetDaily() {
+	fmt.Println(here.name, "开始每日采集")
 	t := time.NewTicker(24 * time.Hour)
 	defer t.Stop()
+	here.getDaily()
 	for {
 		select {
 		case <-here.ctx.Done():

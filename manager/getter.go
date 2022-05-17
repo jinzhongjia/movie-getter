@@ -13,3 +13,15 @@ func (here *Manager) GetStart() {
 		v.StartGet()
 	}
 }
+
+func (here *Manager) GetStartByAlias(name string) {
+	if v, ok := here.Getters[name]; ok {
+		v.StartGet()
+	}
+}
+
+func (here *Manager) GetStopByAlias(name string) {
+	if v, ok := here.Getters[name]; ok {
+		v.StopGet()
+	}
+}

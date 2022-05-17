@@ -77,6 +77,6 @@ func run() map[string]*Getter {
 func protect() {
 	err := recover()
 	if err != nil {
-		logrus.Error("采集发生错误", err)
+		logrus.Error("采集发生错误：", err)
 	}
 }

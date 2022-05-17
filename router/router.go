@@ -12,12 +12,24 @@ import (
 )
 
 func Router(r *gin.Engine, manager *mm.Manager) {
-	r.GET("/user/spider/stop", func(c *gin.Context) {
-		manager.GetStop()
+	r.GET("/user/stop/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		if name == "all" {
+			manager.GetStop()
+		} else {
+			manager.GetStopByAlias(name)
+		}
+
 		c.String(http.StatusOK, "stop")
 	})
-	r.GET("/user/spider/start", func(c *gin.Context) {
-		manager.GetStart()
+	r.GET("/user/start/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		if name == "all" {
+			manager.GetStart()
+		} else {
+			manager.GetStartByAlias(name)
+		}
+
 		c.String(http.StatusOK, "start")
 	})
 	r.GET("/user/exit", func(ctx *gin.Context) {
@@ -91,4 +103,9 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 	})
 
 	r.GET("/img/proxy", proxy.Proxy)
+
+	r.GET("/user/source/all", func(c *gin.Context) {
+		c.JSON(http.StatusOK, manager.GetSource())
+	})
+
 }

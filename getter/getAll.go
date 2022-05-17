@@ -100,7 +100,7 @@ func (here *Getter) getContent(id int) {
 
 	// 获取属于的source
 	belong := here.alias
-	fmt.Println("获取影片：", name)
+	fmt.Println("采集资源库", here.name, "获取影片：", name)
 	db.AddContent(id, name, class, pic, actor, director, duration, description, url, belong)
 
 	// 每当获取完一条信息后就尝试休眠一秒
