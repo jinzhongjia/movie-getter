@@ -1,8 +1,8 @@
 package router
 
 import (
-	"movie/imgproxy"
 	mm "movie/manager"
+	"movie/proxy"
 	"net/http"
 	"os"
 	"strconv"
@@ -90,5 +90,5 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		c.JSON(http.StatusOK, movies)
 	})
 
-	r.GET("/img/proxy", imgProxy.Img)
+	r.GET("/img/proxy", proxy.Proxy)
 }

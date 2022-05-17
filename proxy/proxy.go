@@ -1,15 +1,14 @@
-package imgProxy
+package proxy
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Img(c *gin.Context) {
+func Proxy(c *gin.Context) {
 
 	// 获取url参数
 	url := c.Query("url")
@@ -32,11 +31,12 @@ func Img(c *gin.Context) {
 	}
 	defer resp.Body.Close()
 
-	// 读取请求的body
-	body, _ := ioutil.ReadAll(resp.Body)
+	// // 读取请求的body
+	// body, _ := ioutil.ReadAll(resp.Body)
 
-	// 写入响应体
-	c.Writer.Write(body)
+	// // 写入响应体
+	// c.Writer.Write(body)
+	// c.Status(resp.StatusCode)
+	c.DataFromReader(resp.StatusCode, resp.ContentLength, resp.Header.Get("content-type"), resp.Body, nil)
 
-	c.Status(resp.StatusCode)
 }
