@@ -11,6 +11,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/*
+
+这里是一段屎一样的代码，后面需要重写这里的路由逻辑
+
+*/
+
 func Router(r *gin.Engine, manager *mm.Manager) {
 	r.GET("/user/stop/:name", func(c *gin.Context) {
 		name := c.Param("name")
