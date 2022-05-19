@@ -37,6 +37,9 @@ func Proxy(c *gin.Context) {
 	// // 写入响应体
 	// c.Writer.Write(body)
 	// c.Status(resp.StatusCode)
-	c.DataFromReader(resp.StatusCode, resp.ContentLength, resp.Header.Get("content-type"), resp.Body, nil)
+	header := make(map[string]string)
+	header["content-disposition"] = resp.Header.Get("content-disposition")
+
+	c.DataFromReader(resp.StatusCode, resp.ContentLength, resp.Header.Get("content-type"), resp.Body, header)
 
 }
