@@ -13,7 +13,7 @@ import (
 // 获取最近24小时更新的内容
 func (here *Getter) GetDaily() {
 	fmt.Println(here.name, "开始每日采集")
-	t := time.NewTicker(24 * time.Hour)
+	t := time.NewTicker(8 * time.Hour)
 	defer t.Stop()
 	here.getDaily()
 	for {
@@ -47,7 +47,7 @@ func (here *Getter) getDaily() {
 
 // 获取最近24小时更新内容页数
 func (here *Getter) getPgCountDaily() int {
-	res, _ := http.Get(here.url + "?ac=list&h=24")
+	res, _ := http.Get(here.url + "?ac=list&h=9")
 	body, _ := ioutil.ReadAll(res.Body)
 	pageCount := gjson.Get(string(body), "pagecount").Value()
 	return int(pageCount.(float64))
@@ -55,7 +55,7 @@ func (here *Getter) getPgCountDaily() int {
 
 // 请求最近列表
 func (here *Getter) getListDaily(pg int) []gjson.Result {
-	res, _ := http.Get(here.url + "?ac=list&h=24&pg=" + strconv.Itoa(pg))
+	res, _ := http.Get(here.url + "?ac=list&h=9&pg=" + strconv.Itoa(pg))
 	body, _ := ioutil.ReadAll(res.Body)
 	list := gjson.Get(string(body), "list.#.vod_id").Array()
 	return list
