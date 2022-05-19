@@ -18,16 +18,7 @@ import (
 */
 
 func Router(r *gin.Engine, manager *mm.Manager) {
-	r.GET("/user/stop/:name", func(c *gin.Context) {
-		name := c.Param("name")
-		if name == "all" {
-			manager.GetStop()
-		} else {
-			manager.GetStopByAlias(name)
-		}
 
-		c.String(http.StatusOK, "stop")
-	})
 	r.GET("/user/start/:name", func(c *gin.Context) {
 		name := c.Param("name")
 		if name == "all" {
@@ -35,9 +26,43 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		} else {
 			manager.GetStartByAlias(name)
 		}
-
 		c.String(http.StatusOK, "start")
 	})
+
+	r.GET("/user/stop/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		if name == "all" {
+			manager.GetStop()
+		} else {
+			manager.GetStopByAlias(name)
+		}
+		c.String(http.StatusOK, "stop")
+	})
+
+	r.GET("/user/start_all/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		manager.GetStartByAlias_all(name)
+		c.String(http.StatusOK, "start")
+	})
+
+	r.GET("/user/stop_all/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		manager.GetStopByAlias_all(name)
+		c.String(http.StatusOK, "stop")
+	})
+
+	r.GET("/user/start_daily/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		manager.GetStartByAlias_daily(name)
+		c.String(http.StatusOK, "start")
+	})
+
+	r.GET("/user/stop_daily/:name", func(c *gin.Context) {
+		name := c.Param("name")
+		manager.GetStopByAlias_daily(name)
+		c.String(http.StatusOK, "stop")
+	})
+
 	r.GET("/user/exit", func(ctx *gin.Context) {
 		manager.GetStop()
 		go func() {
@@ -46,10 +71,12 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 			os.Exit(0)
 		}()
 	})
+
 	r.POST("/search", func(c *gin.Context) {
 		keywords := c.PostForm("keywords")
 		c.JSON(http.StatusOK, manager.Search(keywords))
 	})
+
 	r.GET("/play/:belong/:id", func(c *gin.Context) {
 		belong := c.Param("belong")
 		idV := c.Param("id")

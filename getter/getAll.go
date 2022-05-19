@@ -5,8 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
-	"time"
 
 	"github.com/tidwall/gjson"
 )
@@ -14,7 +12,7 @@ import (
 func (here *Getter) GetAll() {
 	for {
 		select {
-		case <-here.ctx.Done():
+		case <-here.ctx_all.Done():
 			// 被取消了，返回
 			return
 		default:
@@ -32,8 +30,15 @@ func (here *Getter) getAll() {
 	list := here.getList()
 
 	for _, v := range list {
-		id := int(v.Value().(float64))
-		here.getContent(id)
+		// 添加一个逻辑，判断是否允许采集
+		select {
+		case <-here.ctx_all.Done():
+			// 被取消了，返回
+			return
+		default:
+			id := int(v.Value().(float64))
+			here.getContent(id)
+		}
 	}
 
 	// 更新页数
@@ -61,53 +66,4 @@ func (here *Getter) getList() []gjson.Result {
 	body, _ := ioutil.ReadAll(res.Body)
 	list := gjson.Get(string(body), "list.#.vod_id").Array()
 	return list
-}
-
-// 采集content
-func (here *Getter) getContent(id int) {
-	res, _ := http.Get(here.url + "?ac=detail&ids=" + strconv.Itoa(id))
-	body, _ := ioutil.ReadAll(res.Body)
-
-	// 获取所属采集类号
-	class := int(gjson.Get(string(body), "list.0.type_id").Value().(float64))
-
-	if !db.JudgeClass(class, here.alias) {
-		return
-	}
-
-	// 获取影片名
-	name := gjson.Get(string(body), "list.0.vod_name").Value().(string)
-
-	// 获取图片封面地址
-	pic := gjson.Get(string(body), "list.0.vod_pic").Value().(string)
-	pic = urlHandle(pic)
-
-	// 获取主演列表
-	actor := gjson.Get(string(body), "list.0.vod_actor").Value().(string)
-
-	// 获取导演
-	director := gjson.Get(string(body), "list.0.vod_director").Value().(string)
-
-	// 获取时长
-	duration := gjson.Get(string(body), "list.0.vod_duration").Value().(string)
-
-	// 获取简介
-	description := gjson.Get(string(body), "list.0.vod_content").Value().(string)
-
-	// 获取播放链接
-	url := gjson.Get(string(body), "list.0.vod_play_url").Value().(string)
-	url = urlHandle(url)
-
-	// 获取属于的source
-	belong := here.alias
-	fmt.Println("采集资源库", here.name, "获取影片：", name)
-	db.AddContent(id, name, class, pic, actor, director, duration, description, url, belong)
-
-	// 每当获取完一条信息后就尝试休眠一秒
-	time.Sleep(1 * time.Second)
-}
-
-// url处理函数
-func urlHandle(s string) string {
-	return strings.Replace(s, "\\/", "/", -1)
 }

@@ -18,7 +18,6 @@ func NewManager() *Manager {
 		Db:      db,
 		Getters: getters,
 	}
-
 	return newManager
 }
 
