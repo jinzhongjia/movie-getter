@@ -3,11 +3,18 @@ package main
 import (
 	"movie/manager"
 	"movie/router"
+	"runtime"
 
 	"github.com/gin-gonic/gin"
 )
 
+func init() {
+	// 这里指定一核运行
+	runtime.GOMAXPROCS(1)
+}
+
 func main() {
+
 	gin.SetMode(gin.ReleaseMode)
 
 	manager := manager.NewManager()
