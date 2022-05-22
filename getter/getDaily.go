@@ -1,32 +1,12 @@
 package getter
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/tidwall/gjson"
 )
-
-// 获取最近24小时更新的内容
-func (here *Getter) GetDaily() {
-	fmt.Println(here.name, "开始每日采集")
-	t := time.NewTicker(8 * time.Hour)
-	defer t.Stop()
-	here.getDaily()
-	for {
-		select {
-		case <-here.ctx_daily.Done():
-			// 被取消了，返回
-			return
-		case <-t.C:
-			here.getDaily()
-		}
-	}
-
-}
 
 // 获取最近24小时更新的内容子执行
 func (here *Getter) getDaily() {
@@ -41,7 +21,7 @@ func (here *Getter) getDaily() {
 		// 逻辑判断是否允许采集
 		for _, v := range list {
 			select {
-			case <-here.ctx_daily.Done():
+			case <-here.ctx.Done():
 				// 被取消了，返回
 				return
 			default:
@@ -59,7 +39,7 @@ func (here *Getter) getDaily() {
 
 // 获取最近24小时更新内容页数
 func (here *Getter) getPgCountDaily() int {
-	res, _ := http.Get(here.url + "?ac=list&h=9")
+	res, _ := http.Get(here.url + "?ac=list&h=24")
 	body, _ := ioutil.ReadAll(res.Body)
 	pageCount := gjson.Get(string(body), "pagecount").Value()
 	return int(pageCount.(float64))

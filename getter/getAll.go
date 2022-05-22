@@ -9,30 +9,23 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-func (here *Getter) GetAll() {
-	for {
-		select {
-		case <-here.ctx_all.Done():
-			// 被取消了，返回
-			return
-		default:
-			here.getAll()
-		}
-	}
-}
-
+// 全局采集
 func (here *Getter) getAll() {
 	defer protect()
-	if here.pg > here.getPgCount() {
+	pgCount := here.getPgCount()
+	if here.pg >= pgCount {
+		here.changer = true
+		db.UpdateSourceChangerByAlias(here.alias, true)
 		return
 	}
 
-	list := here.getList()
+	//获取页数
+	list := here.getList(pgCount)
 
 	for _, v := range list {
 		// 添加一个逻辑，判断是否允许采集
 		select {
-		case <-here.ctx_all.Done():
+		case <-here.ctx.Done():
 			// 被取消了，返回
 			return
 		default:
@@ -60,9 +53,9 @@ func (here *Getter) getPgCount() int {
 }
 
 // 获取list
-func (here *Getter) getList() []gjson.Result {
+func (here *Getter) getList(pgCount int) []gjson.Result {
 	fmt.Println("采集资源站“", here.name, "”，第", here.pg, "页")
-	res, _ := http.Get(here.url + "?ac=list&pg=" + strconv.Itoa(here.pg))
+	res, _ := http.Get(here.url + "?ac=list&pg=" + strconv.Itoa(pgCount-here.pg))
 	body, _ := ioutil.ReadAll(res.Body)
 	list := gjson.Get(string(body), "list.#.vod_id").Array()
 	return list

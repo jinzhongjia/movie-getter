@@ -12,7 +12,7 @@ func (here *Manager) AddSource(name string, url string) {
 		return
 	}
 	alias := source.Get("alias").(string)
-	here.Getters[alias] = getter.NewGetter(name, url, alias, 1)
+	here.Getters[alias] = getter.NewGetter(name, url, alias, 1, false)
 }
 
 type Movie struct {

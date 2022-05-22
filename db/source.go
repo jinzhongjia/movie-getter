@@ -19,7 +19,8 @@ func (here *Db) AddSource(name string, url string) (bool, *clover.Document) {
 		doc.Set("url", url)
 		alias := strconv.Itoa(int(time.Now().Unix()))
 		doc.Set("alias", alias)
-		doc.Set("pg", 1)
+		doc.Set("pg", 0)
+		doc.Set("changer", false) // false代表没采集完成
 
 		// 插入到表中
 		here.db.InsertOne("source", doc)
@@ -70,6 +71,10 @@ func (here *Db) GetSourceByName(name string) *clover.Document {
 func (here *Db) UpdateSourcePgByAlias(alias string, pg int) error {
 	return here.source.Where(clover.Field("alias").Eq(alias)).Update(map[string]interface{}{"pg": pg})
 
+}
+
+func (here *Db) UpdateSourceChangerByAlias(alias string, changer bool) error {
+	return here.source.Where(clover.Field("alias").Eq(alias)).Update(map[string]interface{}{"changer": changer})
 }
 
 // 采集类初始化

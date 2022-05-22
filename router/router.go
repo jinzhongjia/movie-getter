@@ -4,9 +4,7 @@ import (
 	mm "movie/manager"
 	"movie/proxy"
 	"net/http"
-	"os"
 	"strconv"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,6 +17,7 @@ import (
 
 func Router(r *gin.Engine, manager *mm.Manager) {
 
+	// 开启采集
 	r.GET("/user/start/:name", func(c *gin.Context) {
 		name := c.Param("name")
 		if name == "all" {
@@ -29,6 +28,7 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		c.String(http.StatusOK, "start")
 	})
 
+	// 关闭采集
 	r.GET("/user/stop/:name", func(c *gin.Context) {
 		name := c.Param("name")
 		if name == "all" {
@@ -39,44 +39,13 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		c.String(http.StatusOK, "stop")
 	})
 
-	r.GET("/user/start_all/:name", func(c *gin.Context) {
-		name := c.Param("name")
-		manager.GetStartByAlias_all(name)
-		c.String(http.StatusOK, "start")
-	})
-
-	r.GET("/user/stop_all/:name", func(c *gin.Context) {
-		name := c.Param("name")
-		manager.GetStopByAlias_all(name)
-		c.String(http.StatusOK, "stop")
-	})
-
-	r.GET("/user/start_daily/:name", func(c *gin.Context) {
-		name := c.Param("name")
-		manager.GetStartByAlias_daily(name)
-		c.String(http.StatusOK, "start")
-	})
-
-	r.GET("/user/stop_daily/:name", func(c *gin.Context) {
-		name := c.Param("name")
-		manager.GetStopByAlias_daily(name)
-		c.String(http.StatusOK, "stop")
-	})
-
-	r.GET("/user/exit", func(ctx *gin.Context) {
-		manager.GetStop()
-		go func() {
-			time.Sleep(3 * time.Second)
-			manager.Close()
-			os.Exit(0)
-		}()
-	})
-
+	// 搜索功能
 	r.POST("/search", func(c *gin.Context) {
 		keywords := c.PostForm("keywords")
 		c.JSON(http.StatusOK, manager.Search(keywords))
 	})
 
+	// 播放详细页
 	r.GET("/play/:belong/:id", func(c *gin.Context) {
 		belong := c.Param("belong")
 		idV := c.Param("id")
@@ -87,6 +56,7 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		c.JSON(http.StatusOK, manager.GetContent(belong, id))
 	})
 
+	// 添加采集源
 	r.POST("/user/source/add", func(c *gin.Context) {
 		name := c.PostForm("name")
 		url := c.PostForm("url")
@@ -94,6 +64,7 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		c.Status(http.StatusOK)
 	})
 
+	// 删除采集源
 	r.POST("/user/source/del", func(c *gin.Context) {
 		url := c.PostForm("url")
 		err := manager.DelSource(url)
@@ -104,6 +75,7 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		c.Status(http.StatusOK)
 	})
 
+	// 更新采集源名字
 	r.POST("/user/source/updateName", func(c *gin.Context) {
 		// 这里没写完
 		oldName := c.PostForm("oldName")
@@ -116,6 +88,7 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		c.Status(http.StatusOK)
 	})
 
+	// 获取指定分类信息
 	r.POST("/movie/:category", func(c *gin.Context) {
 		category := c.Param("category")
 		numV := c.PostForm("num")
@@ -135,8 +108,10 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		c.JSON(http.StatusOK, movies)
 	})
 
+	// 图片代理
 	r.GET("/img/proxy", proxy.Proxy)
 
+	// 获取所有采集源
 	r.GET("/user/source/all", func(c *gin.Context) {
 		c.JSON(http.StatusOK, manager.GetSource())
 	})
