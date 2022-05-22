@@ -14,7 +14,13 @@ import (
 
 // 采集content
 func (here *Getter) getContent(id int) {
-	res, _ := http.Get(here.url + "?ac=detail&ids=" + strconv.Itoa(id))
+	res, err := http.Get(here.url + "?ac=detail&ids=" + strconv.Itoa(id))
+	if err != nil {
+		panic("采集资源库" + here.name + "获取json信息错误")
+		// panic后通过外部的recover来重新获取json
+	}
+	defer res.Body.Close()
+	// 获取body
 	body, _ := ioutil.ReadAll(res.Body)
 
 	// 获取所属采集类号
