@@ -2,3 +2,4 @@ clover-db
 *.exe
 json
 *.7z
+*.pprof
