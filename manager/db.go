@@ -108,10 +108,10 @@ func (here *Manager) GetContent(belong string, id int) Movie {
 	}
 }
 
-func (here *Manager) GetContentByCategory(name string, num int) []Movie {
+func (here *Manager) GetContentByCategory(name string, num int, pg int) ([]Movie, int) {
 	var movies []Movie
 
-	docs := here.Db.GetContentByCategory(name, num)
+	docs, pgCount := here.Db.GetContentByCategory(name, num, pg)
 	for _, doc := range docs {
 		movies = append(movies, Movie{
 			Id:          int(doc.Get("id").(int64)),
@@ -125,7 +125,7 @@ func (here *Manager) GetContentByCategory(name string, num int) []Movie {
 			Belong:      doc.Get("belong").(string),
 		})
 	}
-	return movies
+	return movies, pgCount
 }
 
 type Source struct {

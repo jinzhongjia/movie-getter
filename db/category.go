@@ -40,8 +40,9 @@ func (here *Db) GetCategory() []*clover.Document {
 	return result
 }
 
-func (here *Db) GetContentByCategory(name string, num int) []*clover.Document {
+func (here *Db) GetContentByCategory(name string, num int, pg int) ([]*clover.Document, int) {
 	var docs []*clover.Document
+	var pgCount int
 	var classes []*clover.Document
 	if here.existCategory(name) {
 		classes, _ = here.class.Where(clover.Field("belong-cat").Eq(name)).FindAll()
@@ -70,16 +71,16 @@ func (here *Db) GetContentByCategory(name string, num int) []*clover.Document {
 		} else {
 			condition = condition.Or(clover.Field("class").In(v.id).And(clover.Field("belong").Eq(v.belong)))
 		}
-
 	}
 	// fmt.Println(here.content.Where(clover.Field("class").Eq(3)).Count())
 	if condition != nil {
-		docs, _ = here.content.Where(condition).Limit(num).Sort(clover.SortOption{
+		docs, _ = here.content.Where(condition).Skip(num * pg).Limit(num).Sort(clover.SortOption{
 			Field:     "stamp",
 			Direction: 1,
 		}).FindAll()
+		pgCount, _ = here.content.Where(condition).Count()
 	}
 
 	// fmt.Println(len(docs))
-	return docs
+	return docs, pgCount
 }

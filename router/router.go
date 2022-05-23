@@ -40,6 +40,7 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 	})
 
 	// 搜索功能
+	// 未完成，差页数和每页数目
 	r.POST("/search", func(c *gin.Context) {
 		keywords := c.PostForm("keywords")
 		c.JSON(http.StatusOK, manager.Search(keywords))
@@ -89,8 +90,10 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 
 	// 获取指定分类信息
 	r.POST("/movie/:category", func(c *gin.Context) {
+		// 未写完
 		category := c.Param("category")
 		numV := c.PostForm("num")
+		pgV := c.PostForm("pg")
 		var num int
 		if numV == "" {
 			num = 20
@@ -102,9 +105,29 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 				return
 			}
 		}
+		var pg int
+		if pgV == "" {
+			pg = 20
+		} else {
+			var err error
+			pg, err = strconv.Atoi(pgV)
+			if err != nil {
+				c.String(http.StatusBadRequest, "wrong pg")
+				return
+			}
+		}
 		var movies []mm.Movie = []mm.Movie{}
-		movies = manager.GetContentByCategory(category, num)
-		c.JSON(http.StatusOK, movies)
+		var pgCount int
+		movies, pgCount = manager.GetContentByCategory(category, num, pg)
+		c.JSON(http.StatusOK, struct {
+			Pg      int        `json:"pg"`
+			PgCount int        `json:"pgCount"`
+			Movies  []mm.Movie `json:"movies"`
+		}{
+			Pg:      pg,
+			PgCount: pgCount,
+			Movies:  movies,
+		})
 	})
 
 	// 图片代理
