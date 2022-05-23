@@ -77,7 +77,6 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 
 	// 更新采集源名字
 	r.POST("/user/source/updateName", func(c *gin.Context) {
-		// 这里没写完
 		oldName := c.PostForm("oldName")
 		newName := c.PostForm("newName")
 		err := manager.UpdateSourceName(oldName, newName)

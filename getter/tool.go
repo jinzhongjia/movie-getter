@@ -59,7 +59,7 @@ func (here *Getter) getContent(id int) {
 	db.AddContent(id, name, class, pic, actor, director, duration, description, url, belong)
 
 	// 每当获取完一条信息后就尝试休眠一秒
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 }
 
 // url处理函数

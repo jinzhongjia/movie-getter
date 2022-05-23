@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,7 +31,7 @@ func main() {
 	manager.AddSource("卧龙", "https://collect.wolongzyw.com/api.php/provide/vod/")
 
 	r := gin.Default()
-
+	pprof.Register(r)
 	router.Router(r, manager)
 
 	// 退出函数处理
