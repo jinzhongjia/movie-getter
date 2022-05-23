@@ -50,3 +50,10 @@ func (here *Db) Close() {
 	here.db.Close()
 	fmt.Println("关闭数据库")
 }
+
+func (here *Db) Export() {
+	here.db.ExportCollection("source", "source.json")
+	here.db.ExportCollection("content", "content.json")
+	here.db.ExportCollection("category", "category.json")
+	here.db.ExportCollection("class", "class.json")
+}

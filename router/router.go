@@ -42,8 +42,45 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 	// 搜索功能
 	// 未完成，差页数和每页数目
 	r.POST("/search", func(c *gin.Context) {
+		// 获取关键字
 		keywords := c.PostForm("keywords")
-		c.JSON(http.StatusOK, manager.Search(keywords))
+		// 过滤的到页数和每页数目
+		numV := c.PostForm("num")
+		pgV := c.PostForm("pg")
+		var num int
+		if numV == "" {
+			num = 20
+		} else {
+			var err error
+			num, err = strconv.Atoi(numV)
+			if err != nil {
+				c.String(http.StatusBadRequest, "wrong num")
+				return
+			}
+		}
+		var pg int
+		if pgV == "" {
+			pg = 1
+		} else {
+			var err error
+			pg, err = strconv.Atoi(pgV)
+			if err != nil {
+				c.String(http.StatusBadRequest, "wrong pg")
+				return
+			}
+		}
+		var movies []mm.Movie = []mm.Movie{}
+		// var pgCount int
+		movies = manager.Search(keywords, num, pg-1)
+		c.JSON(http.StatusOK, struct {
+			Pg      int        `json:"pg"`
+			PgCount int        `json:"pgCount"`
+			Movies  []mm.Movie `json:"movies"`
+		}{
+			Pg: pg,
+
+			Movies: movies,
+		})
 	})
 
 	// 播放详细页
@@ -107,7 +144,7 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		}
 		var pg int
 		if pgV == "" {
-			pg = 20
+			pg = 1
 		} else {
 			var err error
 			pg, err = strconv.Atoi(pgV)
@@ -118,7 +155,7 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		}
 		var movies []mm.Movie = []mm.Movie{}
 		var pgCount int
-		movies, pgCount = manager.GetContentByCategory(category, num, pg)
+		movies, pgCount = manager.GetContentByCategory(category, num, pg-1)
 		c.JSON(http.StatusOK, struct {
 			Pg      int        `json:"pg"`
 			PgCount int        `json:"pgCount"`
@@ -138,4 +175,8 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		c.JSON(http.StatusOK, manager.GetSource())
 	})
 
+	r.GET("/user/export", func(c *gin.Context) {
+		manager.Export()
+		c.Status(http.StatusOK)
+	})
 }

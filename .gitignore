@@ -3,3 +3,4 @@ clover-db
 json
 *.7z
 *.pprof
+*.json

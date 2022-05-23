@@ -27,10 +27,10 @@ type Movie struct {
 	Belong      string `json:"belong"`
 }
 
-func (here *Manager) Search(keyWords string) []Movie {
+func (here *Manager) Search(keyWords string, num int, pg int) []Movie {
 	var movies []Movie
 	names := strings.Fields(keyWords)
-	docs := here.Db.SearchContent(names)
+	docs := here.Db.SearchContent(names, num, pg)
 	for _, doc := range docs {
 		movies = append(movies, Movie{
 			Id:          int(doc.Get("id").(int64)),
@@ -151,4 +151,8 @@ func (here *Manager) GetSource() []Source {
 		})
 	}
 	return sources
+}
+
+func (here *Manager) Export() {
+	here.Db.Export()
 }
