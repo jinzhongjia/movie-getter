@@ -116,6 +116,8 @@ github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 h1:Esafd1046DLD
 github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3RllmbCylyMrvgv0=
 github.com/ostafen/clover v1.1.1-0.20220510183249-e50ea8cafd07 h1:uK5G4W5aFzp9/CZdLnMBLHzP/KDgsIkH6nTr+FTOTpo=
 github.com/ostafen/clover v1.1.1-0.20220510183249-e50ea8cafd07/go.mod h1:FUueveVNOVH62aIk+54GcYFE8kFeYIMtTtJ5g2fllIU=
+github.com/ostafen/clover v1.2.0 h1:9y/Uy/T0C0rcPrVt9UlB+KtkVnLx8+/1g4TTUa+aJGc=
+github.com/ostafen/clover v1.2.0/go.mod h1:FUueveVNOVH62aIk+54GcYFE8kFeYIMtTtJ5g2fllIU=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
