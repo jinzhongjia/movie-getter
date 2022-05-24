@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"regexp"
 	"time"
 
@@ -56,7 +57,7 @@ func (here *Db) DelContent(id string, belong string) error {
 
 }
 
-func (here *Db) SearchContent(names []string) []*clover.Document {
+func (here *Db) SearchContent(names []string, num int, pg int) []*clover.Document {
 	var name string
 	for i, v := range names {
 		if i < len(names)-1 {
@@ -65,7 +66,24 @@ func (here *Db) SearchContent(names []string) []*clover.Document {
 			name += "(.*" + regexp.QuoteMeta(v) + ".*)"
 		}
 	}
-	docs, _ := here.content.Where(clover.Field("name").Like(name)).FindAll()
+	fmt.Println(num, pg)
+	query := here.content.Where(clover.Field("name").Like(name))
+
+	// startT := time.Now()
+
+	docs, _ := query.Sort(clover.SortOption{
+		Field:     "stamp",
+		Direction: -1,
+	}).Skip(num * pg).Limit(num).FindAll()
+
+	// .Sort(clover.SortOption{
+	// 	Field:     "stamp",
+	// 	Direction: -1,
+	// })
+	startT := time.Now()
+	fmt.Println(query.Count())
+	fmt.Printf("time.Since(startT): %v\n", time.Since(startT))
+
 	return docs
 }
 

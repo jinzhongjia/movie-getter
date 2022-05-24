@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.7.7
-	github.com/ostafen/clover v1.2.0
+	github.com/ostafen/clover v1.2.1-0.20220524070840-93caa15dfbb8
 	github.com/sirupsen/logrus v1.8.1
 	github.com/tidwall/gjson v1.14.1
 )

@@ -76,9 +76,9 @@ func (here *Db) GetContentByCategory(name string, num int, pg int) ([]*clover.Do
 	if condition != nil {
 		docs, _ = here.content.Where(condition).Skip(num * pg).Limit(num).Sort(clover.SortOption{
 			Field:     "stamp",
-			Direction: 1,
+			Direction: -1,
 		}).FindAll()
-		pgCount, _ = here.content.Where(condition).Count()
+		// pgCount, _ = here.content.Where(condition).Count()
 	}
 
 	// fmt.Println(len(docs))

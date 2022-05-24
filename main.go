@@ -4,24 +4,23 @@ import (
 	"movie/manager"
 	"movie/router"
 	"os"
-	"runtime"
+	"runtime/pprof"
 	"time"
 
-	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 )
 
 func init() {
 	// 这里指定一核运行
-	runtime.GOMAXPROCS(1)
+	// runtime.GOMAXPROCS(1)
 }
 
 func main() {
 	// 性能分析
-	// f, _ := os.OpenFile("cpu.pprof", os.O_CREATE|os.O_RDWR, 0644)
-	// defer f.Close()
-	// pprof.StartCPUProfile(f)
-	// defer pprof.StopCPUProfile()
+	f, _ := os.OpenFile("cpu.pprof", os.O_CREATE|os.O_RDWR, 0644)
+	defer f.Close()
+	pprof.StartCPUProfile(f)
+	defer pprof.StopCPUProfile()
 
 	gin.SetMode(gin.ReleaseMode)
 
@@ -31,7 +30,7 @@ func main() {
 	manager.AddSource("卧龙", "https://collect.wolongzyw.com/api.php/provide/vod/")
 
 	r := gin.Default()
-	pprof.Register(r)
+	// pprof.Register(r)
 	router.Router(r, manager)
 
 	// 退出函数处理
@@ -40,8 +39,8 @@ func main() {
 		go func() {
 			time.Sleep(3 * time.Second)
 			manager.Close()
-			// pprof.StopCPUProfile()
-			// f.Close()
+			pprof.StopCPUProfile()
+			f.Close()
 			os.Exit(0)
 		}()
 	})
