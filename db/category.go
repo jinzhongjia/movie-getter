@@ -18,19 +18,23 @@ func (here *Db) UpdateCategoryName(oldName string, newName string) error {
 }
 
 // 删除分类
-func (here *Db) DelCategory(name string) error {
+func (here *Db) DelCategory(id uint) error {
 	var db *gorm.DB
 
 	// 创建事务
 	tx := here.db.Begin()
 	// 尝试删除关系
-	err := tx.Model(&Category{}).Where("name = ?", name).Association("Class").Clear()
+	err := tx.Model(&Category{
+		ID: id,
+	}).Association("Class").Clear()
 	if err != nil {
 		tx.Rollback()
 		return err
 	}
 	// 尝试删除自建分类
-	db = tx.Where("name = ?", name).Delete(&Category{})
+	db = tx.Delete(&Category{
+		ID: id,
+	})
 	if db.Error != nil {
 		tx.Rollback()
 		return db.Error
@@ -46,5 +50,3 @@ func (here *Db) AllCategory() ([]Category, error) {
 	db := here.db.Find(&categories)
 	return categories, db.Error
 }
-
-

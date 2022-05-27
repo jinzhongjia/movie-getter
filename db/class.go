@@ -49,11 +49,28 @@ func (here *Db) JudgeClass(SourceId uint, class_Id uint) bool {
 	return class.Get
 }
 
+// 通过source和class_id获取classId
 func (here *Db) GetClassIdBySourceId(sourceId uint, class_Id int) uint {
 	var class Class
 	here.db.Model(&Source{
 		ID: sourceId,
 	}).Where("class_id = ?", class_Id).Association("Class").Find(&class)
 	return class.ID
+}
 
+// 获取某资源库下所有采集类
+func (here *Db) GetClass(sourceId uint) ([]Class, error) {
+	var classes []Class
+	err := here.db.Model(&Source{
+		ID: sourceId,
+	}).Association("Class").Find(&classes)
+	return classes, err
+}
+
+// 改变采集状态
+func (here *Db) ChangeClassGet(classId uint, get bool) error {
+	db := here.db.Model(&Class{
+		ID: classId,
+	}).Update("get", get)
+	return db.Error
 }

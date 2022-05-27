@@ -3,9 +3,22 @@ package manager
 import (
 	"movie/db"
 	"movie/getter"
-
-	"github.com/sirupsen/logrus"
 )
+
+func (here *Manager) GetSource() ([]Source, error) {
+	sources := []Source{}
+	v, err := here.Db.AllSource()
+	for _, v := range v {
+		sources = append(sources, Source{
+			ID:   v.ID,
+			Name: v.Name,
+			Url:  v.Url,
+			Ok:   v.Ok,
+			Pg:   v.Pg,
+		})
+	}
+	return sources, err
+}
 
 // 增加采集源
 func (here *Manager) AddSource(name string, url string) bool {
@@ -17,17 +30,12 @@ func (here *Manager) AddSource(name string, url string) bool {
 	return ok
 }
 
-type Movie struct {
-	Id          int    `json:"id"`
-	Name        string `json:"name"`
-	Pic         string `json:"pic"`
-	Actor       string `json:"actor"`
-	Director    string `json:"director"`
-	Duration    string `json:"duration"`
-	Description string `json:"description"`
-	Url         string `json:"url,omitempty"`
+// 删除采集源
+func (here *Manager) DelSource(id uint) error {
+	return here.Db.DelSource(id)
 }
 
+// 所有影片
 func (here *Manager) SearchContent(keyword string) ([]Movie, error) {
 	var movies []Movie
 	contents, err := here.Db.SearchContent(keyword)
@@ -46,8 +54,8 @@ func (here *Manager) SearchContent(keyword string) ([]Movie, error) {
 	return movies, err
 }
 
+// 获取影片详细信息
 func (here *Manager) GetContent(id uint) (Movie, error) {
-
 	content, err := here.Db.GetContent(id)
 	movie := Movie{
 		Id:          int(content.ID),
@@ -62,11 +70,6 @@ func (here *Manager) GetContent(id uint) (Movie, error) {
 	return movie, err
 }
 
-// 删除采集源
-func (here *Manager) DelSource(id uint) error {
-	return here.Db.DelSource(id)
-}
-
 // 更新采集源名字
 func (here *Manager) UpdateSourceName(oldName string, newName string) error {
 	return here.Db.UpdateSourceName(oldName, newName)
@@ -79,18 +82,13 @@ func (here *Manager) AddCategory(name string) bool {
 }
 
 // 获取所有分类
-func (here *Manager) GetCategory() []db.Category {
-
-	categories, err := here.Db.AllCategory()
-	if err != nil {
-		logrus.Error(err)
-	}
-	return categories
+func (here *Manager) GetCategory() ([]db.Category, error) {
+	return here.Db.AllCategory()
 }
 
 // 删除分类
-func (here *Manager) DelCategory(name string) error {
-	return here.Db.DelCategory(name)
+func (here *Manager) DelCategory(id uint) error {
+	return here.Db.DelCategory(id)
 }
 
 // 更新分类
@@ -98,11 +96,7 @@ func (here *Manager) UpdateCategory(oldName string, newName string) error {
 	return here.Db.UpdateCategoryName(oldName, newName)
 }
 
-// 分配采集类
-func (here *Manager) DistributeClass(classId uint, categoryId uint) error {
-	return here.Db.DistributeClass(classId, categoryId)
-}
-
+// 获取分类下影片
 func (here *Manager) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Movie, int, error) {
 	contents, pgCount, err := here.Db.BrowseContentByCategory(categoryId, num, pg)
 
@@ -123,54 +117,51 @@ func (here *Manager) BrowseContentByCategory(categoryId uint, num int, pg int) (
 	return movies, pgCount, err
 }
 
-// 分配采集类
-// func (here *Manager) AllocateClass(id int, belong string, belong_cat string) error {
-// 	return here.Db.DistributeClass(id, belong, belong_cat)
-// }
-
-// func (here *Manager) GetContent(belong string, id int) Movie {
-// 	doc := here.Db.GetContent(belong, id)
-// 	return Movie{
-// 		Id:          int(doc.Get("id").(int64)),
-// 		Name:        doc.Get("name").(string),
-// 		Pic:         doc.Get("pic").(string),
-// 		Actor:       doc.Get("actor").(string),
-// 		Director:    doc.Get("director").(string),
-// 		Duration:    doc.Get("duration").(string),
-// 		Description: doc.Get("description").(string),
-// 		Url:         doc.Get("url").(string),
-// 		Belong:      doc.Get("belong").(string),
-// 	}
-// }
-
-// func (here *Manager) GetContentByCategory(name string, num int, pg int) ([]Movie, int) {
-// 	var movies []Movie
-
-// 	docs, pgCount := here.Db.GetContentByCategory(name, num, pg)
-// 	for _, doc := range docs {
-// 		movies = append(movies, Movie{
-// 			Id:          int(doc.Get("id").(int64)),
-// 			Name:        doc.Get("name").(string),
-// 			Pic:         doc.Get("pic").(string),
-// 			Actor:       doc.Get("actor").(string),
-// 			Director:    doc.Get("director").(string),
-// 			Duration:    doc.Get("duration").(string),
-// 			Description: doc.Get("description").(string),
-// 			Url:         doc.Get("url").(string),
-// 			Belong:      doc.Get("belong").(string),
-// 		})
-// 	}
-// 	return movies, pgCount
-// }
-
-type Source struct {
-	Name  string `json:"name"`
-	Url   string `json:"url"`
-	Alias string `json:"alias"`
-	Pg    int    `json:"pg"`
+func (here *Manager) GetClass(sourceId uint) ([]Class, error) {
+	v, err := here.Db.GetClass(sourceId)
+	classes := []Class{}
+	for _, v := range v {
+		classes = append(classes, Class{
+			ID:      v.ID,
+			Name:    v.Name,
+			ClassId: v.ClassId,
+			Get:     v.Get,
+		})
+	}
+	return classes, err
 }
 
-func (here *Manager) GetSource() []db.Source {
-	sources, _ := here.Db.AllSource()
-	return sources
+// 分配采集类
+func (here *Manager) DistributeClass(classId uint, categoryId uint) error {
+	return here.Db.DistributeClass(classId, categoryId)
+}
+
+func (here *Manager) ChangeClassGet(classId uint, get bool) error {
+	return here.Db.ChangeClassGet(classId, get)
+}
+
+type Source struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+	Url  string `json:"url"`
+	Ok   bool   `json:"ok"`
+	Pg   int    `json:"pg"`
+}
+
+type Movie struct {
+	Id          int    `json:"id"`
+	Name        string `json:"name"`
+	Pic         string `json:"pic"`
+	Actor       string `json:"actor"`
+	Director    string `json:"director"`
+	Duration    string `json:"duration"`
+	Description string `json:"description"`
+	Url         string `json:"url,omitempty"`
+}
+
+type Class struct {
+	ID      uint
+	Name    string // 采集分类名
+	ClassId int    // 采集分类id
+	Get     bool   // 是否采集
 }

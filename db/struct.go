@@ -40,7 +40,7 @@ type Class struct {
 } // 采集资源分类
 
 type Category struct {
-	ID    uint
-	Name  string `gorm:"unique;not null;index"` // 自建分类名
-	Class []Class
+	ID    uint    `json:"id"`
+	Name  string  `gorm:"unique;not null;index" json:"name"` // 自建分类名
+	Class []Class `json:",omitempty"`
 } // 自建分类
