@@ -181,7 +181,7 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Con
 	// 设置查询前缀
 	pre := here.db.Model(&Content{}).Where("class_id IN ?", class)
 	// 查询content
-	db := pre.Debug().Order("stamp desc").Select("id", "name", "pic", "actor", "director", "duration", "description").Offset(num * (pg - 1)).Limit(num).Find(&contents)
+	db := pre.Order("stamp desc").Select("id", "name", "pic", "actor", "director", "duration", "description").Offset(num * (pg - 1)).Limit(num).Find(&contents)
 
 	// 查询计数
 	var count int64
