@@ -14,14 +14,14 @@ type Content struct {
 	ID          uint
 	ContentId   int    `gorm:"index"` // 影片编号
 	Name        string `gorm:"index"` //影片名
-	Class       string // 所属类别
+	Class       string // 所属类别 作为保留字段
 	Pic         string // 影片图片地址
 	Actor       string // 主演
 	Director    string // 导演
 	Duration    string // 时长
 	Description string // 简介
 	Url         string `gorm:"unique"` // 视频链接
-	Stamp       int64  // 创建时间戳
+	Stamp       int64  `gorm:"index"`  // 创建时间戳
 	SourceID    uint
 	ClassID     uint
 	//属于分类
@@ -29,9 +29,9 @@ type Content struct {
 
 type Class struct {
 	ID         uint
-	Name       string
-	ClassId    int  `gorm:"not null;index"`
-	Get        bool `gorm:"default:true"` // 是否采集
+	Name       string // 采集分类名
+	ClassId    int    `gorm:"not null;index"` // 采集分类id
+	Get        bool   `gorm:"default:true"`   // 是否采集
 	Content    []Content
 	SourceID   uint
 	CategoryID uint
@@ -41,6 +41,6 @@ type Class struct {
 
 type Category struct {
 	ID    uint
-	Name  string `gorm:"unique;not null;index"`
+	Name  string `gorm:"unique;not null;index"` // 自建分类名
 	Class []Class
 } // 自建分类
