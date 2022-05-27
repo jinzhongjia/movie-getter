@@ -10,7 +10,7 @@ import (
 // 增加采集源
 func (here *Manager) AddSource(name string, url string) bool {
 	id, ok := here.Db.AddSource(name, url)
-	if ok {
+	if !ok {
 		return ok
 	}
 	here.Getters[id] = getter.NewGetter(id, name, url, false, 1)
@@ -25,29 +25,42 @@ type Movie struct {
 	Director    string `json:"director"`
 	Duration    string `json:"duration"`
 	Description string `json:"description"`
-	Url         string `json:"url"`
-	Belong      string `json:"belong"`
+	Url         string `json:"url,omitempty"`
 }
 
-// func (here *Manager) Search(keyWords string, num int, pg int) []Movie {
-// 	var movies []Movie
-// 	names := strings.Fields(keyWords)
-// 	docs := here.Db.SearchContent(names, num, pg)
-// 	for _, doc := range docs {
-// 		movies = append(movies, Movie{
-// 			Id:          int(doc.Get("id").(int64)),
-// 			Name:        doc.Get("name").(string),
-// 			Pic:         doc.Get("pic").(string),
-// 			Actor:       doc.Get("actor").(string),
-// 			Director:    doc.Get("director").(string),
-// 			Duration:    doc.Get("duration").(string),
-// 			Description: doc.Get("description").(string),
-// 			Url:         doc.Get("url").(string),
-// 			Belong:      doc.Get("belong").(string),
-// 		})
-// 	}
-// 	return movies
-// }
+func (here *Manager) SearchContent(keyword string) ([]Movie, error) {
+	var movies []Movie
+	contents, err := here.Db.SearchContent(keyword)
+	for _, content := range contents {
+		movies = append(movies, Movie{
+			Id:          int(content.ID),
+			Name:        content.Name,
+			Pic:         content.Pic,
+			Actor:       content.Actor,
+			Director:    content.Director,
+			Duration:    content.Duration,
+			Description: content.Description,
+			// Url:         content.Url,
+		})
+	}
+	return movies, err
+}
+
+func (here *Manager) GetContent(id uint) (Movie, error) {
+
+	content, err := here.Db.GetContent(id)
+	movie := Movie{
+		Id:          int(content.ID),
+		Name:        content.Name,
+		Pic:         content.Pic,
+		Actor:       content.Actor,
+		Director:    content.Director,
+		Duration:    content.Duration,
+		Description: content.Description,
+		Url:         content.Url,
+	}
+	return movie, err
+}
 
 // 删除采集源
 func (here *Manager) DelSource(id uint) error {

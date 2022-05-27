@@ -24,10 +24,12 @@ func main() {
 	// }
 	// time.Sleep(1 * time.Minute)
 	// manager.AddCategory("动作")
-	// manager.DistributeClass(5, 1)
+	// manager.DistributeClass(6, 1)
+	// fmt.Println(manager.Db.JudgeClass(1, 34))
+	// fmt.Println(manager.Db.GetClassIdBySourceId(1,7))
 	r := gin.Default()
 	router.Router(r, manager)
-	// //监听端口默认为8080
+	//监听端口默认为8080
 	r.Run("127.0.0.1:8000")
 
 }

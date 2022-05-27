@@ -3,11 +3,11 @@ package db
 import "gorm.io/gorm"
 
 // 添加class
-func (here *Db) AddClass(sourceId uint, name string, classId int) error {
+func (here *Db) AddClass(sourceId uint, name string, class_Id int) error {
 	var db *gorm.DB
 	class := &Class{
 		Name:    name,
-		ClassId: classId,
+		ClassId: class_Id,
 	}
 	// 创建事务
 	tx := here.db.Begin()
@@ -17,7 +17,7 @@ func (here *Db) AddClass(sourceId uint, name string, classId int) error {
 		tx.Rollback()
 		return db.Error
 	}
-	// 尝试添加关系
+	// 添加与source的关系
 	err := tx.Model(&Source{
 		ID: sourceId,
 	}).Association("Class").Append(class)
@@ -30,7 +30,7 @@ func (here *Db) AddClass(sourceId uint, name string, classId int) error {
 	return nil
 }
 
-// 分配class，这里的classId是表中的id
+// 分配class
 func (here *Db) DistributeClass(classId uint, categoryId uint) error {
 	return here.db.Model(&Category{
 		ID: categoryId,
@@ -39,11 +39,21 @@ func (here *Db) DistributeClass(classId uint, categoryId uint) error {
 	})
 }
 
-func (here *Db) JudgeClass(SourceId uint, classId uint) bool {
+// 判断判断当前分类是否允许采集
+func (here *Db) JudgeClass(SourceId uint, class_Id uint) bool {
 	var class Class
 	here.db.Model(&Source{
 		ID: SourceId,
-	}).Association("Class").Find(&class, classId)
+	}).Select("get").Where("class_id = ?", class_Id).Association("Class").Find(&class)
 
 	return class.Get
+}
+
+func (here *Db) GetClassIdBySourceId(sourceId uint, class_Id int) uint {
+	var class Class
+	here.db.Model(&Source{
+		ID: sourceId,
+	}).Where("class_id = ?", class_Id).Association("Class").Find(&class)
+	return class.ID
+
 }

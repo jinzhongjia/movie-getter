@@ -7,7 +7,7 @@ import (
 )
 
 func (here *Db) AddContent(
-	contentId int,
+	content_Id int,
 	name string, // 影片名
 	pic string, //
 	actor string,
@@ -15,13 +15,13 @@ func (here *Db) AddContent(
 	duration string,
 	description string,
 	url string,
-	classId int, //所属类别
+	class_Id int, //所属类别
 	sourceId uint, // source id
 ) error {
-	id, ok := here.existContent(contentId, sourceId)
+	id, ok := here.existContent(content_Id, sourceId)
 	if ok {
 		return here.updateContent(id,
-			contentId,
+			content_Id,
 			name,
 			pic,
 			actor,
@@ -29,12 +29,12 @@ func (here *Db) AddContent(
 			duration,
 			description,
 			url,
-			classId,
+			class_Id,
 			sourceId,
 		)
 	}
 	return here.addContent(
-		contentId,
+		content_Id,
 		name,
 		pic,
 		actor,
@@ -42,13 +42,13 @@ func (here *Db) AddContent(
 		duration,
 		description,
 		url,
-		classId,
+		class_Id,
 		sourceId)
 }
 
-func (here *Db) existContent(contentId int, sourceId uint) (uint, bool) {
+func (here *Db) existContent(content_Id int, sourceId uint) (uint, bool) {
 	var content Content
-	here.db.Where("content_id = ? AND source_id = ?", contentId, sourceId).Select("id").Find(&content)
+	here.db.Where("content_id = ? AND source_id = ?", content_Id, sourceId).Select("id").Find(&content)
 	if content.ID == 0 {
 		return 0, false
 	}
@@ -58,7 +58,7 @@ func (here *Db) existContent(contentId int, sourceId uint) (uint, bool) {
 
 func (here *Db) updateContent(
 	id uint,
-	contentId int,
+	content_Id int,
 	name string, // 影片名
 	pic string, //
 	actor string,
@@ -66,12 +66,12 @@ func (here *Db) updateContent(
 	duration string,
 	description string,
 	url string,
-	classId int, //所属类别
+	class_Id int, //所属类别
 	sourceId uint, // source id
 ) error {
 	content := &Content{
 
-		ContentId:   contentId,
+		ContentId:   content_Id,
 		Name:        name,
 		Pic:         pic,
 		Actor:       actor,
@@ -88,7 +88,7 @@ func (here *Db) updateContent(
 }
 
 func (here *Db) addContent(
-	contentId int,
+	content_Id int,
 	name string, // 影片名
 	pic string, //
 	actor string,
@@ -96,12 +96,12 @@ func (here *Db) addContent(
 	duration string,
 	description string,
 	url string,
-	classId int, //所属类别
+	class_Id int, //所属类别
 	sourceId uint, // source id
 ) error {
 	var db *gorm.DB
 	content := &Content{
-		ContentId:   contentId,
+		ContentId:   content_Id,
 		Name:        name,
 		Pic:         pic,
 		Actor:       actor,
@@ -130,18 +130,13 @@ func (here *Db) addContent(
 		return err
 	}
 
-	// 声明一个class变量
-	var class Class
-
 	// 尝试寻找class
-	db = tx.Where("class_id = ?", classId).First(&class)
-	if db.Error != nil {
-		tx.Rollback()
-		return db.Error
-	}
+	classId := here.GetClassIdBySourceId(sourceId, class_Id)
 
 	// 尝试添加content与class关系
-	err = tx.Model(&class).Association("Content").Append(content)
+	err = tx.Model(&Class{
+		ID: classId,
+	}).Association("Content").Append(content)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -156,4 +151,33 @@ func (here *Db) addContent(
 func (here *Db) DelContent(id uint) error {
 	db := here.db.Delete(&Content{}, id)
 	return db.Error
+}
+
+// 搜索影片
+func (here *Db) SearchContent(keyword string) ([]Content, error) {
+	var contents []Content
+	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description").Where("name LIKE ?", "%"+keyword+"%").Find(&contents)
+	return contents, db.Error
+}
+
+// 获取影片
+func (here *Db) GetContent(id uint) (Content, error) {
+	var content Content
+	db := here.db.First(&content, id)
+	return content, db.Error
+}
+
+func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Content, int, error) {
+	// 查询所属分类下的采集类
+	var class []int
+	here.db.Model(&Category{
+		ID: categoryId,
+	}).Select("id").Association("Class").Find(&class)
+
+	var contents []Content
+	pre := here.db.Where("class_id IN ?", class)
+	db := pre.Offset(num * (pg - 1)).Limit(num).Find(&contents)
+	var count int64
+	pre.Count(&count)
+	return contents, int(count) / num, db.Error
 }

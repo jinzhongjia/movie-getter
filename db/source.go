@@ -76,8 +76,8 @@ func (here *Db) sourceInit(url string, sourceId uint) error {
 	for _, vv := range classes {
 		v := vv.Value().(map[string]interface{})
 		name := v["type_name"].(string)
-		classId := int(v["type_id"].(float64))
-		here.AddClass(sourceId, name, classId)
+		class_Id := int(v["type_id"].(float64))
+		here.AddClass(sourceId, name, class_Id)
 	}
 	return nil
 }

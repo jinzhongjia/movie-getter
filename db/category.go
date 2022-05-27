@@ -46,3 +46,5 @@ func (here *Db) AllCategory() ([]Category, error) {
 	db := here.db.Find(&categories)
 	return categories, db.Error
 }
+
+

@@ -22,8 +22,8 @@ type Content struct {
 	Description string // 简介
 	Url         string `gorm:"unique"` // 视频链接
 	Stamp       int64  `gorm:"index"`  // 创建时间戳
-	SourceID    uint
-	ClassID     uint
+	SourceID    uint   `gorm:"index"`
+	ClassID     uint   `gorm:"index"`
 	//属于分类
 } // 资源内容
 
