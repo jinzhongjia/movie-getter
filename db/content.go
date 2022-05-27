@@ -1,6 +1,8 @@
 package db
 
 import (
+	"fmt"
+	"math"
 	"time"
 
 	"gorm.io/gorm"
@@ -174,10 +176,16 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Con
 		ID: categoryId,
 	}).Select("id").Association("Class").Find(&class)
 
+	// 创建一个存储content的切片
 	var contents []Content
-	pre := here.db.Where("class_id IN ?", class)
-	db := pre.Offset(num * (pg - 1)).Limit(num).Find(&contents)
+	// 设置查询前缀
+	pre := here.db.Model(&Content{}).Where("class_id IN ?", class)
+	// 查询content
+	db := pre.Debug().Order("stamp desc").Select("id", "name", "pic", "actor", "director", "duration", "description").Offset(num * (pg - 1)).Limit(num).Find(&contents)
+
+	// 查询计数
 	var count int64
-	pre.Count(&count)
-	return contents, int(count) / num, db.Error
+	fmt.Printf("count: %v\n", count)
+
+	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }

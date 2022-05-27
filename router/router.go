@@ -82,11 +82,38 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		c.JSON(http.StatusOK, movie)
 	})
 
-	r.GET("/class/data", func(c *gin.Context) {
-		contents, _, _ := manager.Db.BrowseContentByCategory(1, 10, 1)
-		// fmt.Printf("pgCount: %v\n", pgCount)
-		c.JSON(http.StatusOK, contents)
-
+	// 获取某个分类下最新的影片
+	r.POST("/category/:id", func(c *gin.Context) {
+		idV := c.Param("id")
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		pgV := c.PostForm("pg")
+		pg, err := strconv.Atoi(pgV)
+		// pg--
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		numV := c.PostForm("num")
+		num, err := strconv.Atoi(numV)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		movies, pgCount, err := manager.BrowseContentByCategory(uint(id), num, pg)
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+		}
+		c.JSON(http.StatusOK, struct {
+			Movies  []mm.Movie `json:"movies"`
+			PgCount int        `json:"pgCount"`
+		}{
+			Movies:  movies,
+			PgCount: pgCount,
+		})
 	})
 
 }

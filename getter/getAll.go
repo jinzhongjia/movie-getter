@@ -59,7 +59,7 @@ func (here *Getter) getPgCount() int {
 
 // 获取list
 func (here *Getter) getList(pgCount int) []gjson.Result {
-	fmt.Println("采集资源站“", here.name, "”，第", here.pg+1, "页")
+	fmt.Println("采集资源站“", here.name, "”，第", here.pg, "页")
 	res, err := http.Get(here.url + "?ac=list&pg=" + strconv.Itoa(pgCount-here.pg))
 	if err != nil {
 		panic("采集资源站“" + here.name + "获取采集页数失败")

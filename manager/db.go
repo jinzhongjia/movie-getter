@@ -98,8 +98,29 @@ func (here *Manager) UpdateCategory(oldName string, newName string) error {
 	return here.Db.UpdateCategoryName(oldName, newName)
 }
 
+// 分配采集类
 func (here *Manager) DistributeClass(classId uint, categoryId uint) error {
 	return here.Db.DistributeClass(classId, categoryId)
+}
+
+func (here *Manager) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Movie, int, error) {
+	contents, pgCount, err := here.Db.BrowseContentByCategory(categoryId, num, pg)
+
+	movies := []Movie{}
+
+	for _, content := range contents {
+		movies = append(movies, Movie{
+			Id:          int(content.ID),
+			Name:        content.Name,
+			Pic:         content.Pic,
+			Actor:       content.Actor,
+			Director:    content.Director,
+			Duration:    content.Duration,
+			Description: content.Description,
+		})
+	}
+
+	return movies, pgCount, err
 }
 
 // 分配采集类
