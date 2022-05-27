@@ -3,9 +3,14 @@ package main
 import (
 	"movie/manager"
 	"movie/router"
+	"runtime"
 
 	"github.com/gin-gonic/gin"
 )
+
+func init() {
+	runtime.GOMAXPROCS(1)
+}
 
 func main() {
 
