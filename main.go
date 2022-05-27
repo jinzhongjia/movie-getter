@@ -17,7 +17,7 @@ func main() {
 	// manager.AddSource("卧龙", "https://collect.wolongzyw.com/api.php/provide/vod/")
 	manager.GetStart()
 	for {
-
+		//此处的自旋会导致高cpu占用
 	}
 	// time.Sleep(1 * time.Minute)
 	// manager.AddCategory("动作")
