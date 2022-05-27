@@ -7,7 +7,7 @@ import (
 
 type Manager struct {
 	Db      *database.Db
-	Getters map[string]*getter.Getter
+	Getters map[uint]*getter.Getter
 }
 
 func NewManager() *Manager {
@@ -20,9 +20,3 @@ func NewManager() *Manager {
 	}
 	return newManager
 }
-
-func (here *Manager) Close() {
-	here.Db.Close()
-}
-
-

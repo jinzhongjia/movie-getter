@@ -14,8 +14,8 @@ func (here *Getter) getAll() {
 	defer protect()
 	pgCount := here.getPgCount()
 	if here.pg >= pgCount {
-		here.changer = true
-		db.UpdateSourceChangerByAlias(here.alias, true)
+		here.ok = true
+		db.UpdateSourceOk(here.id, here.ok)
 		return
 	}
 
@@ -29,6 +29,7 @@ func (here *Getter) getAll() {
 			// 被取消了，返回
 			return
 		default:
+			// fmt.Println("666")
 			id := int(v.Value().(float64))
 			here.getContent(id)
 		}
@@ -41,7 +42,7 @@ func (here *Getter) getAll() {
 // 更新页数
 func (here *Getter) updatePg() {
 	here.pg++
-	db.UpdateSourcePgByAlias(here.alias, here.pg)
+	db.UpdateSourcePg(here.id, here.pg)
 }
 
 // 获取所有采集页数

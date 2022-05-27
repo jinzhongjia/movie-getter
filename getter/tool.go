@@ -26,7 +26,7 @@ func (here *Getter) getContent(id int) {
 	// 获取所属采集类号
 	class := int(gjson.Get(string(body), "list.0.type_id").Value().(float64))
 
-	if !db.JudgeClass(class, here.alias) {
+	if !db.JudgeClass(here.id, uint(class)) {
 		return
 	}
 
@@ -54,13 +54,14 @@ func (here *Getter) getContent(id int) {
 	url = urlHandle(url)
 
 	// 获取属于的source
-	belong := here.alias
+	belong := here.id
 	fmt.Println("采集资源库", here.name, "获取影片：", name)
-	db.AddContent(id, name, class, pic, actor, director, duration, description, url, belong)
+	db.AddContent(id, name, pic, actor, director, duration, description, url, class, belong)
 
 	// 每当获取完一条信息后就尝试休眠一秒
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 }
+ 
 
 // url处理函数
 func urlHandle(s string) string {
@@ -74,3 +75,5 @@ func protect() {
 		logrus.Error("采集发生错误：", err)
 	}
 }
+
+

@@ -1,33 +1,49 @@
 package db
 
-import "github.com/ostafen/clover"
+import "gorm.io/gorm"
 
-func (here *Db) AddClass(name string, id int, belong string) bool {
-	if !here.existClass(id, belong) {
-		doc := clover.NewDocument()
-		doc.Set("name", name)
-		doc.Set("id", id)
-		doc.Set("belong", belong)
-		doc.Set("get", true)
-		doc.Set("belong-cat", "")
-		here.db.InsertOne("class", doc)
-		return true
+// 添加class
+func (here *Db) AddClass(sourceId uint, name string, classId int) error {
+	var db *gorm.DB
+	class := &Class{
+		Name:    name,
+		ClassId: classId,
 	}
-	return false
+	// 创建事务
+	tx := here.db.Begin()
+	// 开始创建class
+	db = tx.Create(class)
+	if db.Error != nil {
+		tx.Rollback()
+		return db.Error
+	}
+	// 尝试添加关系
+	err := tx.Model(&Source{
+		ID: sourceId,
+	}).Association("Class").Append(class)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	// 提交事务
+	tx.Commit()
+	return nil
 }
 
-// 判断该类别是否采集
-func (here *Db) JudgeClass(id int, belong string) bool {
-	doc, _ := here.class.Where(clover.Field("id").Eq(id).And(clover.Field("belong").Eq(belong))).FindFirst()
-	return doc.Get("get").(bool)
+// 分配class，这里的classId是表中的id
+func (here *Db) DistributeClass(classId uint, categoryId uint) error {
+	return here.db.Model(&Category{
+		ID: categoryId,
+	}).Association("Class").Append(&Class{
+		ID: classId,
+	})
 }
 
-// 分配采集类
-func (here *Db) AllocateClass(id int, belong string, belong_cat string) error {
-	return here.class.Where(clover.Field("id").Eq(id).And(clover.Field("belong").Eq(belong))).Update(map[string]interface{}{"belong-cat": belong_cat})
-}
+func (here *Db) JudgeClass(SourceId uint, classId uint) bool {
+	var class Class
+	here.db.Model(&Source{
+		ID: SourceId,
+	}).Association("Class").Find(&class, classId)
 
-func (here *Db) existClass(id int, belong string) bool {
-	result, _ := here.category.Where(clover.Field("id").Eq(id).And(clover.Field("belong").Eq(belong))).Exists()
-	return result
+	return class.Get
 }

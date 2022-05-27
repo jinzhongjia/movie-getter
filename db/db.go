@@ -1,59 +1,26 @@
 package db
 
 import (
-	"fmt"
+	"movie/config"
 
-	"github.com/ostafen/clover"
-	"github.com/sirupsen/logrus"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 type Db struct {
-	db       *clover.DB
-	source   *clover.Query // 来源表
-	content  *clover.Query // 采集的资源表
-	category *clover.Query // 自建分类表
-	class    *clover.Query // 采集类表
+	db *gorm.DB
 }
 
+// 构造函数
 func NewDb() *Db {
-	// 尝试打开数据库
-	db, err := clover.Open("clover-db")
+	db, err := gorm.Open(sqlite.Open(config.DbPath), &gorm.Config{
+		// SkipDefaultTransaction: false, // 关闭事务
+	})
 	if err != nil {
-		logrus.Fatal("connect clover failed! err:", err)
+		panic("failed to connect database")
 	}
-
-	db.CreateCollection("source")
-	// 来源表
-	db.CreateCollection("content")
-	// 采集的资源表
-	db.CreateCollection("category")
-	// 自建分类表
-	db.CreateCollection("class")
-	// 采集类表
-
-	source := db.Query("source")
-	content := db.Query("content")
-	category := db.Query("category")
-	class := db.Query("class")
-
+	db.AutoMigrate(&Source{}, &Content{}, &Class{}, &Category{})
 	return &Db{
-		db:       db,
-		source:   source,
-		content:  content,
-		category: category,
-		class:    class,
+		db: db,
 	}
-}
-
-//关闭连接
-func (here *Db) Close() {
-	here.db.Close()
-	fmt.Println("关闭数据库")
-}
-
-func (here *Db) Export() {
-	here.db.ExportCollection("source", "source.json")
-	here.db.ExportCollection("content", "content.json")
-	here.db.ExportCollection("category", "category.json")
-	here.db.ExportCollection("class", "class.json")
 }

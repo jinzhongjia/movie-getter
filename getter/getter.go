@@ -10,52 +10,48 @@ import (
 
 var db *database.Db
 
-func SetDb(tmp *database.Db) map[string]*Getter {
+func SetDb(tmp *database.Db) map[uint]*Getter {
+	// 设置数据库
 	db = tmp
-	return run()
-}
-
-func run() map[string]*Getter {
-	sources := db.GetSource()
-	getters := make(map[string]*Getter)
+	// 查询数据库获取所有的source
+	sources, err := db.AllSource()
+	if err != nil {
+		panic("查询数据库失败！")
+	}
+	getters := make(map[uint]*Getter)
 	for _, v := range sources {
-		name := v.Get("name").(string)
-		url := v.Get("url").(string)
-		alias := v.Get("alias").(string)
-		pg := int(v.Get("pg").(int64))
-		changer := v.Get("changer").(bool)
-		// fmt.Println(name)
-		getters[alias] = NewGetter(name, url, alias, pg, changer)
+		getters[v.ID] = NewGetter(v.ID, v.Name, v.Url, v.Ok, v.Pg)
 	}
 	return getters
 }
 
 type Getter struct {
-	name    string
-	url     string
-	alias   string
-	pg      int
-	changer bool
-	ctx     context.Context
-	cancel  context.CancelFunc
+	id     uint
+	name   string
+	url    string
+	ok     bool
+	pg     int
+	ctx    context.Context
+	cancel context.CancelFunc
 }
 
-func NewGetter(name string, url string, alias string, pg int, changer bool) *Getter {
+// 构造函数
+func NewGetter(id uint, name string, url string, ok bool, pg int) *Getter {
 	if db == nil {
 		logrus.Errorln("the db is nil!")
 	}
-	// 采集的ctx
+	// 初始化采集所用的ctx
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
 
 	get := &Getter{
-		name:    name,
-		url:     url,
-		alias:   alias,
-		pg:      pg,
-		changer: changer,
-		ctx:     ctx,
-		cancel:  cancel,
+		id:     id,
+		name:   name,
+		url:    url,
+		ok:     ok,
+		pg:     pg,
+		ctx:    ctx,
+		cancel: cancel,
 	}
 	return get
 }

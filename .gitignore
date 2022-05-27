@@ -4,3 +4,4 @@ json
 *.7z
 *.pprof
 *.json
+*.db

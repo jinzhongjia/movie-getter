@@ -3,7 +3,7 @@ package getter
 import "time"
 
 func (here *Getter) Get() {
-	for !here.changer {
+	for !here.ok {
 		select {
 		case <-here.ctx.Done():
 			// 被取消了，返回
