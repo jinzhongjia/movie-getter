@@ -58,12 +58,29 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusBadRequest)
 			return
 		}
-		contents, err := manager.SearchContent(keyword)
+		pgV := c.PostForm("pg")
+		pg, err := strconv.Atoi(pgV)
+		// pg--
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		numV := c.PostForm("num")
+		num, err := strconv.Atoi(numV)
+		if err != nil {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		movies, pgCount, err := manager.SearchContent(keyword, num, pg)
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
-		c.JSON(http.StatusOK, contents)
+		movie := Movie{
+			Movies:  movies,
+			PgCount: pgCount,
+		}
+		c.JSON(http.StatusOK, movie)
 	})
 
 	// 获取影片信息
@@ -107,13 +124,11 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
 		}
-		c.JSON(http.StatusOK, struct {
-			Movies  []mm.Movie `json:"movies"`
-			PgCount int        `json:"pgCount"`
-		}{
+		movie := Movie{
 			Movies:  movies,
 			PgCount: pgCount,
-		})
+		}
+		c.JSON(http.StatusOK, movie)
 	})
 
 	// 获取所有的source
@@ -171,7 +186,7 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 
 	// 删除分类
 	r.POST("/user/category/del", func(c *gin.Context) {
-		idV := c.Param("id")
+		idV := c.PostForm("id")
 		id, err := strconv.Atoi(idV)
 		if err != nil {
 			c.Status(http.StatusBadRequest)

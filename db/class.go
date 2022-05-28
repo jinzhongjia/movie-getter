@@ -63,7 +63,7 @@ func (here *Db) GetClass(sourceId uint) ([]Class, error) {
 	var classes []Class
 	err := here.db.Model(&Source{
 		ID: sourceId,
-	}).Association("Class").Find(&classes)
+	}).Select("id", "name", "get").Association("Class").Find(&classes)
 	return classes, err
 }
 

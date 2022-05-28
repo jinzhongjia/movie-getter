@@ -36,9 +36,9 @@ func (here *Manager) DelSource(id uint) error {
 }
 
 // 所有影片
-func (here *Manager) SearchContent(keyword string) ([]Movie, error) {
-	var movies []Movie
-	contents, err := here.Db.SearchContent(keyword)
+func (here *Manager) SearchContent(keyword string, num int, pg int) ([]Movie, int, error) {
+	movies := []Movie{}
+	contents, pgCount, err := here.Db.SearchContent(keyword, num, pg)
 	for _, content := range contents {
 		movies = append(movies, Movie{
 			Id:          int(content.ID),
@@ -51,7 +51,7 @@ func (here *Manager) SearchContent(keyword string) ([]Movie, error) {
 			// Url:         content.Url,
 		})
 	}
-	return movies, err
+	return movies, pgCount, err
 }
 
 // 获取影片详细信息
@@ -122,10 +122,10 @@ func (here *Manager) GetClass(sourceId uint) ([]Class, error) {
 	classes := []Class{}
 	for _, v := range v {
 		classes = append(classes, Class{
-			ID:      v.ID,
-			Name:    v.Name,
-			ClassId: v.ClassId,
-			Get:     v.Get,
+			ID:   v.ID,
+			Name: v.Name,
+			// ClassId: v.ClassId,
+			Get: v.Get,
 		})
 	}
 	return classes, err
@@ -160,8 +160,8 @@ type Movie struct {
 }
 
 type Class struct {
-	ID      uint
-	Name    string // 采集分类名
-	ClassId int    // 采集分类id
-	Get     bool   // 是否采集
+	ID   uint
+	Name string // 采集分类名
+	// ClassId int    // 采集分类id
+	Get bool // 是否采集
 }

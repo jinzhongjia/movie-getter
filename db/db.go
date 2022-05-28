@@ -14,7 +14,7 @@ type Db struct {
 // 构造函数
 func NewDb() *Db {
 	db, err := gorm.Open(sqlite.Open(config.DbPath), &gorm.Config{
-		// SkipDefaultTransaction: false, // 关闭事务
+		SkipDefaultTransaction: true, // 关闭事务
 	})
 	if err != nil {
 		panic("failed to connect database")

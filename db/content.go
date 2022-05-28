@@ -156,10 +156,15 @@ func (here *Db) DelContent(id uint) error {
 }
 
 // 搜索影片
-func (here *Db) SearchContent(keyword string) ([]Content, error) {
+func (here *Db) SearchContent(keyword string, num int, pg int) ([]Content, int, error) {
+	// 尝试进行搜索操作
 	var contents []Content
-	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description").Where("name LIKE ?", "%"+keyword+"%").Find(&contents)
-	return contents, db.Error
+	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description").Where("name LIKE ?", "%"+keyword+"%").Offset(num * (pg - 1)).Limit(num).Find(&contents)
+	// 尝试进行计数操作
+	var count int64
+	here.db.Model(&Content{}).Where("name LIKE ?", "%"+keyword+"%").Count(&count)
+	// 返回结果
+	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
 
 // 获取影片
@@ -176,12 +181,12 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Con
 		ID: categoryId,
 	}).Select("id").Association("Class").Find(&class)
 
+	fmt.Printf("class: %v\n", class)
 	// 创建一个存储content的切片
 	var contents []Content
-	// 设置查询前缀
-	pre := here.db.Model(&Content{}).Where("class_id IN ?", class)
+
 	// 查询content
-	db := pre.Order("stamp desc").Select("id", "name", "pic", "actor", "director", "duration", "description").Offset(num * (pg - 1)).Limit(num).Find(&contents)
+	db := here.db.Debug().Model(&Content{}).Where("class_id IN ?", class).Order("stamp desc").Select("id", "name", "pic", "actor", "director", "duration", "description").Offset(num * (pg - 1)).Limit(num).Find(&contents)
 
 	// 查询计数
 	var count int64
