@@ -185,6 +185,7 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Con
 
 	// 查询计数
 	var count int64
+	here.db.Model(&Content{}).Where("class_id IN ?", class).Count(&count)
 	fmt.Printf("count: %v\n", count)
 
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
