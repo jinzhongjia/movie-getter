@@ -41,7 +41,7 @@
 
 ## 技术栈
 
-gjson、clover、gin
+gjson、gorm、gin
 
 
 ## 贡献代码
