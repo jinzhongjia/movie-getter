@@ -5,6 +5,7 @@ import (
 	"movie/router"
 	"runtime"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,7 +34,13 @@ func main() {
 	// fmt.Println(manager.Db.JudgeClass(1, 34))
 	// fmt.Println(manager.Db.GetClassIdBySourceId(1,7))
 	r := gin.Default()
-	router.Router(r, manager)
+	{
+		//处理跨域
+		r.Use(cors.Default())
+		//配置路由
+		router.Router(r, manager)
+	}
+
 	//监听端口默认为8080
 	r.Run("127.0.0.1:8000")
 
