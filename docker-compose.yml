@@ -1,0 +1,35 @@
+version: '3'
+services:
+
+  db:
+    image: "mysql"
+    command:
+      [
+        '--character-set-server=utf8mb4',
+        '--collation-server=utf8mb4_unicode_ci'
+      ]
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: movie
+
+  movie:
+    depends_on:
+      - db
+    image: "yunyizhiying/movie"
+    ports:
+      - "8000:8000"
+    restart: always
+    environment:
+      MYSQL_HOST: db:3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+      MYSQL_NAME: movie
+
+volumes:
+  mysql_data:
