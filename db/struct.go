@@ -19,9 +19,9 @@ type Content struct {
 	Actor       string // 主演
 	Director    string // 导演
 	Duration    string // 时长
-	Description string // 简介
-	Url         string `gorm:"unique"` // 视频链接
-	Stamp       int64  `gorm:"index"`  // 创建时间戳
+	Description string `gorm:"type:longText"` // 简介
+	Url         string `gorm:"type:longText"` // 视频链接
+	Stamp       int64  `gorm:"index"`         // 创建时间戳
 	SourceID    uint   `gorm:"index;default:null"`
 	ClassID     uint   `gorm:"index;default:null"`
 	//属于分类
