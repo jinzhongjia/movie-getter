@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"math"
 	"time"
 
@@ -181,7 +180,7 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Con
 		ID: categoryId,
 	}).Select("id").Association("Class").Find(&class)
 
-	fmt.Printf("class: %v\n", class)
+	// fmt.Printf("class: %v\n", class)
 	// 创建一个存储content的切片
 	var contents []Content
 
@@ -191,7 +190,7 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Con
 	// 查询计数
 	var count int64
 	here.db.Model(&Content{}).Where("class_id IN ?", class).Count(&count)
-	fmt.Printf("count: %v\n", count)
+	// fmt.Printf("count: %v\n", count)
 
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
