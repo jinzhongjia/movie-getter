@@ -37,6 +37,7 @@ func main() {
 	{
 		//处理跨域
 		r.Use(cors.Default())
+		router.Static(r)
 		//配置路由
 		router.Router(r, manager)
 	}
