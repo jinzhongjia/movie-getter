@@ -5,18 +5,16 @@ services:
     image: "mysql:5.7"
     command:
       [
-        '--character-set-server=utf8mb4',
+        '--character-set-server=utf8mb4', #设置utf8编码
         '--collation-server=utf8mb4_unicode_ci'
       ]
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     restart: always
     environment:
       TZ: Asia/Shanghai
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: movie
+      MYSQL_ROOT_PASSWORD: 123456 # 数据库root密码
+      MYSQL_DATABASE: movie # 初始化的数据库名
 
   movie:
     depends_on:
@@ -27,11 +25,11 @@ services:
     restart: always
     environment:
       TZ: Asia/Shanghai
-      MYSQL_HOST: db:3306
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 123456
-      DATABASE_NAME: movie
-      LISTEN_ADDR: :8000
+      MYSQL_HOST: db:3306 # mysql地址
+      MYSQL_USER: root # mysql用户名
+      MYSQL_PASSWORD: 123456 # mysql密码
+      DATABASE_NAME: movie # mysql数据库
+      LISTEN_ADDR: :8000 # 主程序监听地址，与ports后面端口保持一致
 
 volumes:
   mysql_data:
