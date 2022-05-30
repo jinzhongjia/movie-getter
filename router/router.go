@@ -217,14 +217,15 @@ func Router(r *gin.Engine, manager *mm.Manager) {
 
 	// 改变class的采集状态是否采集
 	r.POST("/user/class/changeGet", func(c *gin.Context) {
-		idV := c.Param("id")
+		idV := c.PostForm("id")
 		id, err := strconv.Atoi(idV)
 		if err != nil {
 			c.Status(http.StatusBadRequest)
 			return
 		}
+
 		getV := c.PostForm("get")
-		get := (getV == "0")
+		get := !(getV == "0")
 		if manager.ChangeClassGet(uint(id), get) != nil {
 			c.Status(http.StatusInternalServerError)
 			return

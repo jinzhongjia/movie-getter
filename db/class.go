@@ -1,6 +1,8 @@
 package db
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 // 添加class
 func (here *Db) AddClass(sourceId uint, name string, class_Id int) error {
