@@ -44,6 +44,10 @@
 gjson、gorm、gin
 
 
+## docker
+
+dockerfile已经内置，可以直接自行打包image使用，也可以使用docker-compose
+
 ## 贡献代码
 
 本项目也是刚刚起步，欢迎所有热爱开源的朋友参与到该项目中
