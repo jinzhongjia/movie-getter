@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -48,6 +49,7 @@ func (here *Getter) getContent(id int) {
 
 	// 获取简介
 	description := gjson.Get(string(body), "list.0.vod_content").Value().(string)
+	description = desHandle(description) // 净化功能
 
 	// 获取播放链接
 	url := gjson.Get(string(body), "list.0.vod_play_url").Value().(string)
@@ -61,7 +63,6 @@ func (here *Getter) getContent(id int) {
 	// 每当获取完一条信息后就尝试休眠一秒
 	time.Sleep(1 * time.Second)
 }
- 
 
 // url处理函数
 func urlHandle(s string) string {
@@ -76,4 +77,7 @@ func protect() {
 	}
 }
 
-
+// 净化描述、去除html标签、去除头尾空格
+func desHandle(s string) string {
+	return regexp.MustCompile(`<[^>]+>|(^\s*)|(\s*$)|&nbsp;`).ReplaceAllString(s, "")
+}
