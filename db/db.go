@@ -1,7 +1,9 @@
 package db
 
 import (
+	"fmt"
 	"movie/config"
+	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -17,7 +19,8 @@ func NewDb() *Db {
 		SkipDefaultTransaction: true, // 关闭事务
 	})
 	if err != nil {
-		panic("failed to connect database")
+		fmt.Println("连接数据库失败！")
+		os.Exit(1)
 	}
 	db.AutoMigrate(&Source{}, &Content{}, &Category{}, &Class{})
 	return &Db{
