@@ -13,7 +13,7 @@ type Db struct {
 
 // 构造函数
 func NewDb() *Db {
-	db, err := gorm.Open(mysql.Open(config.DbPath), &gorm.Config{
+	db, err := gorm.Open(mysql.Open(config.DbAddr), &gorm.Config{
 		SkipDefaultTransaction: true, // 关闭事务
 	})
 	if err != nil {

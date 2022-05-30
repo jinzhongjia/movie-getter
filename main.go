@@ -1,13 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"movie/manager"
 	"movie/router"
 	"runtime"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -43,7 +43,7 @@ func main() {
 		router.Router(r, manager)
 	}
 
-	logrus.Info("开始监听端口")
+	fmt.Println("运行正常，开始监听端口！")
 	//监听端口默认为8080
 	r.Run(":8000")
 

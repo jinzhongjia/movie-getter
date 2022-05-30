@@ -2,7 +2,7 @@ version: '3'
 services:
 
   db:
-    image: "mysql"
+    image: "mysql:5.7"
     command:
       [
         '--character-set-server=utf8mb4',
@@ -13,8 +13,8 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     restart: always
-
     environment:
+      TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: movie
 
@@ -26,10 +26,11 @@ services:
       - "8000:8000"
     restart: always
     environment:
+      TZ: Asia/Shanghai
       MYSQL_HOST: db:3306
       MYSQL_USER: root
       MYSQL_PASSWORD: 123456
-      MYSQL_NAME: movie
+      DATABASE_NAME: movie
 
 volumes:
   mysql_data:
