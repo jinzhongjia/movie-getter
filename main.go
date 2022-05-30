@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"movie/config"
 	"movie/manager"
 	"movie/router"
 	"runtime"
@@ -45,6 +46,6 @@ func main() {
 
 	fmt.Println("运行正常，开始监听端口！")
 	//监听端口默认为8080
-	r.Run(":8000")
+	r.Run(config.Addr)
 
 }

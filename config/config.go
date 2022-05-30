@@ -9,6 +9,7 @@ import (
 )
 
 var DbAddr string
+var Addr string = "127.0.0.1:8000"
 
 func init() {
 	env()    // 读取环境变量
@@ -23,6 +24,10 @@ func env() {
 	password := os.Getenv("MYSQL_PASSWORD")
 	databaseName := os.Getenv("DATABASE_NAME")
 	DbAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
+
+	if os.Getenv("LISTEN_ADDR") != "" {
+		Addr = os.Getenv("LISTEN_ADDR")
+	}
 }
 
 // 尝试读取配置文件
@@ -37,6 +42,10 @@ func config() {
 	password := mysql.Key("password").String()
 	databaseName := mysql.Key("database_name").String()
 	DbAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
+
+	if cfg.Section("").Key("LISTEN_ADDR").String() != "" {
+		Addr = cfg.Section("").Key("LISTEN_ADDR").String()
+	}
 }
 
 // 尝试读取命令行配置
@@ -45,6 +54,7 @@ func cli() {
 	user := flag.String("MYSQL_USER", "", "the user of mysql")
 	password := flag.String("MYSQL_PASSWORD", "", "the password of mysql")
 	databaseName := flag.String("DATABASE_NAME", "movie", "the database name of mysql")
+	addr := flag.String("LISTEN_ADDR", "", "the program listen addr")
 	flag.Parse()
 	if *host == "" || *user == "" || *password == "" {
 		if *host != "" || *user != "" || *password != "" {
@@ -52,6 +62,10 @@ func cli() {
 			os.Exit(1) // 出现错误的状态码
 		}
 		return
+	}
+
+	if *addr != "" {
+		Addr = *addr
 	}
 	DbAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
 }
