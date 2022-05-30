@@ -8,6 +8,11 @@
 * 高效、采用gin框架
 * 易用，api接口语义化
 
+### demo
+
+[GO MOVIE](https://movie.jinzh.me/)
+
+### 资源站
 
 推荐资源站：
 
@@ -46,6 +51,18 @@ gjson、gorm、gin
 ## docker
 
 dockerfile已经内置，可以直接自行打包image使用，也可以使用docker-compose
+
+### 通过docker构建image
+
+```bash
+docker build -t yunyizhiying/movie .
+```
+
+#### 使用docker-compose
+
+```bash
+docker-compose up -d
+```
 
 ## 贡献代码
 
