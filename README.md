@@ -48,6 +48,21 @@
 gjson、gorm、gin
 
 
+## 使用
+
+你可以通过命令行参数配置movie，或者通过conf.ini，亦或者通过环境变量控制
+
+movie本身支持的api可以参考router的router文件，内部有详细注释
+
+由于目前尚没有后台操作的前端页面，因此部署后需要手动使用curl或者其他工具请求api操作！
+
+步骤如下：
+
+1. 先通过api添加资源库
+2. 创建自建分类
+3. 将采集分类绑定到自建分类上
+4. 开始采集
+
 ## docker
 
 dockerfile已经内置，可以直接自行打包image使用，也可以使用docker-compose
