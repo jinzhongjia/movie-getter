@@ -3,6 +3,7 @@ services:
 
   db:
     image: "mysql:5.7"
+    container_name: movie_mysql
     command:
       [
         '--character-set-server=utf8mb4', #设置utf8编码
@@ -20,6 +21,7 @@ services:
     depends_on:
       - db
     image: "yunyizhiying/movie"
+    container_name: movie
     ports:
       - "8000:8000"
     restart: always
@@ -31,5 +33,17 @@ services:
       DATABASE_NAME: movie # mysql数据库
       LISTEN_ADDR: :8000 # 主程序监听地址，与ports后面端口保持一致
 
+  # 瞭望塔 容器监听更新
+  watchtower:
+    image: containrrr/watchtower
+    container_name: movie_watcher
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json
+    command: movie movie_watcher --cleanup --schedule "0 0 4 * * *"
+    # command: movie movie_watcher --cleanup --interval 60
 volumes:
   mysql_data:
