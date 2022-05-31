@@ -62,7 +62,7 @@ func (here *Getter) StartGet() {
 	case _, result_all := <-here.ctx.Done():
 		if !result_all {
 			here.ctx, here.cancel = context.WithCancel(context.Background())
-			go here.Get()
+			go here.get()
 		}
 	default:
 		fmt.Println("采集处于开启状态")

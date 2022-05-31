@@ -2,7 +2,7 @@ package getter
 
 import "time"
 
-func (here *Getter) Get() {
+func (here *Getter) get() {
 	for !here.ok {
 		select {
 		case <-here.ctx.Done():

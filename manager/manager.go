@@ -18,5 +18,8 @@ func NewManager() *Manager {
 		Db:      db,
 		Getters: getters,
 	}
+	for _, v := range newManager.Getters {
+		v.StartGet()
+	}
 	return newManager
 }
