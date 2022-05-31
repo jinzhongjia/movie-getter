@@ -10,7 +10,7 @@
 
 ### demo
 
-[GO MOVIE](https://movie.jinzh.me/)
+[GO MOVIE](http://movie.jinzh.me/)
 
 ### 资源站
 
