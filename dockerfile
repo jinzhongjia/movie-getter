@@ -17,4 +17,4 @@ COPY --from=builder /app/movie /app/movie
 
 EXPOSE 8233
 
-CMD ["./movie"]
+CMD ["/app/movie"]
