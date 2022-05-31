@@ -1,4 +1,4 @@
-import{m as Or,p as Ar,q as wr,s as Pr,v as Er,x as Ue,d as xr,y as $r,z as or,j as ne,A as We,B as de,C as Fr,D as Ir}from"./index.d9482c51.js";import{g as Rr}from"./base.72dcf844.js";const Nr=Or({name:"Ellipsis",common:Ar,peers:{Tooltip:wr}});var Cr=Nr,Tr=Pr("ellipsis",{overflow:"hidden"},[Er("line-clamp",`
+import{m as Or,p as Ar,q as wr,s as Pr,v as Er,x as Ue,d as xr,y as $r,z as or,j as ne,A as We,B as de,C as Fr,D as Ir}from"./index.5407ad12.js";import{g as Rr}from"./base.0dd79f2a.js";const Nr=Or({name:"Ellipsis",common:Ar,peers:{Tooltip:wr}});var Cr=Nr,Tr=Pr("ellipsis",{overflow:"hidden"},[Er("line-clamp",`
  white-space: nowrap;
  display: inline-block;
  vertical-align: bottom;
