@@ -44,3 +44,8 @@ type Category struct {
 	Name  string  `gorm:"unique;not null;index" json:"name"` // 自建分类名
 	Class []Class `json:",omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 } // 自建分类
+
+type User struct {
+	Account string // 账户
+	Passwd  string // 密码
+}
