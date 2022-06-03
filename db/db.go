@@ -27,3 +27,7 @@ func NewDb() *Db {
 		db: db,
 	}
 }
+
+func (here *Db) DbGet() *gorm.DB {
+	return here.db
+}
