@@ -7,7 +7,7 @@ import (
 
 func (here *Manager) GetSource() ([]Source, error) {
 	sources := []Source{}
-	v, err := here.Db.AllSource()
+	v, err := here.db.AllSource()
 	for _, v := range v {
 		sources = append(sources, Source{
 			ID:   v.ID,
@@ -22,23 +22,23 @@ func (here *Manager) GetSource() ([]Source, error) {
 
 // 增加采集源
 func (here *Manager) AddSource(name string, url string) bool {
-	id, ok := here.Db.AddSource(name, url)
+	id, ok := here.db.AddSource(name, url)
 	if !ok {
 		return ok
 	}
-	here.Getters[id] = getter.NewGetter(id, name, url, false, 1)
+	here.getters[id] = getter.NewGetter(id, name, url, false, 1)
 	return ok
 }
 
 // 删除采集源
 func (here *Manager) DelSource(id uint) error {
-	return here.Db.DelSource(id)
+	return here.db.DelSource(id)
 }
 
 // 所有影片
 func (here *Manager) SearchContent(keyword string, num int, pg int) ([]Movie, int, error) {
 	movies := []Movie{}
-	contents, pgCount, err := here.Db.SearchContent(keyword, num, pg)
+	contents, pgCount, err := here.db.SearchContent(keyword, num, pg)
 	for _, content := range contents {
 		movies = append(movies, Movie{
 			Id:          int(content.ID),
@@ -56,7 +56,7 @@ func (here *Manager) SearchContent(keyword string, num int, pg int) ([]Movie, in
 
 // 获取影片详细信息
 func (here *Manager) GetContent(id uint) (Movie, error) {
-	content, err := here.Db.GetContent(id)
+	content, err := here.db.GetContent(id)
 	movie := Movie{
 		Id:          int(content.ID),
 		Name:        content.Name,
@@ -72,33 +72,33 @@ func (here *Manager) GetContent(id uint) (Movie, error) {
 
 // 更新采集源名字
 func (here *Manager) UpdateSourceName(oldName string, newName string) error {
-	return here.Db.UpdateSourceName(oldName, newName)
+	return here.db.UpdateSourceName(oldName, newName)
 }
 
 // 增加自定义分类
 func (here *Manager) AddCategory(name string) bool {
-	_, ok := here.Db.AddCategory(name)
+	_, ok := here.db.AddCategory(name)
 	return ok == nil
 }
 
 // 获取所有分类
 func (here *Manager) GetCategory() ([]db.Category, error) {
-	return here.Db.AllCategory()
+	return here.db.AllCategory()
 }
 
 // 删除分类
 func (here *Manager) DelCategory(id uint) error {
-	return here.Db.DelCategory(id)
+	return here.db.DelCategory(id)
 }
 
 // 更新分类
 func (here *Manager) UpdateCategory(oldName string, newName string) error {
-	return here.Db.UpdateCategoryName(oldName, newName)
+	return here.db.UpdateCategoryName(oldName, newName)
 }
 
 // 获取分类下影片
 func (here *Manager) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Movie, int, error) {
-	contents, pgCount, err := here.Db.BrowseContentByCategory(categoryId, num, pg)
+	contents, pgCount, err := here.db.BrowseContentByCategory(categoryId, num, pg)
 
 	movies := []Movie{}
 
@@ -118,7 +118,7 @@ func (here *Manager) BrowseContentByCategory(categoryId uint, num int, pg int) (
 }
 
 func (here *Manager) GetClass(sourceId uint) ([]Class, error) {
-	v, err := here.Db.GetClass(sourceId)
+	v, err := here.db.GetClass(sourceId)
 	classes := []Class{}
 	for _, v := range v {
 		classes = append(classes, Class{
@@ -133,11 +133,11 @@ func (here *Manager) GetClass(sourceId uint) ([]Class, error) {
 
 // 分配采集类
 func (here *Manager) DistributeClass(classId uint, categoryId uint) error {
-	return here.Db.DistributeClass(classId, categoryId)
+	return here.db.DistributeClass(classId, categoryId)
 }
 
 func (here *Manager) ChangeClassGet(classId uint, get bool) error {
-	return here.Db.ChangeClassGet(classId, get)
+	return here.db.ChangeClassGet(classId, get)
 }
 
 type Source struct {
