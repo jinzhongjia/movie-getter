@@ -194,3 +194,10 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Con
 
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
+
+// 获取全部影片的数目
+func (here *Db) ContentCount() int {
+	var result int64
+	here.db.Model(&Content{}).Count(&result)
+	return int(result)
+}

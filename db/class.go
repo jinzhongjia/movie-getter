@@ -76,3 +76,11 @@ func (here *Db) ChangeClassGet(classId uint, get bool) error {
 	}).Update("get", get)
 	return db.Error
 }
+
+// 获取某个采集分类下的所有影片
+func (here *Db) ClassMovieNum(classId uint) int {
+	result := here.db.Model(&Class{
+		ID: classId,
+	}).Association("Content").Count()
+	return int(result)
+}

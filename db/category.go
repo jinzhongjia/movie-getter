@@ -50,3 +50,16 @@ func (here *Db) AllCategory() ([]Category, error) {
 	db := here.db.Find(&categories)
 	return categories, db.Error
 }
+
+// 获取当前自建分类下所有的影片数目
+func (here *Db) CategoryMovieCount(categoryId uint) (int, error) {
+	var classIds []uint
+	err := here.db.Model(&Category{
+		ID: categoryId,
+	}).Select("id").Association("Class").Find(&classIds)
+	result := 0
+	for _, classId := range classIds {
+		result += here.ClassMovieNum(classId)
+	}
+	return result, err
+}

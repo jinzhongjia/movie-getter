@@ -64,6 +64,14 @@ func (here *Db) UpdateSourcePg(id uint, pg int) error {
 	return db.Error
 }
 
+// 获取该采集源下影片数目
+func (here *Db) SourceMovieNum(sourceId uint) int {
+	result := here.db.Model(&Source{
+		ID: sourceId,
+	}).Association("Content").Count()
+	return int(result)
+}
+
 // 资源库初始化
 func (here *Db) sourceInit(url string, sourceId uint) error {
 	res, err := http.Get(url)
