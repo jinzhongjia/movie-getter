@@ -12,8 +12,8 @@ type Source struct {
 
 type Content struct {
 	ID          uint
-	ContentId   int    `gorm:"index"` // 影片编号
-	Name        string `gorm:"index"` //影片名
+	ContentId   int    `gorm:"index"`                 // 影片编号
+	Name        string `gorm:"index:,class:FULLTEXT"` //影片名
 	Class       string // 所属类别 作为保留字段
 	Pic         string // 影片图片地址
 	Actor       string // 主演
