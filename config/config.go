@@ -10,6 +10,7 @@ import (
 
 var DbAddr string
 var Addr string = "127.0.0.1:8000"
+var SessionSecret string = "secret"
 
 func init() {
 	env()    // 读取环境变量
@@ -19,14 +20,23 @@ func init() {
 
 // 读取环境变量
 func env() {
+	// mysql配置
 	host := os.Getenv("MYSQL_HOST")
 	user := os.Getenv("MYSQL_USER")
 	password := os.Getenv("MYSQL_PASSWORD")
 	databaseName := os.Getenv("DATABASE_NAME")
 	DbAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
 
-	if os.Getenv("LISTEN_ADDR") != "" {
-		Addr = os.Getenv("LISTEN_ADDR")
+	listenAddr := os.Getenv("LISTEN_ADDR") // 监听地址
+
+	if listenAddr != "" {
+		Addr = listenAddr
+	}
+
+	sessionSecret := os.Getenv("SESSION_SECRET") // session秘钥
+
+	if sessionSecret != "" {
+		SessionSecret = sessionSecret
 	}
 }
 
@@ -43,8 +53,16 @@ func config() {
 	databaseName := mysql.Key("database_name").String()
 	DbAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
 
-	if cfg.Section("").Key("LISTEN_ADDR").String() != "" {
-		Addr = cfg.Section("").Key("LISTEN_ADDR").String()
+	listenAddr := cfg.Section("").Key("LISTEN_ADDR").String()
+
+	if listenAddr != "" {
+		Addr = listenAddr
+	}
+
+	sessionSecret := cfg.Section("").Key("SESSION_SECRET").String()
+
+	if sessionSecret != "" {
+		SessionSecret = sessionSecret
 	}
 }
 
@@ -55,6 +73,7 @@ func cli() {
 	password := flag.String("MYSQL_PASSWORD", "", "the password of mysql")
 	databaseName := flag.String("DATABASE_NAME", "movie", "the database name of mysql")
 	addr := flag.String("LISTEN_ADDR", "", "the program listen addr")
+	sessionSecret := flag.String("SESSION_SECRET", "", "the secret of session")
 	flag.Parse()
 	if *host == "" || *user == "" || *password == "" {
 		if *host != "" || *user != "" || *password != "" {
@@ -67,5 +86,10 @@ func cli() {
 	if *addr != "" {
 		Addr = *addr
 	}
+
+	if *sessionSecret != "" {
+		SessionSecret = *sessionSecret
+	}
+
 	DbAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
 }
