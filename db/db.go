@@ -23,9 +23,11 @@ func NewDb() *Db {
 		os.Exit(1)
 	}
 	db.AutoMigrate(&Source{}, &Content{}, &Category{}, &Class{})
-	return &Db{
+	result := &Db{
 		db: db,
 	}
+	result.systemInit() // 进行初次启动的初始化操作
+	return result
 }
 
 func (here *Db) DbGet() *gorm.DB {
