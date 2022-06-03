@@ -52,7 +52,7 @@ func (here *Db) JudgeClass(SourceId uint, class_Id uint) bool {
 }
 
 // 通过source和class_id获取classId
-func (here *Db) GetClassIdBySourceId(sourceId uint, class_Id int) uint {
+func (here *Db) getClassIdBySourceId(sourceId uint, class_Id int) uint {
 	var class Class
 	here.db.Model(&Source{
 		ID: sourceId,

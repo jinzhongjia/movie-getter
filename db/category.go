@@ -11,7 +11,7 @@ func (here *Db) AddCategory(name string) (uint, error) {
 	return category.ID, db.Error
 }
 
-// 删除分类
+// 更新分类名字
 func (here *Db) UpdateCategoryName(oldName string, newName string) error {
 	db := here.db.Model(&Category{}).Where("name = ?", oldName).Update("name", newName)
 	return db.Error

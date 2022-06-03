@@ -132,7 +132,7 @@ func (here *Db) addContent(
 	}
 
 	// 尝试寻找class
-	classId := here.GetClassIdBySourceId(sourceId, class_Id)
+	classId := here.getClassIdBySourceId(sourceId, class_Id)
 
 	// 尝试添加content与class关系
 	err = tx.Model(&Class{
@@ -154,14 +154,126 @@ func (here *Db) DelContent(id uint) error {
 	return db.Error
 }
 
-// 搜索影片
+// 全局搜索影片
 func (here *Db) SearchContent(keyword string, num int, pg int) ([]Content, int, error) {
 	// 尝试进行搜索操作
 	var contents []Content
-	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description").Where("name LIKE ?", "%"+keyword+"%").Offset(num * (pg - 1)).Limit(num).Find(&contents)
+	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description", "url").Where("name LIKE ?", "%"+keyword+"%").Offset(num * (pg - 1)).Limit(num).Find(&contents)
+
 	// 尝试进行计数操作
 	var count int64
 	here.db.Model(&Content{}).Where("name LIKE ?", "%"+keyword+"%").Count(&count)
+
+	// 返回结果
+	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
+}
+
+// 搜索自建分类下影片
+func (here *Db) SearchContent_Category(categoryId uint, keyword string, num int, pg int) ([]Content, int, error) {
+	// 查询所属分类下的采集类
+	var class []int
+	here.db.Model(&Category{
+		ID: categoryId,
+	}).Select("id").Association("Class").Find(&class)
+
+	// 定义变量结果存储
+	var contents []Content
+	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description", "url").Where("name LIKE ? AND class_id IN ?", "%"+keyword+"%", class).Offset(num * (pg - 1)).Limit(num).Find(&contents)
+
+	// 尝试进行计数操作
+	var count int64
+	here.db.Model(&Content{}).Where("name LIKE ? AND class_id IN ?", "%"+keyword+"%", class).Count(&count)
+
+	// 返回结果
+	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
+}
+
+// 搜索采集分类下影片
+func (here *Db) SearchContent_Class(classId uint, keyword string, num int, pg int) ([]Content, int, error) {
+	// 定义变量结果存储
+	var contents []Content
+	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description", "url").Where("name LIKE ? AND class_id = ?", "%"+keyword+"%", classId).Offset(num * (pg - 1)).Limit(num).Find(&contents)
+
+	// 尝试进行计数操作
+	var count int64
+	here.db.Model(&Content{}).Where("name LIKE ? AND class_id = ?", "%"+keyword+"%", classId).Count(&count)
+
+	// 返回结果
+	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
+}
+
+// 搜索某个采集源下的影片
+func (here *Db) SearchContent_Source(sourceId uint, keyword string, num int, pg int) ([]Content, int, error) {
+	// 定义变量结果存储
+	var contents []Content
+	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description", "url").Where("name LIKE ? AND source_id = ?", "%"+keyword+"%", sourceId).Offset(num * (pg - 1)).Limit(num).Find(&contents)
+
+	// 尝试进行计数操作
+	var count int64
+	here.db.Model(&Content{}).Where("name LIKE ? AND source_id = ?", "%"+keyword+"%", sourceId).Count(&count)
+
+	// 返回结果
+	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
+}
+
+// 全局影片列表
+func (here *Db) ContentList(num int, pg int) ([]Content, int, error) {
+	// 尝试进行搜索操作
+	var contents []Content
+	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description", "url").Offset(num * (pg - 1)).Limit(num).Find(&contents)
+
+	// 尝试进行计数操作
+	var count int64
+	here.db.Model(&Content{}).Count(&count)
+
+	// 返回结果
+	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
+}
+
+// 自建分类影片列表
+func (here *Db) ContentList_Category(categoryId uint, num int, pg int) ([]Content, int, error) {
+	// 查询所属分类下的采集类
+	var class []int
+	here.db.Model(&Category{
+		ID: categoryId,
+	}).Select("id").Association("Class").Find(&class)
+
+	// 定义变量结果存储
+	var contents []Content
+	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description", "url").Where("class_id IN ?", class).Offset(num * (pg - 1)).Limit(num).Find(&contents)
+
+	// 尝试进行计数操作
+	var count int64
+	here.db.Model(&Content{}).Where("class_id IN ?", class).Count(&count)
+
+	// 返回结果
+	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
+}
+
+// 采集类影片列表
+func (here *Db) ContentList_Class(classId uint, num int, pg int) ([]Content, int, error) {
+	// 定义变量结果存储
+	var contents []Content
+	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description", "url").Where("class_id = ?", classId).Offset(num * (pg - 1)).Limit(num).Find(&contents)
+
+	// 尝试进行计数操作
+	var count int64
+	here.db.Model(&Content{}).Where("class_id = ?", classId).Count(&count)
+
+	// 返回结果
+	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
+}
+
+// 采集源影片列表
+func (here *Db) ContentList_Source(sourceId uint, num int, pg int) ([]Content, int, error) {
+	// 定义变量结果存储
+	var contents []Content
+	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description", "url").Where("source_id = ?", sourceId).Offset(num * (pg - 1)).Limit(num).Find(&contents)
+
+	// 尝试进行计数操作
+	var count int64
+	here.db.Model(&Content{}).Where("source_id = ?", sourceId).Count(&count)
+
 	// 返回结果
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
@@ -180,7 +292,6 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Con
 		ID: categoryId,
 	}).Select("id").Association("Class").Find(&class)
 
-	// fmt.Printf("class: %v\n", class)
 	// 创建一个存储content的切片
 	var contents []Content
 

@@ -35,10 +35,8 @@ func (here *Manager) DelSource(id uint) error {
 	return here.db.DelSource(id)
 }
 
-// 所有影片
-func (here *Manager) SearchContent(keyword string, num int, pg int) ([]Movie, int, error) {
+func handleContents(contents []db.Content) []Movie {
 	movies := []Movie{}
-	contents, pgCount, err := here.db.SearchContent(keyword, num, pg)
 	for _, content := range contents {
 		movies = append(movies, Movie{
 			Id:          int(content.ID),
@@ -48,9 +46,83 @@ func (here *Manager) SearchContent(keyword string, num int, pg int) ([]Movie, in
 			Director:    content.Director,
 			Duration:    content.Duration,
 			Description: content.Description,
-			// Url:         content.Url,
+			Url:         content.Url,
 		})
 	}
+	return movies
+}
+
+// 前台接口，搜索所有影片
+func (here *Manager) SearchContent(keyword string, num int, pg int) ([]Movie, int, error) {
+	contents, pgCount, err := here.db.SearchContent(keyword, num, pg)
+	movies := []Movie{}
+	for _, content := range contents {
+		movies = append(movies, Movie{
+			Id:          int(content.ID),
+			Name:        content.Name,
+			Pic:         content.Pic,
+			Actor:       content.Actor,
+			Director:    content.Director,
+			Duration:    content.Duration,
+			Description: content.Description,
+		})
+	}
+	return movies, pgCount, err
+}
+
+// 后台接口，全局搜索影片
+func (here *Manager) SearchContent_bk(keyword string, num int, pg int) ([]Movie, int, error) {
+	contents, pgCount, err := here.db.SearchContent(keyword, num, pg)
+	movies := handleContents(contents)
+	return movies, pgCount, err
+}
+
+// 后台接口，搜索自建分类下影片
+func (here *Manager) SearchContent_bk_Category(categoryId uint, keyword string, num int, pg int) ([]Movie, int, error) {
+	contents, pgCount, err := here.db.SearchContent_Category(categoryId, keyword, num, pg)
+	movies := handleContents(contents)
+	return movies, pgCount, err
+}
+
+// 后台接口，搜索采集类下影片
+func (here *Manager) Search_bk_Class(classId uint, keyword string, num int, pg int) ([]Movie, int, error) {
+	contents, pgCount, err := here.db.SearchContent_Class(classId, keyword, num, pg)
+	movies := handleContents(contents)
+	return movies, pgCount, err
+}
+
+// 后台接口，根据采集源搜索影片
+func (here *Manager) Search_bk_Source(sourceId uint, keyword string, num int, pg int) ([]Movie, int, error) {
+	contents, pgCount, err := here.db.SearchContent_Source(sourceId, keyword, num, pg)
+	movies := handleContents(contents)
+	return movies, pgCount, err
+}
+
+// 后台接口，所有影片列表
+func (here *Manager) ContentList(num int, pg int) ([]Movie, int, error) {
+	contents, pgCount, err := here.db.ContentList(num, pg)
+	movies := handleContents(contents)
+	return movies, pgCount, err
+}
+
+// 后台接口，自建分类影片列表
+func (here *Manager) ContentList_Category(categoryId uint, num int, pg int) ([]Movie, int, error) {
+	contents, pgCount, err := here.db.ContentList_Category(categoryId, num, pg)
+	movies := handleContents(contents)
+	return movies, pgCount, err
+}
+
+// 后台接口，采集类影片列表
+func (here *Manager) ContentList_Class(classId uint, num int, pg int) ([]Movie, int, error) {
+	contents, pgCount, err := here.db.ContentList_Class(classId, num, pg)
+	movies := handleContents(contents)
+	return movies, pgCount, err
+}
+
+// 后台接口，采集源影片列表
+func (here *Manager) ContentList_Source(sourceId uint, num int, pg int) ([]Movie, int, error) {
+	contents, pgCount, err := here.db.ContentList_Source(sourceId, num, pg)
+	movies := handleContents(contents)
 	return movies, pgCount, err
 }
 
@@ -73,6 +145,11 @@ func (here *Manager) GetContent(id uint) (Movie, error) {
 // 更新采集源名字
 func (here *Manager) UpdateSourceName(oldName string, newName string) error {
 	return here.db.UpdateSourceName(oldName, newName)
+}
+
+// 更新采集源地址
+func (here *Manager) UpdateSourceUrl(oldUrl string, newUrl string) error {
+	return here.db.UpdateSourceUrl(oldUrl, newUrl)
 }
 
 // 增加自定义分类
@@ -136,6 +213,7 @@ func (here *Manager) DistributeClass(classId uint, categoryId uint) error {
 	return here.db.DistributeClass(classId, categoryId)
 }
 
+// 更改采集类是否允许采集
 func (here *Manager) ChangeClassGet(classId uint, get bool) error {
 	return here.db.ChangeClassGet(classId, get)
 }
