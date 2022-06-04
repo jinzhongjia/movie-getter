@@ -37,6 +37,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		c.Next()
 	})
 
+	// 路由组逻辑处理
 	{
 		// 关闭全局采集
 		user.GET("/stop", func(_ *gin.Context) {
