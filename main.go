@@ -16,7 +16,10 @@ import (
 
 func main() {
 
+	// 调整为生产模式
 	gin.SetMode(gin.ReleaseMode)
+
+	// 构造manager
 	manager := manager.NewManager()
 
 	r := gin.Default()

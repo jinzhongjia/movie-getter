@@ -8,9 +8,9 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-var DbAddr string
-var Addr string = "127.0.0.1:8000"
-var SessionSecret string = "secret"
+var DbAddr string                   // 数据库的地址
+var Addr string = "127.0.0.1:8000"  // 监听的地址
+var SessionSecret string = "secret" // session加密的秘钥
 
 func init() {
 	env()    // 读取环境变量
