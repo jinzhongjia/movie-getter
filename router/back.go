@@ -9,6 +9,8 @@ import (
 )
 
 func back(r *gin.Engine, manager *mm.Manager) {
+
+	// 登录函数处理
 	r.POST("/user/login", func(c *gin.Context) {
 		account := c.PostForm("account")
 		password := c.PostForm("password")
@@ -22,8 +24,19 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		manager.Session_Set(c.Writer, c.Request, "login", true)
 		c.Status(http.StatusOK)
 	})
+
+	// 路由组定义
 	user := r.Group("/user")
-	// user.Use() // 使用鉴权中间件
+
+	// 路由组中间件，用于鉴权
+	user.Use(func(c *gin.Context) {
+		if manager.Session_Get(c.Request, "login") == nil {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		c.Next()
+	})
+
 	{
 		// 关闭全局采集
 		user.GET("/stop", func(_ *gin.Context) {
