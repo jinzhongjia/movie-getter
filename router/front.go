@@ -11,18 +11,20 @@ import (
 func front(r *gin.Engine, manager *mm.Manager) {
 	// 搜索功能
 	r.POST("/search", func(c *gin.Context) {
+		// 获取关键字
 		keyword := c.PostForm("keyword")
 		if keyword == "" {
 			c.Status(http.StatusBadRequest)
 			return
 		}
+		// 获取页码
 		pgV := c.PostForm("pg")
 		pg, err := strconv.Atoi(pgV)
-		// pg--
 		if err != nil {
 			c.Status(http.StatusBadRequest)
 			return
 		}
+		// 获取数量
 		numV := c.PostForm("num")
 		num, err := strconv.Atoi(numV)
 		if err != nil {

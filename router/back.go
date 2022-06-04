@@ -48,6 +48,152 @@ func back(r *gin.Engine, manager *mm.Manager) {
 
 		})
 
+		// 全局影片列表
+		user.POST("/list", func(c *gin.Context) {
+			// 获取页码
+			pgV := c.PostForm("pg")
+			pg, err := strconv.Atoi(pgV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取数量
+			numV := c.PostForm("num")
+			num, err := strconv.Atoi(numV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 执行检索
+			movies, pgCount, err := manager.ContentList(num, pg)
+			if err != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			movie := Movie{
+				Movies:  movies,
+				PgCount: pgCount,
+			}
+			// 编码json
+			c.JSON(http.StatusOK, movie)
+		})
+
+		// 全局搜索影片
+		user.POST("/search", func(c *gin.Context) {
+			// 获取关键字
+			keyword := c.PostForm("keyword")
+			if keyword == "" {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取页码
+			pgV := c.PostForm("pg")
+			pg, err := strconv.Atoi(pgV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取数量
+			numV := c.PostForm("num")
+			num, err := strconv.Atoi(numV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 执行搜索操作
+			movies, pgCount, err := manager.SearchContent_bk(keyword, num, pg)
+			if err != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			movie := Movie{
+				Movies:  movies,
+				PgCount: pgCount,
+			}
+			// 编码json
+			c.JSON(http.StatusOK, movie)
+		})
+
+		// 采集源影片列表
+		user.POST("/source/list", func(c *gin.Context) {
+			// 获取sourceId
+			idV := c.PostForm("id")
+			id, err := strconv.Atoi(idV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取页码
+			pgV := c.PostForm("pg")
+			pg, err := strconv.Atoi(pgV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取数量
+			numV := c.PostForm("num")
+			num, err := strconv.Atoi(numV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 执行检索
+			movies, pgCount, err := manager.ContentList_Source(uint(id), num, pg)
+			if err != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			movie := Movie{
+				Movies:  movies,
+				PgCount: pgCount,
+			}
+			// 编码json
+			c.JSON(http.StatusOK, movie)
+		})
+
+		// 采集源影片搜索
+		user.POST("/source/search", func(c *gin.Context) {
+			// 获取sourceId
+			idV := c.PostForm("id")
+			id, err := strconv.Atoi(idV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取关键字
+			keyword := c.PostForm("keyword")
+			if keyword == "" {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取页码
+			pgV := c.PostForm("pg")
+			pg, err := strconv.Atoi(pgV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取数量
+			numV := c.PostForm("num")
+			num, err := strconv.Atoi(numV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 执行搜索操作
+			movies, pgCount, err := manager.SearchContent_bk_Source(uint(id), keyword, num, pg)
+			if err != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			movie := Movie{
+				Movies:  movies,
+				PgCount: pgCount,
+			}
+			// 编码json
+			c.JSON(http.StatusOK, movie)
+		})
+
 		// 获取所有的source
 		user.GET("/source/all", func(c *gin.Context) {
 			sources, err := manager.GetSource()
@@ -79,6 +225,102 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				return
 			}
 			c.Status(http.StatusOK)
+		})
+
+		// 获取某资源库下所有采集类
+		user.GET("/source/all_class/:id", func(c *gin.Context) {
+			idV := c.Param("id")
+			id, err := strconv.Atoi(idV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			classes, err := manager.GetClass(uint(id))
+			if err != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			c.JSON(http.StatusOK, classes)
+		})
+
+		// 自建分类影片列表
+		user.POST("/category/list", func(c *gin.Context) {
+			// 获取categoryId
+			idV := c.PostForm("id")
+			id, err := strconv.Atoi(idV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取页码
+			pgV := c.PostForm("pg")
+			pg, err := strconv.Atoi(pgV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取数量
+			numV := c.PostForm("num")
+			num, err := strconv.Atoi(numV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 执行检索
+			movies, pgCount, err := manager.ContentList_Category(uint(id), num, pg)
+			if err != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			movie := Movie{
+				Movies:  movies,
+				PgCount: pgCount,
+			}
+			// 编码json
+			c.JSON(http.StatusOK, movie)
+		})
+
+		// 自建分类影片搜索
+		user.POST("/category/search", func(c *gin.Context) {
+			// 获取categoryId
+			idV := c.PostForm("id")
+			id, err := strconv.Atoi(idV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取关键字
+			keyword := c.PostForm("keyword")
+			if keyword == "" {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取页码
+			pgV := c.PostForm("pg")
+			pg, err := strconv.Atoi(pgV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取数量
+			numV := c.PostForm("num")
+			num, err := strconv.Atoi(numV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 执行搜索操作
+			movies, pgCount, err := manager.SearchContent_bk_Category(uint(id), keyword, num, pg)
+			if err != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			movie := Movie{
+				Movies:  movies,
+				PgCount: pgCount,
+			}
+			// 编码json
+			c.JSON(http.StatusOK, movie)
 		})
 
 		// 获取自建分类
@@ -116,20 +358,84 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusOK)
 		})
 
-		// 获取某资源库下所有采集类
-		user.GET("/class/all/:id", func(c *gin.Context) {
-			idV := c.Param("id")
+		// 采集类影片列表
+		user.POST("/class/list", func(c *gin.Context) {
+			// 获取categoryId
+			idV := c.PostForm("id")
 			id, err := strconv.Atoi(idV)
 			if err != nil {
 				c.Status(http.StatusBadRequest)
 				return
 			}
-			classes, err := manager.GetClass(uint(id))
+			// 获取页码
+			pgV := c.PostForm("pg")
+			pg, err := strconv.Atoi(pgV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取数量
+			numV := c.PostForm("num")
+			num, err := strconv.Atoi(numV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 执行检索
+			movies, pgCount, err := manager.ContentList_Class(uint(id), num, pg)
 			if err != nil {
 				c.Status(http.StatusInternalServerError)
 				return
 			}
-			c.JSON(http.StatusOK, classes)
+			movie := Movie{
+				Movies:  movies,
+				PgCount: pgCount,
+			}
+			// 编码json
+			c.JSON(http.StatusOK, movie)
+		})
+
+		// 采集类影片搜索
+		user.POST("/class/search", func(c *gin.Context) {
+			// 获取sourceId
+			idV := c.PostForm("id")
+			id, err := strconv.Atoi(idV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取关键字
+			keyword := c.PostForm("keyword")
+			if keyword == "" {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取页码
+			pgV := c.PostForm("pg")
+			pg, err := strconv.Atoi(pgV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 获取数量
+			numV := c.PostForm("num")
+			num, err := strconv.Atoi(numV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			// 执行搜索操作
+			movies, pgCount, err := manager.SearchContent_bk_Class(uint(id), keyword, num, pg)
+			if err != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			movie := Movie{
+				Movies:  movies,
+				PgCount: pgCount,
+			}
+			// 编码json
+			c.JSON(http.StatusOK, movie)
 		})
 
 		// 改变class的采集状态是否采集
@@ -171,5 +477,4 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusOK)
 		})
 	}
-
 }
