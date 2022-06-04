@@ -53,13 +53,13 @@ func config() {
 	databaseName := mysql.Key("database_name").String()
 	DbAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
 
-	listenAddr := cfg.Section("").Key("LISTEN_ADDR").String()
+	listenAddr := cfg.Section("").Key("listen_addr").String()
 
 	if listenAddr != "" {
 		Addr = listenAddr
 	}
 
-	sessionSecret := cfg.Section("").Key("SESSION_SECRET").String()
+	sessionSecret := cfg.Section("").Key("session_secret").String()
 
 	if sessionSecret != "" {
 		SessionSecret = sessionSecret
