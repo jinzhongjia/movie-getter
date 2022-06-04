@@ -142,6 +142,11 @@ func (here *Manager) GetContent(id uint) (Movie, error) {
 	return movie, err
 }
 
+// 删除影片
+func (here *Manager) DelContent(id uint) error {
+	return here.db.DelContent(id)
+}
+
 // 更新采集源名字
 func (here *Manager) UpdateSourceName(oldName string, newName string) error {
 	return here.db.UpdateSourceName(oldName, newName)
@@ -222,6 +227,13 @@ func (here *Manager) ChangeClassGet(classId uint, get bool) error {
 func (here *Manager) Login(account string, password string) bool {
 	return here.db.Login(account, password)
 }
+
+// 获取所有影片数目
+func (here *Manager) ContentCount() int {
+	return here.db.ContentCount()
+}
+
+// func (here *Manager)Source
 
 type Source struct {
 	ID   uint   `json:"id"`

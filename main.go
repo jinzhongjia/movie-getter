@@ -10,10 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// func init() {
-// 	runtime.GOMAXPROCS(1)
-// }
-
 func main() {
 
 	// 调整为生产模式

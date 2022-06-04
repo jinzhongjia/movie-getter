@@ -140,6 +140,28 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.JSON(http.StatusOK, movie)
 		})
 
+		// 删除影片
+		user.POST("/del", func(c *gin.Context) {
+			// 获取contentId
+			idV := c.PostForm("id")
+			id, err := strconv.Atoi(idV)
+
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			if manager.DelContent(uint(id)) != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			c.Status(http.StatusOK)
+		})
+
+		// 获取所有影片数目
+		user.GET("/count", func(c *gin.Context) {
+			c.String(http.StatusOK, strconv.Itoa(manager.ContentCount()))
+		})
+
 		// 采集源影片列表
 		user.POST("/source/list", func(c *gin.Context) {
 			// 获取sourceId
