@@ -23,6 +23,13 @@ func (here *Db) systemInit() {
 	}
 }
 
+// 登录
+func (here *Db) Login(account string, password string) bool {
+	system := &System{}
+	here.db.Model(&System{}).Where("account = ?", account).Find(system)
+	return bcrypt.CompareHashAndPassword([]byte(system.Passwd), []byte(password)) == nil
+}
+
 // 更新后台账户
 func (here *Db) UpdateAccount(oldAccount string, newAccount string) error {
 	db := here.db.Model(&System{

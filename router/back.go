@@ -9,7 +9,19 @@ import (
 )
 
 func back(r *gin.Engine, manager *mm.Manager) {
+	r.POST("/user/login", func(c *gin.Context) {
+		account := c.PostForm("account")
+		password := c.PostForm("password")
 
+		// 验证登录
+		if !manager.Login(account, password) {
+			c.Status(http.StatusForbidden)
+			return
+		}
+
+		manager.Session_Set(c.Writer, c.Request, "login", true)
+		c.Status(http.StatusOK)
+	})
 	user := r.Group("/user")
 	// user.Use() // 使用鉴权中间件
 	{
@@ -119,10 +131,12 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			// 获取sourceId
 			idV := c.PostForm("id")
 			id, err := strconv.Atoi(idV)
+
 			if err != nil {
 				c.Status(http.StatusBadRequest)
 				return
 			}
+
 			// 获取页码
 			pgV := c.PostForm("pg")
 			pg, err := strconv.Atoi(pgV)
@@ -130,6 +144,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				c.Status(http.StatusBadRequest)
 				return
 			}
+
 			// 获取数量
 			numV := c.PostForm("num")
 			num, err := strconv.Atoi(numV)
@@ -137,6 +152,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				c.Status(http.StatusBadRequest)
 				return
 			}
+
 			// 执行检索
 			movies, pgCount, err := manager.ContentList_Source(uint(id), num, pg)
 			if err != nil {

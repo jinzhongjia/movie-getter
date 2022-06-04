@@ -218,6 +218,11 @@ func (here *Manager) ChangeClassGet(classId uint, get bool) error {
 	return here.db.ChangeClassGet(classId, get)
 }
 
+// 登录函数
+func (here *Manager) Login(account string, password string) bool {
+	return here.db.Login(account, password)
+}
+
 type Source struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
