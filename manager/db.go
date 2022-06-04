@@ -85,14 +85,14 @@ func (here *Manager) SearchContent_bk_Category(categoryId uint, keyword string, 
 }
 
 // 后台接口，搜索采集类下影片
-func (here *Manager) Search_bk_Class(classId uint, keyword string, num int, pg int) ([]Movie, int, error) {
+func (here *Manager) SearchContent_bk_Class(classId uint, keyword string, num int, pg int) ([]Movie, int, error) {
 	contents, pgCount, err := here.db.SearchContent_Class(classId, keyword, num, pg)
 	movies := handleContents(contents)
 	return movies, pgCount, err
 }
 
 // 后台接口，根据采集源搜索影片
-func (here *Manager) Search_bk_Source(sourceId uint, keyword string, num int, pg int) ([]Movie, int, error) {
+func (here *Manager) SearchContent_bk_Source(sourceId uint, keyword string, num int, pg int) ([]Movie, int, error) {
 	contents, pgCount, err := here.db.SearchContent_Source(sourceId, keyword, num, pg)
 	movies := handleContents(contents)
 	return movies, pgCount, err
