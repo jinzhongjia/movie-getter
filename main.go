@@ -6,7 +6,6 @@ import (
 	"movie/manager"
 	"movie/router"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,8 +19,9 @@ func main() {
 
 	r := gin.Default()
 	{
+
 		//处理跨域
-		r.Use(cors.Default())
+		r.Use(cors())
 		router.Static(r)
 		//配置路由
 		router.Router(r, manager)
