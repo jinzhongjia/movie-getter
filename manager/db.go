@@ -164,8 +164,25 @@ func (here *Manager) AddCategory(name string) bool {
 }
 
 // 获取所有分类
-func (here *Manager) GetCategory() ([]db.Category, error) {
-	return here.db.AllCategory()
+func (here *Manager) GetCategory() ([]Category, error) {
+	var categories []Category
+	tmp, err := here.db.AllCategory()
+	if err != nil {
+		return []Category{}, err
+	}
+	for _, v := range tmp {
+		num, err := here.db.CategoryMovieCount(v.ID)
+		if err != nil {
+			return []Category{}, err
+		}
+		categories = append(categories, Category{
+			ID:       v.ID,
+			Name:     v.Name,
+			ClassNum: here.db.CategoryClassCount(v.ID),
+			MovieNum: num,
+		})
+	}
+	return categories, nil
 }
 
 // 删除分类
@@ -257,6 +274,12 @@ type Movie struct {
 type Class struct {
 	ID   uint
 	Name string // 采集分类名
-	// ClassId int    // 采集分类id
-	Get bool // 是否采集
+	Get  bool   // 是否采集
+}
+
+type Category struct {
+	ID       uint   `json:"id"`
+	Name     string `json:"name"`
+	ClassNum int    `json:"classNum"`
+	MovieNum int    `json:"movieNum"`
 }
