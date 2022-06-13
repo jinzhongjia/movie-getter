@@ -266,7 +266,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 
 		// 删除source
 		user.POST("/source/del", func(c *gin.Context) {
-			idV := c.Param("id")
+			idV := c.PostForm("id")
 			id, err := strconv.Atoi(idV)
 			if err != nil {
 				c.Status(http.StatusBadRequest)
