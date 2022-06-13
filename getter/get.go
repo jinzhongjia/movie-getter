@@ -32,3 +32,13 @@ func (here *Getter) get() {
 		}
 	}
 }
+
+// 判断是否在采集中
+func (here *Getter) JudgeGetting() bool {
+	select {
+	case <-here.ctx.Done():
+		return false
+	default:
+		return true
+	}
+}
