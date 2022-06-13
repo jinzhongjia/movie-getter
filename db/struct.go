@@ -47,5 +47,5 @@ type Category struct {
 
 type System struct {
 	Account string // 账户
-	Passwd  string // 密码
+	Password  string // 密码
 }
