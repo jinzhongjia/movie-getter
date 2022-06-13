@@ -24,3 +24,14 @@ func (here *Manager) Session_Set(w http.ResponseWriter, r *http.Request, key str
 	session.Values[key] = value
 	session.Save(r, w)
 }
+
+// destroy 操作
+func (here *Manager) Session_Destroy(w http.ResponseWriter, r *http.Request) {
+	session, err := here.session.Get(r, "data")
+	if err != nil {
+		logrus.Error(err)
+	}
+	session.Options.MaxAge = -1
+	session.Save(r, w)
+	here.session.Cleanup()
+}

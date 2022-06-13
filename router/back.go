@@ -546,6 +546,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusOK)
 		})
 
+		// 更新密码
 		user.POST("/updatePassword", func(c *gin.Context) {
 			password := c.PostForm("password")
 			if password == "" {
@@ -557,6 +558,12 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				c.Status(http.StatusInternalServerError)
 				return
 			}
+			c.Status(http.StatusOK)
+		})
+
+		// 登出操作
+		user.GET("/logout", func(c *gin.Context) {
+			manager.Session_Destroy(c.Writer, c.Request)
 			c.Status(http.StatusOK)
 		})
 	}
