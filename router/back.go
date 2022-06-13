@@ -22,6 +22,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		}
 
 		manager.Session_Set(c.Writer, c.Request, "login", true)
+		manager.Session_Set(c.Writer, c.Request, "account", account)
 		c.Status(http.StatusOK)
 	})
 
@@ -523,6 +524,36 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				return
 			}
 			if manager.DistributeClass(uint(classId), uint(categoryId)) != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			c.Status(http.StatusOK)
+		})
+
+		// 更新账户
+		user.POST("/updateAccount", func(c *gin.Context) {
+			account := c.PostForm("account")
+			if account == "" {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			oldAccount := manager.Session_Get(c.Request, "account").(string)
+			if manager.UpdateAccount(oldAccount, account) != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			manager.Session_Set(c.Writer, c.Request, "account", account)
+			c.Status(http.StatusOK)
+		})
+
+		user.POST("/updatePassword", func(c *gin.Context) {
+			password := c.PostForm("password")
+			if password == "" {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			account := manager.Session_Get(c.Request, "account").(string)
+			if manager.UpdatePassword(account, password) != nil {
 				c.Status(http.StatusInternalServerError)
 				return
 			}
