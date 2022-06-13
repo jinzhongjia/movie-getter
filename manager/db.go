@@ -13,6 +13,7 @@ func (here *Manager) GetSource() ([]Source, error) {
 			ID:   v.ID,
 			Name: v.Name,
 			Url:  v.Url,
+			Get:  here.getters[v.ID].JudgeGetting(),
 			Ok:   v.Ok,
 			Pg:   v.Pg,
 		})
@@ -250,12 +251,21 @@ func (here *Manager) ContentCount() int {
 	return here.db.ContentCount()
 }
 
-// func (here *Manager)Source
+// 更新用户名
+func (here *Manager) UpdateAccount(oldAccount string, newAccount string) error {
+	return here.db.UpdateAccount(oldAccount, newAccount)
+}
+
+// 更新密码
+func (here *Manager) UpdatePassword(account string, newPassword string) error {
+	return here.db.UpdatePassword(account, newPassword)
+}
 
 type Source struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
 	Url  string `json:"url"`
+	Get  bool   `json:"get"`
 	Ok   bool   `json:"ok"`
 	Pg   int    `json:"pg"`
 }
