@@ -63,3 +63,11 @@ func (here *Db) CategoryMovieCount(categoryId uint) (int, error) {
 	}
 	return result, err
 }
+
+func (here *Db) CategoryClassCount(categoryId uint) int {
+
+	result := here.db.Model(&Category{
+		ID: categoryId,
+	}).Association("Class").Count()
+	return int(result)
+}
