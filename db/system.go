@@ -17,8 +17,8 @@ func (here *Db) systemInit() {
 			os.Exit(1)
 		}
 		here.db.Create(&System{
-			Account: "admin",
-			Passwd:  string(hash),
+			Account:  "admin",
+			Password: string(hash),
 		})
 	}
 }
@@ -27,14 +27,12 @@ func (here *Db) systemInit() {
 func (here *Db) Login(account string, password string) bool {
 	system := &System{}
 	here.db.Model(&System{}).Where("account = ?", account).Find(system)
-	return bcrypt.CompareHashAndPassword([]byte(system.Passwd), []byte(password)) == nil
+	return bcrypt.CompareHashAndPassword([]byte(system.Password), []byte(password)) == nil
 }
 
 // 更新后台账户
 func (here *Db) UpdateAccount(oldAccount string, newAccount string) error {
-	db := here.db.Model(&System{
-		Account: oldAccount,
-	}).Update("account", newAccount)
+	db := here.db.Model(&System{}).Where("account = ?", oldAccount).Update("account", newAccount)
 	return db.Error
 }
 
@@ -42,10 +40,9 @@ func (here *Db) UpdateAccount(oldAccount string, newAccount string) error {
 func (here *Db) UpdatePassword(account string, newPassword string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 	if err != nil {
+		logrus.Error("passwd encrypt failed!")
 		return err
 	}
-	db := here.db.Model(&System{
-		Account: account,
-	}).Update("account", string(hash))
+	db := here.db.Model(&System{}).Where("account = ?", account).Update("password", string(hash))
 	return db.Error
 }
