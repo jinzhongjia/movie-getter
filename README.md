@@ -11,6 +11,9 @@
 ### demo
 
 [GO MOVIE](http://movie.jinzh.me/)
+后台地址：[here](http://movie.jinzh.me/#/user/login)
+账户：admin
+密码：admin888
 
 ### 资源站
 
@@ -32,6 +35,7 @@
 * 采集源指定类别屏蔽
 * 采集源添加
 * 前端模板
+* 后端管理模板（半成品）
 
 ### 待实现：
 
@@ -46,7 +50,7 @@
 
 ## 技术栈
 
-gjson、gorm、gin
+gjson、gorm、gin、vue、naive-ui
 
 
 ## 使用
@@ -55,7 +59,11 @@ gjson、gorm、gin
 
 movie本身支持的api可以参考router的router文件，内部有详细注释
 
-由于目前尚没有后台操作的前端页面，因此部署后需要手动使用curl或者其他工具请求api操作！
+由于目前后台操作的前端页面尚不完善，因此部署后少量功能需要额外使用其他api工具配合使用！
+
+后台地址为：www.example.com/#/user/login
+初始管理员账户：admin
+初始密码：admin888
 
 步骤如下：
 
