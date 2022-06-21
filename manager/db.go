@@ -222,10 +222,10 @@ func (here *Manager) GetClass(sourceId uint) ([]Class, error) {
 	classes := []Class{}
 	for _, v := range v {
 		classes = append(classes, Class{
-			ID:   v.ID,
-			Name: v.Name,
-			// ClassId: v.ClassId,
-			Get: v.Get,
+			ID:         v.ID,
+			Name:       v.Name,
+			Get:        v.Get,
+			CategoryId: v.CategoryID,
 		})
 	}
 	return classes, err
@@ -282,9 +282,10 @@ type Movie struct {
 }
 
 type Class struct {
-	ID   uint
-	Name string // 采集分类名
-	Get  bool   // 是否采集
+	ID         uint   `json:"id"`
+	Name       string `json:"name"` // 采集分类名
+	Get        bool   `json:"get"`  // 是否采集
+	CategoryId uint   `json:"categoryId"`
 }
 
 type Category struct {
