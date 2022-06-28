@@ -14,7 +14,7 @@ func (here *Getter) get() {
 
 	}
 
-	t := time.NewTicker(24 * time.Hour)
+	t := time.NewTicker(time.Duration(db.GetCollectInterval()) * time.Hour)
 	defer t.Stop()
 
 	//此处使用一个自执行匿名函数

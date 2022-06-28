@@ -261,6 +261,10 @@ func (here *Manager) UpdatePassword(account string, newPassword string) error {
 	return here.db.UpdatePassword(account, newPassword)
 }
 
+func (here *Manager) UpdateCollectInterval(interval int) error {
+	return here.db.ChangeCollectInterval(interval)
+}
+
 type Source struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`

@@ -1,6 +1,7 @@
 package db
 
 import (
+	"log"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -45,4 +46,21 @@ func (here *Db) UpdatePassword(account string, newPassword string) error {
 	}
 	db := here.db.Model(&System{}).Where("account = ?", account).Update("password", string(hash))
 	return db.Error
+}
+
+func (here *Db) ChangeCollectInterval(interval int) error {
+	db := here.db.Model(&System{}).Update("collect_interval", interval)
+	return db.Error
+}
+
+func (here *Db) GetCollectInterval() int {
+	var system System
+	db := here.db.Select("collect_interval").Find(&system)
+	if db.Error != nil {
+		log.Println("get collect interval failed, err:", db.Error)
+	}
+	if system.CollectInterval == 0 {
+		return 24
+	}
+	return system.CollectInterval
 }

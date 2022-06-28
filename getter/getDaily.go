@@ -8,7 +8,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-// 获取最近24小时更新的内容子执行
+// 获取最近更新的内容子执行
 func (here *Getter) getDaily() {
 	defer protect()
 	// 获取页数
@@ -37,9 +37,9 @@ func (here *Getter) getDaily() {
 	}
 }
 
-// 获取最近24小时更新内容页数
+// 获取最近更新内容页数
 func (here *Getter) getPgCountDaily() int {
-	res, err := http.Get(here.url + "?ac=list&h=24")
+	res, err := http.Get(here.url + "?ac=list&h=" + strconv.Itoa(db.GetCollectInterval()))
 	if err != nil {
 		panic("采集资源站“" + here.name + "获取采集页数失败")
 	}
@@ -51,7 +51,7 @@ func (here *Getter) getPgCountDaily() int {
 
 // 请求最近列表
 func (here *Getter) getListDaily(pg int) []gjson.Result {
-	res, err := http.Get(here.url + "?ac=list&h=9&pg=" + strconv.Itoa(pg))
+	res, err := http.Get(here.url + "?ac=list&h=" + strconv.Itoa(db.GetCollectInterval()) + "&pg=" + strconv.Itoa(pg))
 	if err != nil {
 		panic("采集资源站“" + here.name + "获取采集页数失败")
 	}

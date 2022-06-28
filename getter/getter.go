@@ -10,6 +10,8 @@ import (
 
 var db *database.Db
 
+// var interval int = 24
+
 func SetDb(tmp *database.Db) map[uint]*Getter {
 	// 设置数据库
 	db = tmp

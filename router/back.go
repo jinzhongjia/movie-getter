@@ -561,6 +561,20 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusOK)
 		})
 
+		// 更新采集间隔
+		user.POST("/updateCollectInterval", func(c *gin.Context) {
+			intervalV := c.PostForm("interval")
+			interval, err := strconv.Atoi(intervalV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			if interval <= 0 {
+				interval = 24
+			}
+			manager.UpdateCollectInterval(interval)
+		})
+
 		// 登出操作
 		user.GET("/logout", func(c *gin.Context) {
 			manager.Session_Destroy(c.Writer, c.Request)
