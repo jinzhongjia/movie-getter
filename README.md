@@ -53,27 +53,35 @@
 
 gjson、gorm、gin、vue、naive-ui
 
-程序的相关api文档：[here](https://console-docs.apipost.cn/preview/ec88e3cf21948a37/480c3d77eff01465)
+后端api文档：[here](https://console-docs.apipost.cn/preview/ec88e3cf21948a37/480c3d77eff01465)
 
 
 ## 使用
 
-你可以通过命令行参数配置movie，或者通过conf.ini，亦或者通过环境变量控制
+当前的前端前台和后台尚未分离，后续会进行分离操作
 
-movie本身支持的api可以参考router的router文件，内部有详细注释
+前台页面首页的分类id如下：
 
-由于目前后台操作的前端页面尚不完善，因此部署后少量功能需要额外使用其他api工具配合使用！
+* 1：电影
+* 2：动漫
+* 3：电视剧
+
+**初始化配置**：可以通过命令行参数配置movie，或者通过conf.ini，亦或者通过环境变量控制
 
 后台地址为：www.example.com/#/user/login
 初始管理员账户：admin
 初始密码：admin888
 
-步骤如下：
+使用方法：
 
-1. 先通过api添加资源库
-2. 创建自建分类（注意当前前端分类创建循序为：电影、动漫、电视剧
-3. 将采集分类绑定到自建分类上
-4. 开始采集
+* 使用二进制文件部署或者docker部署
+
+* 登陆后台，更改管理员账户和密码
+
+* 添加采集源、创建自建分类、分配采集类到自建分类
+
+* 开始采集
+
 
 ## docker
 
