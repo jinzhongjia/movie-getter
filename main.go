@@ -19,7 +19,6 @@ func main() {
 
 	r := gin.Default()
 	{
-
 		//处理跨域
 		r.Use(cors())
 		router.Static(r)
