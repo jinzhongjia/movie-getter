@@ -46,7 +46,7 @@ type Category struct {
 } // 自建分类
 
 type System struct {
-	CollectInterval int    `gorm:"default:24"` //采集间隔时间
 	Account         string // 账户
 	Password        string // 密码
+	CollectInterval int    `gorm:"default:24"` //采集间隔时间
 }
