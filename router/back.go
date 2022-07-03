@@ -1,6 +1,7 @@
 package router
 
 import (
+	"log"
 	mm "movie/manager"
 	"net/http"
 	"strconv"
@@ -561,6 +562,11 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusOK)
 		})
 
+		// 获取采集间隔
+		user.GET("getCollectInterval", func(c *gin.Context) {
+			c.String(http.StatusOK, strconv.Itoa(manager.GetCollectInterval()))
+		})
+
 		// 更新采集间隔
 		user.POST("/updateCollectInterval", func(c *gin.Context) {
 			intervalV := c.PostForm("interval")
@@ -572,7 +578,13 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			if interval <= 0 {
 				interval = 24
 			}
-			manager.UpdateCollectInterval(interval)
+			err = manager.UpdateCollectInterval(interval)
+			if err != nil {
+				c.Status(http.StatusInternalServerError)
+				log.Println("update collect interval failed!", err)
+				return
+			}
+			c.Status(http.StatusOK)
 		})
 
 		// 登出操作
