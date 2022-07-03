@@ -6,6 +6,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 func (here *Db) systemInit() {
@@ -49,7 +50,7 @@ func (here *Db) UpdatePassword(account string, newPassword string) error {
 }
 
 func (here *Db) ChangeCollectInterval(interval int) error {
-	db := here.db.Model(&System{}).Update("collect_interval", interval)
+	db := here.db.Session(&gorm.Session{AllowGlobalUpdate: true}).Model(&System{}).Update("collect_interval", interval)
 	return db.Error
 }
 
