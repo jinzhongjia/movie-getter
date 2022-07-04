@@ -27,7 +27,7 @@
 ### 目前功能：
 
 * 全局采集资源
-* 定时采集最新资源（24h）
+* 采集资源间隔定制化（默认为24h）
 * 采集资源可控
 * 搜索功能
 * 分类功能
@@ -35,7 +35,7 @@
 * 采集源指定类别屏蔽
 * 采集源添加
 * 前端模板
-* 后端管理模板（成品）
+* 后端管理模板
 
 ### 待实现：
 
@@ -47,7 +47,6 @@
 * 流量统计
 * 日志系统
 * 数据库管理(导出导入)
-* 后台管理客户端
 
 ## 技术栈
 
@@ -66,7 +65,7 @@ gjson、gorm、gin、vue、naive-ui
 * 2：动漫
 * 3：电视剧
 
-**初始化配置**：可以通过命令行参数配置movie，或者通过conf.ini，亦或者通过环境变量控制
+**初始化配置**：可以通过命令行参数配置movie，或者通过conf.ini，亦或者通过环境变量控制（docker容器采取此方案）
 
 后台地址为：www.example.com/#/user/login
 初始管理员账户：admin
@@ -74,7 +73,7 @@ gjson、gorm、gin、vue、naive-ui
 
 使用方法：
 
-* 使用二进制文件部署或者docker部署
+* 使用二进制文件部署或者docker部署，推荐使用docker-compose文件进行部署，可进行自更新处理
 
 * 登陆后台，更改管理员账户和密码
 
@@ -93,7 +92,7 @@ dockerfile已经内置，可以直接自行打包image使用，也可以使用do
 docker build -t yunyizhiying/movie .
 ```
 
-#### 使用docker-compose
+#### 使用docker-compose部署（推荐，可进行自更新处理）
 
 ```bash
 docker-compose up -d
