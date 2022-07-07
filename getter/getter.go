@@ -10,8 +10,6 @@ import (
 
 var db *database.Db
 
-// var interval int = 24
-
 func SetDb(tmp *database.Db) map[uint]*Getter {
 	// 设置数据库
 	db = tmp
@@ -24,6 +22,7 @@ func SetDb(tmp *database.Db) map[uint]*Getter {
 	for _, v := range sources {
 		getters[v.ID] = NewGetter(v.ID, v.Name, v.Url, v.Ok, v.Pg)
 	}
+	ChangeInterval(db.GetCollectInterval())
 	return getters
 }
 

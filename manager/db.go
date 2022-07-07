@@ -263,12 +263,14 @@ func (here *Manager) UpdatePassword(account string, newPassword string) error {
 
 // 更新采集间隔
 func (here *Manager) UpdateCollectInterval(interval int) error {
-	return here.db.ChangeCollectInterval(interval)
+	err := here.db.ChangeCollectInterval(interval)
+	getter.ChangeInterval(interval)
+	return err
 }
 
 // 获取采集间隔
 func (here *Manager) GetCollectInterval() int {
-	return here.db.GetCollectInterval()
+	return getter.GetInterval()
 }
 
 type Source struct {
