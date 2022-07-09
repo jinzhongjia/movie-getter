@@ -1,1 +1,0 @@
-import{l as n}from"./index.80337ce4.js";async function r(o,t,a){const e=await(await fetch(o,{method:"POST",mode:"cors",cache:"no-cache",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:n.stringify(t)})).json();return a.value=e,e}export{r as G};
