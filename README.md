@@ -11,7 +11,7 @@
 ### demo
 
 [GO MOVIE](http://movie.jinzh.me/)
-后台地址：[here](http://movie.jinzh.me/#/user/login)
+后台地址：[here](http://movie.jinzh.me/admin)
 账户：admin
 密码：admin888
 
@@ -68,7 +68,7 @@ gjson、gorm、gin、vue、naive-ui
 
 **初始化配置**：可以通过命令行参数配置movie，或者通过conf.ini，亦或者通过环境变量控制（docker容器采取此方案）
 
-后台地址为：www.example.com/#/user/login
+后台地址为：www.example.com/admin/
 初始管理员账户：admin
 初始密码：admin888
 
