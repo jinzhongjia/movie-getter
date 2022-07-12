@@ -24,8 +24,8 @@ func NewManager() *Manager {
 		getters: getters,
 		session: session,
 	}
-	for _, v := range newManager.getters {
-		v.StartGet()
-	}
+	// for _, v := range newManager.getters {
+	// 	v.StartGet()
+	// }
 	return newManager
 }
