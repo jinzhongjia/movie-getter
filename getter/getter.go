@@ -84,3 +84,13 @@ func (here *Getter) StartGet() {
 func (here *Getter) StopGet() {
 	here.cancel()
 }
+
+func (here *Getter) ReGet() {
+	here.StopGet()
+	for here.JudgeGetting() {
+		// 进入一个自旋
+	}
+	db.UpdateSourcePg(here.id, 1) // 数据库中寸的值更新到1页
+	here.pg = 1                   // getter本身也更新为1页
+	here.StartGet()
+}

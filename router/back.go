@@ -266,6 +266,20 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusOK)
 		})
 
+		user.POST("/source/reGet", func(c *gin.Context) {
+			idV := c.PostForm("id")
+			id, err := strconv.Atoi(idV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+			if manager.ReGet(uint(id)) != nil {
+				c.Status(http.StatusInternalServerError)
+				return
+			}
+			c.Status(http.StatusOK)
+		})
+
 		// 删除source
 		user.POST("/source/del", func(c *gin.Context) {
 			idV := c.PostForm("id")

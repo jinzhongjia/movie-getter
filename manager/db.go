@@ -1,8 +1,10 @@
 package manager
 
 import (
+	"errors"
 	"movie/db"
 	"movie/getter"
+	"strconv"
 )
 
 func (here *Manager) GetSource() ([]Source, error) {
@@ -271,6 +273,15 @@ func (here *Manager) UpdateCollectInterval(interval int) error {
 // 获取采集间隔
 func (here *Manager) GetCollectInterval() int {
 	return getter.GetInterval()
+}
+
+func (here *Manager) ReGet(SourceId uint) error {
+	getter, ok := here.getters[SourceId]
+	if !ok {
+		return errors.New("not exist the source which id is" + strconv.Itoa(int(SourceId)))
+	}
+	getter.ReGet()
+	return nil
 }
 
 type Source struct {
