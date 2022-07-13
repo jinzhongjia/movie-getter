@@ -22,6 +22,8 @@ func (here *Manager) Session_Set(w http.ResponseWriter, r *http.Request, key str
 		logrus.Error(err)
 	}
 	session.Values[key] = value
+	session.Options.SameSite = http.SameSiteNoneMode
+	session.Options.Secure = true
 	session.Save(r, w)
 }
 
