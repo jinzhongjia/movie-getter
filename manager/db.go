@@ -35,6 +35,14 @@ func (here *Manager) AddSource(name string, url string) bool {
 
 // 删除采集源
 func (here *Manager) DelSource(id uint) error {
+	getter, ok := here.getters[id]
+	if !ok {
+		return errors.New("the source which id is" + strconv.Itoa(int(id)) + " is not")
+	}
+	getter.StopGet()
+	for getter.JudgeGetting() {
+
+	}
 	return here.db.DelSource(id)
 }
 
