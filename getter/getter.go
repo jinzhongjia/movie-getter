@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	database "movie/db"
+	"sync/atomic"
 
 	"github.com/sirupsen/logrus"
 )
@@ -27,13 +28,14 @@ func SetDb(tmp *database.Db) map[uint]*Getter {
 }
 
 type Getter struct {
-	id     uint
-	name   string
-	url    string
-	ok     bool
-	pg     int
-	ctx    context.Context
-	cancel context.CancelFunc
+	id     uint               // 专属id
+	name   string             // 采集源的名字
+	url    string             // 采集源的地址
+	ok     bool               // 是否采集完成
+	pg     int                // 当前采集到的页数
+	run    *atomic.Value      // 是否正在采集
+	ctx    context.Context    // 上下文
+	cancel context.CancelFunc // 取消函数
 }
 
 // 构造函数
@@ -51,6 +53,7 @@ func NewGetter(id uint, name string, url string, ok bool, pg int) *Getter {
 		url:    url,
 		ok:     ok,
 		pg:     pg,
+		run:    newAtomicBool(),
 		ctx:    ctx,
 		cancel: cancel,
 	}
@@ -59,15 +62,22 @@ func NewGetter(id uint, name string, url string, ok bool, pg int) *Getter {
 
 // 开启采集
 func (here *Getter) StartGet() {
-	select {
-	case _, result_all := <-here.ctx.Done():
-		if !result_all {
-			here.ctx, here.cancel = context.WithCancel(context.Background())
-			go here.get()
-		}
-	default:
+	if !here.run.Load().(bool) {
+		here.ctx, here.cancel = context.WithCancel(context.Background())
+		here.run.Store(true)
+		go here.get()
+	} else {
 		fmt.Println("采集处于开启状态")
 	}
+	// select {
+	// case _, result_all := <-here.ctx.Done():
+	// 	if !result_all {
+	// 		here.ctx, here.cancel = context.WithCancel(context.Background())
+	// 		go here.get()
+	// 	}
+	// default:
+	// 	fmt.Println("采集处于开启状态")
+	// }
 }
 
 // 关闭采集

@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -80,4 +81,10 @@ func protect() {
 // 净化描述、去除html标签、去除头尾空格
 func desHandle(s string) string {
 	return regexp.MustCompile(`<[^>]+>|(^\s*)|(\s*$)|&nbsp;`).ReplaceAllString(s, "")
+}
+
+func newAtomicBool() *atomic.Value {
+	var value atomic.Value
+	value.Store(false)
+	return &value
 }

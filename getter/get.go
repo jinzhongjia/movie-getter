@@ -7,6 +7,7 @@ func (here *Getter) get() {
 		select {
 		case <-here.ctx.Done():
 			// 被取消了，返回
+			here.run.Store(false)
 			return
 		default:
 			here.getAll()
@@ -26,6 +27,7 @@ func (here *Getter) get() {
 		select {
 		case <-here.ctx.Done():
 			// 被取消了，返回
+			here.run.Store(false)
 			return
 		case <-t.C:
 			here.getDaily()
@@ -35,10 +37,11 @@ func (here *Getter) get() {
 
 // 判断是否在采集中
 func (here *Getter) JudgeGetting() bool {
-	select {
-	case <-here.ctx.Done():
-		return false
-	default:
-		return true
-	}
+	// select {
+	// case <-here.ctx.Done():
+	// 	return false
+	// default:
+	// 	return true
+	// }
+	return here.run.Load().(bool)
 }
