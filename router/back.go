@@ -15,15 +15,17 @@ func back(r *gin.Engine, manager *mm.Manager) {
 	r.POST("/user/login", func(c *gin.Context) {
 		account := c.PostForm("account")
 		password := c.PostForm("password")
+		if manager.Session_Get(c.Request, "login") == nil {
+			// 验证登录
+			if !manager.Login(account, password) {
+				c.Status(http.StatusForbidden)
+				return
+			}
 
-		// 验证登录
-		if !manager.Login(account, password) {
-			c.Status(http.StatusForbidden)
-			return
+			manager.Session_Set(c.Writer, c.Request, "login", true)
+			manager.Session_Set(c.Writer, c.Request, "account", account)
 		}
 
-		manager.Session_Set(c.Writer, c.Request, "login", true)
-		manager.Session_Set(c.Writer, c.Request, "account", account)
 		c.Status(http.StatusOK)
 	})
 
