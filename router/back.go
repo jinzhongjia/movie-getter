@@ -15,13 +15,14 @@ func back(r *gin.Engine, manager *mm.Manager) {
 	r.POST("/user/login", func(c *gin.Context) {
 		account := c.PostForm("account")
 		password := c.PostForm("password")
+		long := c.PostForm("long") // 获取参数是否要长时间无需登录
 		if manager.Session_Get(c.Request, "login") == nil {
 			// 验证登录
 			if !manager.Login(account, password) {
 				c.Status(http.StatusForbidden)
 				return
 			}
-
+			manager.SessionInit(c.Writer, c.Request, long == "1") // 进行相关的初始化操作，并且判断是否需要cookie长期有效
 			manager.Session_Set(c.Writer, c.Request, "login", true)
 			manager.Session_Set(c.Writer, c.Request, "account", account)
 		}

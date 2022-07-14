@@ -15,6 +15,20 @@ func (here *Manager) Session_Get(r *http.Request, key string) interface{} {
 	return session.Values[key]
 }
 
+// 登陆后进行的session初始化操作
+func (here *Manager) SessionInit(w http.ResponseWriter, r *http.Request, long bool) {
+	session, err := here.session.Get(r, "data")
+	if err != nil {
+		logrus.Error(err)
+	}
+	session.Options.SameSite = http.SameSiteNoneMode
+	session.Options.Secure = true
+	if long {
+		session.Options.MaxAge = 2592000
+	}
+	session.Save(r, w)
+}
+
 // set 操作
 func (here *Manager) Session_Set(w http.ResponseWriter, r *http.Request, key string, value interface{}) {
 	session, err := here.session.Get(r, "data")
@@ -22,8 +36,6 @@ func (here *Manager) Session_Set(w http.ResponseWriter, r *http.Request, key str
 		logrus.Error(err)
 	}
 	session.Values[key] = value
-	session.Options.SameSite = http.SameSiteNoneMode
-	session.Options.Secure = true
 	session.Save(r, w)
 }
 
