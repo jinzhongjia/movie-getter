@@ -3,6 +3,7 @@ services:
 
   db:
     image: "mysql:5.7"
+    # 5.7内存占用小，如果要性能更高可以使用mysql最新版
     container_name: movie_mysql
     command:
       [
