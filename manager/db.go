@@ -273,8 +273,26 @@ func (here *Manager) UpdatePassword(account string, newPassword string) error {
 
 // 更新采集间隔
 func (here *Manager) UpdateCollectInterval(interval int) error {
+	getters := make([]*getter.Getter, 0) // 存储当前正在采集的采集源
+	// 尝试关闭所有正在进行的采集源
+	for _, getter := range here.getters {
+		if getter.JudgeGetting() {
+			getters = append(getters, getter) // 存储
+			getter.StopGet()
+			for getter.JudgeGetting() {
+				// 自旋等待采集源结束
+			}
+		}
+	}
 	err := here.db.ChangeCollectInterval(interval)
-	getter.ChangeInterval(interval)
+	if err == nil {
+		// 数据库更改成功后才会修改内存中的值
+		getter.ChangeInterval(interval)
+	}
+	// 复原原本采集现场
+	for _, getter := range getters {
+		getter.StartGet()
+	}
 	return err
 }
 
