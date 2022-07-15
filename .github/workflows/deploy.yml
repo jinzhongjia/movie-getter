@@ -1,0 +1,40 @@
+name: CI/CD
+# 触发条件为 push
+on:
+    push:
+        branches:
+            - master
+        # 修改文件范围, 不在范围内不触发
+        paths:
+            - "/"
+            # - '.github/workflows/**'
+            # - '__test__/**'
+            # - 'src/**'
+# 任务
+jobs:
+    test:
+        # 运行的环境
+        runs-on: ubuntu-latest
+        # 步骤
+        steps:
+            - uses: jinzhongjia/movie-getter # git pull
+            - name: Use Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 14
+            - name: 打包镜像, 上传 Docker Hub
+              run: |
+                  docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+                  docker build --platform linux/amd64 -t [name]:latest  .
+                  docker tag [name]:latest ${{ secrets.DOCKER_REPOSITORY }}
+                  docker push ${{ secrets.DOCKER_REPOSITORY }}
+
+            - name: 登录服务器, 执行脚本
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.REMOTE_HOST }}
+                  username: root
+                  password: ${{ secrets.REMOTE_PASSWORD }}
+                  # 执行脚本
+                  script: |
+                      ./deploy.sh
