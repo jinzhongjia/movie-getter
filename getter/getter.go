@@ -90,7 +90,9 @@ func (here *Getter) ReGet() {
 	for here.JudgeGetting() {
 		// 进入一个自旋
 	}
-	db.UpdateSourcePg(here.id, 1) // 数据库中寸的值更新到1页
-	here.pg = 1                   // getter本身也更新为1页
+	db.UpdateSourcePg(here.id, 1)     // 数据库中采集页数更新到1页
+	db.UpdateSourceOk(here.id, false) // 更新数据库中的采集进度未false
+	here.pg = 1                       // getter本身也更新为1页
+	here.ok = false                   // 采集进度调整为false，即未采集完成
 	here.StartGet()
 }

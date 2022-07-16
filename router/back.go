@@ -269,6 +269,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusOK)
 		})
 
+		// 重新采集
 		user.POST("/source/reGet", func(c *gin.Context) {
 			idV := c.PostForm("id")
 			id, err := strconv.Atoi(idV)
