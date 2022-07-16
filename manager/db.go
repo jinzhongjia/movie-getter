@@ -273,7 +273,7 @@ func (here *Manager) UpdatePassword(account string, newPassword string) error {
 
 // 更新采集间隔
 func (here *Manager) UpdateCollectInterval(interval int) error {
-	getters := make([]*getter.Getter, 0) // 存储当前正在采集的采集源
+	getters := make([]*getter.Getter, 0) // 创建一个切片存储当前正在采集的采集源
 	// 尝试关闭所有正在进行的采集源
 	for _, getter := range here.getters {
 		if getter.JudgeGetting() {
