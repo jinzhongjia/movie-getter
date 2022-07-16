@@ -22,7 +22,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				c.Status(http.StatusForbidden)
 				return
 			}
-			manager.SessionInit(c.Writer, c.Request, long == "1") // 进行相关的初始化操作，并且判断是否需要cookie长期有效
+			manager.SessionInit(c.Writer, c.Request, long == "true") // 进行相关的初始化操作，并且判断是否需要cookie长期有效
 			manager.Session_Set(c.Writer, c.Request, "login", true)
 			manager.Session_Set(c.Writer, c.Request, "account", account)
 		}
