@@ -22,9 +22,12 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				c.Status(http.StatusForbidden)
 				return
 			}
-			manager.SessionInit(c.Writer, c.Request, long == "true") // 进行相关的初始化操作，并且判断是否需要cookie长期有效
-			manager.Session_Set(c.Writer, c.Request, "login", true)
-			manager.Session_Set(c.Writer, c.Request, "account", account)
+			kv := make(map[interface{}]interface{})
+			{
+				kv["login"] = true
+				kv["account"] = account
+			}
+			manager.SessionInit(c.Writer, c.Request, long == "true", kv) // 进行相关的初始化操作，并且判断是否需要cookie长期有效
 		}
 
 		c.Status(http.StatusOK)
@@ -35,7 +38,8 @@ func back(r *gin.Engine, manager *mm.Manager) {
 
 	// 路由组中间件，用于鉴权
 	user.Use(func(c *gin.Context) {
-		if manager.Session_Get(c.Request, "login") == nil {
+		err := manager.Session_Get(c.Request, "login")
+		if err == nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
@@ -561,7 +565,9 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				c.Status(http.StatusInternalServerError)
 				return
 			}
-			manager.Session_Set(c.Writer, c.Request, "account", account)
+			kv := make(map[interface{}]interface{})
+			kv["account"] = account
+			manager.Session_Set(c.Writer, c.Request, kv)
 			c.Status(http.StatusOK)
 		})
 
@@ -610,5 +616,6 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			manager.Session_Destroy(c.Writer, c.Request)
 			c.Status(http.StatusOK)
 		})
+
 	}
 }
