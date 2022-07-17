@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"log"
 	mm "movie/manager"
 	"net/http"
@@ -617,5 +618,16 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusOK)
 		})
 
+		// 修改登录路径
+		user.POST("/changePath", func(c *gin.Context) {
+			path := c.PostForm("path")
+			err := manager.ChangePath(path)
+			if err != nil {
+				c.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			c.Status(http.StatusOK)
+		})
+		fmt.Printf("user.Handlers: %v\n", user.Handlers)
 	}
 }

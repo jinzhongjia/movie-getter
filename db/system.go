@@ -65,3 +65,22 @@ func (here *Db) GetCollectInterval() int {
 	}
 	return system.CollectInterval
 }
+
+// 获取登录路径
+func (here *Db) GetPath() string {
+	var system System
+	db := here.db.Select("path").Find(&system)
+	if db.Error != nil {
+		log.Println("get path failed, err:", db.Error)
+	}
+	if system.Path == "" {
+		return "admin"
+	}
+	return system.Path
+}
+
+// 修改登陆路径
+func (here *Db) ChangePath(path string) error {
+	db := here.db.Session(&gorm.Session{AllowGlobalUpdate: true}).Model(&System{}).Update("path", path)
+	return db.Error
+}

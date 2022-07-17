@@ -5,6 +5,7 @@ import (
 	"movie/db"
 	"movie/getter"
 	"strconv"
+	"strings"
 )
 
 func (here *Manager) GetSource() ([]Source, error) {
@@ -301,6 +302,7 @@ func (here *Manager) GetCollectInterval() int {
 	return getter.GetInterval()
 }
 
+// 重新采集逻辑
 func (here *Manager) ReGet(SourceId uint) error {
 	getter, ok := here.getters[SourceId]
 	if !ok {
@@ -308,6 +310,22 @@ func (here *Manager) ReGet(SourceId uint) error {
 	}
 	getter.ReGet()
 	return nil
+}
+
+// 获取登录路径
+func (here *Manager) GetPath() string {
+	return here.db.GetPath()
+}
+
+// 修改登陆路径
+func (here *Manager) ChangePath(path string) error {
+	path = strings.TrimSpace(path) // 去除前后空格
+	for _, v := range Path {
+		if path == v {
+			return errors.New("后台路径不得与系统预置变量相同！")
+		}
+	}
+	return here.db.ChangePath(path)
 }
 
 type Source struct {

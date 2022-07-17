@@ -48,5 +48,6 @@ type Category struct {
 type System struct {
 	Account         string // 账户
 	Password        string // 密码
-	CollectInterval int    `gorm:"default:24"` //采集间隔时间
+	CollectInterval int    `gorm:"default:24"`    // 采集间隔时间
+	Path            string `gorm:"default:admin"` // 后台路径
 }
