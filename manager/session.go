@@ -16,7 +16,7 @@ func (here *Manager) Session_Get(r *http.Request, key string) interface{} {
 }
 
 // 登陆后进行的session初始化操作
-func (here *Manager) SessionInit(w http.ResponseWriter, r *http.Request, long bool) {
+func (here *Manager) SessionInit(w http.ResponseWriter, r *http.Request, long bool, kv map[interface{}]interface{}) {
 	session, err := here.session.Get(r, "data")
 	if err != nil {
 		logrus.Error(err)
@@ -26,16 +26,21 @@ func (here *Manager) SessionInit(w http.ResponseWriter, r *http.Request, long bo
 	if long {
 		session.Options.MaxAge = 2592000
 	}
+	for k, v := range kv {
+		session.Values[k] = v
+	}
 	session.Save(r, w)
 }
 
 // set 操作
-func (here *Manager) Session_Set(w http.ResponseWriter, r *http.Request, key string, value interface{}) {
+func (here *Manager) Session_Set(w http.ResponseWriter, r *http.Request, kv map[interface{}]interface{}) {
 	session, err := here.session.Get(r, "data")
 	if err != nil {
 		logrus.Error(err)
 	}
-	session.Values[key] = value
+	for k, v := range kv {
+		session.Values[k] = v
+	}
 	session.Save(r, w)
 }
 
