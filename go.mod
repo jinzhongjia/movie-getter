@@ -1,10 +1,10 @@
 module movie
 
-go 1.18
+go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.8.1
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.0
 	github.com/tidwall/gjson v1.14.1
 	github.com/wader/gormstore/v2 v2.0.0
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
