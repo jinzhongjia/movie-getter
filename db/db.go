@@ -22,7 +22,11 @@ func NewDb() *Db {
 		fmt.Println("连接数据库失败！")
 		os.Exit(1)
 	}
-	db.AutoMigrate(&Source{}, &Content{}, &Category{}, &Class{}, &System{})
+	err = db.AutoMigrate(&Source{}, &Content{}, &Category{}, &Class{}, &System{})
+	if err != nil {
+		fmt.Println("数据库同步失败！")
+		os.Exit(1)
+	}
 	result := &Db{
 		db: db,
 	}
