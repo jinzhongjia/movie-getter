@@ -15,9 +15,9 @@ type Manager struct {
 }
 
 func NewManager() *Manager {
-	db := database.NewDb()               // 获取数据库db
-	getters := getter.SetDb(db)          // 从数据库获取所有的资源地址构建getter
-	session := ss.NewSession(db.DbGet()) // 开始构建session
+	db := database.NewDb()                   // 获取数据库db
+	getters := getter.SetDb(db)              // 从数据库获取所有的资源地址构建getter
+	session := ss.NewSession(db.DbGetGorm()) // 开始构建session
 
 	newManager := &Manager{
 		db:      db,
