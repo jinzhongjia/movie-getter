@@ -11,7 +11,7 @@ buildMac(){
 }
 
 help(){
-    echo 'usage: sh build.sh commond
+    echo 'usage: sh build.sh command
     - mac   , Compiling programs for Mac 64-bit computers
     - win   , Compiling programs for Windows 64-bit computers
     - linux , Compiling programs for linux 64-bit computers'
