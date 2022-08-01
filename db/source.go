@@ -7,7 +7,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-// 添加source
+// AddSource 添加source
 func (here *Db) AddSource(name string, url string) (uint, bool) {
 	source := &Source{
 		Name: name,
@@ -21,19 +21,19 @@ func (here *Db) AddSource(name string, url string) (uint, bool) {
 	return source.ID, true
 }
 
-// 更新资源库名字
+// UpdateSourceName 更新资源库名字
 func (here *Db) UpdateSourceName(oldName string, newName string) error {
 	db := here.db.Model(&Source{}).Where("name = ?", oldName).Update("name", newName)
 	return db.Error
 }
 
-// 更新资源库的地址
+// UpdateSourceUrl 更新资源库的地址
 func (here *Db) UpdateSourceUrl(oldUrl string, newUrl string) error {
 	db := here.db.Model(&Source{}).Where("url = ?", oldUrl).Update("url", newUrl)
 	return db.Error
 }
 
-// 删除资源库
+// DelSource 删除资源库
 func (here *Db) DelSource(id uint) error {
 	db := here.db.Select("Class", "Content").Delete(&Source{
 		ID: id,
@@ -41,7 +41,7 @@ func (here *Db) DelSource(id uint) error {
 	return db.Error
 }
 
-// 更新source的ok状态
+// UpdateSourceOk 更新source的ok状态
 func (here *Db) UpdateSourceOk(id uint, status bool) error {
 	db := here.db.Model(&Source{
 		ID: id,
@@ -49,14 +49,14 @@ func (here *Db) UpdateSourceOk(id uint, status bool) error {
 	return db.Error
 }
 
-// 获取所有的source
+// AllSource 获取所有的source
 func (here *Db) AllSource() ([]Source, error) {
 	var sources []Source
 	db := here.db.Find(&sources)
 	return sources, db.Error
 }
 
-// 更新source采集的页数
+// UpdateSourcePg 更新source采集的页数
 func (here *Db) UpdateSourcePg(id uint, pg int) error {
 	db := here.db.Model(&Source{
 		ID: id,
@@ -64,7 +64,7 @@ func (here *Db) UpdateSourcePg(id uint, pg int) error {
 	return db.Error
 }
 
-// 获取该采集源下影片数目
+// SourceMovieNum 获取该采集源下影片数目
 func (here *Db) SourceMovieNum(sourceId uint) int {
 	result := here.db.Model(&Source{
 		ID: sourceId,
