@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// 添加class
+// AddClass 添加class
 func (here *Db) AddClass(sourceId uint, name string, class_Id int) error {
 	var db *gorm.DB
 	class := &Class{
@@ -32,7 +32,7 @@ func (here *Db) AddClass(sourceId uint, name string, class_Id int) error {
 	return nil
 }
 
-// 分配class
+// DistributeClass 分配class
 func (here *Db) DistributeClass(classId uint, categoryId uint) error {
 	return here.db.Model(&Category{
 		ID: categoryId,
@@ -41,13 +41,15 @@ func (here *Db) DistributeClass(classId uint, categoryId uint) error {
 	})
 }
 
-// 判断判断当前分类是否允许采集
+// JudgeClass 判断判断当前分类是否允许采集
 func (here *Db) JudgeClass(SourceId uint, class_Id uint) bool {
 	var class Class
-	here.db.Model(&Source{
+	err := here.db.Model(&Source{
 		ID: SourceId,
 	}).Select("get").Where("class_id = ?", class_Id).Association("Class").Find(&class)
-
+	if err != nil {
+		return false
+	}
 	return class.Get
 }
 
@@ -60,7 +62,7 @@ func (here *Db) getClassIdBySourceId(sourceId uint, class_Id int) uint {
 	return class.ID
 }
 
-// 获取某资源库下所有采集类
+// GetClass 获取某资源库下所有采集类
 func (here *Db) GetClass(sourceId uint) ([]Class, error) {
 	var classes []Class
 	err := here.db.Model(&Source{
@@ -69,7 +71,7 @@ func (here *Db) GetClass(sourceId uint) ([]Class, error) {
 	return classes, err
 }
 
-// 改变采集状态
+// ChangeClassGet 改变采集状态
 func (here *Db) ChangeClassGet(classId uint, get bool) error {
 	db := here.db.Model(&Class{
 		ID: classId,
@@ -77,7 +79,7 @@ func (here *Db) ChangeClassGet(classId uint, get bool) error {
 	return db.Error
 }
 
-// 获取某个采集分类下的所有影片
+// ClassMovieNum 获取某个采集分类下的所有影片
 func (here *Db) ClassMovieNum(classId uint) int {
 	result := here.db.Model(&Class{
 		ID: classId,

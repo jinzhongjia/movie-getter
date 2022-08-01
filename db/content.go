@@ -148,13 +148,13 @@ func (here *Db) addContent(
 	return nil
 }
 
-// 删除content
+// DelContent 删除content
 func (here *Db) DelContent(id uint) error {
 	db := here.db.Delete(&Content{}, id)
 	return db.Error
 }
 
-// 全局搜索影片
+// SearchContent 全局搜索影片
 func (here *Db) SearchContent(keyword string, num int, pg int) ([]Content, int, error) {
 	// 尝试进行搜索操作
 	var contents []Content
@@ -168,7 +168,7 @@ func (here *Db) SearchContent(keyword string, num int, pg int) ([]Content, int, 
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
 
-// 搜索自建分类下影片
+// SearchContent_Category 搜索自建分类下影片
 func (here *Db) SearchContent_Category(categoryId uint, keyword string, num int, pg int) ([]Content, int, error) {
 	// 查询所属分类下的采集类
 	var class []int
@@ -188,7 +188,7 @@ func (here *Db) SearchContent_Category(categoryId uint, keyword string, num int,
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
 
-// 搜索采集分类下影片
+// SearchContent_Class 搜索采集分类下影片
 func (here *Db) SearchContent_Class(classId uint, keyword string, num int, pg int) ([]Content, int, error) {
 	// 定义变量结果存储
 	var contents []Content
@@ -202,7 +202,7 @@ func (here *Db) SearchContent_Class(classId uint, keyword string, num int, pg in
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
 
-// 搜索某个采集源下的影片
+// SearchContent_Source 搜索某个采集源下的影片
 func (here *Db) SearchContent_Source(sourceId uint, keyword string, num int, pg int) ([]Content, int, error) {
 	// 定义变量结果存储
 	var contents []Content
@@ -216,7 +216,7 @@ func (here *Db) SearchContent_Source(sourceId uint, keyword string, num int, pg 
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
 
-// 全局影片列表
+// ContentList 全局影片列表
 func (here *Db) ContentList(num int, pg int) ([]Content, int, error) {
 	// 尝试进行搜索操作
 	var contents []Content
@@ -230,7 +230,7 @@ func (here *Db) ContentList(num int, pg int) ([]Content, int, error) {
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
 
-// 自建分类影片列表
+// ContentList_Category 自建分类影片列表
 func (here *Db) ContentList_Category(categoryId uint, num int, pg int) ([]Content, int, error) {
 	// 查询所属分类下的采集类
 	var class []int
@@ -250,7 +250,7 @@ func (here *Db) ContentList_Category(categoryId uint, num int, pg int) ([]Conten
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
 
-// 采集类影片列表
+// ContentList_Class 采集类影片列表
 func (here *Db) ContentList_Class(classId uint, num int, pg int) ([]Content, int, error) {
 	// 定义变量结果存储
 	var contents []Content
@@ -264,7 +264,7 @@ func (here *Db) ContentList_Class(classId uint, num int, pg int) ([]Content, int
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
 
-// 采集源影片列表
+// ContentList_Source 采集源影片列表
 func (here *Db) ContentList_Source(sourceId uint, num int, pg int) ([]Content, int, error) {
 	// 定义变量结果存储
 	var contents []Content
@@ -278,7 +278,7 @@ func (here *Db) ContentList_Source(sourceId uint, num int, pg int) ([]Content, i
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
 
-// 获取影片
+// GetContent 获取影片
 func (here *Db) GetContent(id uint) (Content, error) {
 	var content Content
 	db := here.db.First(&content, id)
@@ -306,7 +306,7 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Con
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
 
-// 获取全部影片的数目
+// ContentCount 获取全部影片的数目
 func (here *Db) ContentCount() int {
 	var result int64
 	here.db.Model(&Content{}).Count(&result)

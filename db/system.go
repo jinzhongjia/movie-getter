@@ -25,20 +25,20 @@ func (here *Db) systemInit() {
 	}
 }
 
-// 登录
+// Login 登录
 func (here *Db) Login(account string, password string) bool {
 	system := &System{}
 	here.db.Model(&System{}).Where("account = ?", account).Find(system)
 	return bcrypt.CompareHashAndPassword([]byte(system.Password), []byte(password)) == nil
 }
 
-// 更新后台账户
+// UpdateAccount 更新后台账户
 func (here *Db) UpdateAccount(oldAccount string, newAccount string) error {
 	db := here.db.Model(&System{}).Where("account = ?", oldAccount).Update("account", newAccount)
 	return db.Error
 }
 
-// 更新后台密码
+// UpdatePassword 更新后台密码
 func (here *Db) UpdatePassword(account string, newPassword string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 	if err != nil {
