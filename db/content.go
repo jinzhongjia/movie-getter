@@ -1,10 +1,9 @@
 package db
 
 import (
+	"gorm.io/gorm"
 	"math"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 func (here *Db) AddContent(
@@ -30,8 +29,8 @@ func (here *Db) AddContent(
 			duration,
 			description,
 			url,
-			class_Id,
-			sourceId,
+			//class_Id,
+			//sourceId,
 		)
 	}
 	return here.addContent(
@@ -67,8 +66,8 @@ func (here *Db) updateContent(
 	duration string,
 	description string,
 	url string,
-	class_Id int, //所属类别
-	sourceId uint, // source id
+	//class_Id int, //所属类别
+	//sourceId uint, // source id
 ) error {
 	content := &Content{
 
@@ -285,6 +284,7 @@ func (here *Db) GetContent(id uint) (Content, error) {
 	return content, db.Error
 }
 
+// BrowseContentByCategory 分类下的影片
 func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Content, int, error) {
 	// 查询所属分类下的采集类
 	var class []int

@@ -34,6 +34,6 @@ func NewDb() *Db {
 	return result
 }
 
-func (here *Db) DbGet() *gorm.DB {
+func (here *Db) DbGetGorm() *gorm.DB {
 	return here.db
 }

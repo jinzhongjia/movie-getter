@@ -1,6 +1,8 @@
 package db
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 // AddCategory 添加分类
 func (here *Db) AddCategory(name string) (uint, error) {

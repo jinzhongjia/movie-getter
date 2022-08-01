@@ -49,11 +49,13 @@ func (here *Db) UpdatePassword(account string, newPassword string) error {
 	return db.Error
 }
 
+// ChangeCollectInterval 修改采集间隔
 func (here *Db) ChangeCollectInterval(interval int) error {
 	db := here.db.Session(&gorm.Session{AllowGlobalUpdate: true}).Model(&System{}).Update("collect_interval", interval)
 	return db.Error
 }
 
+// GetCollectInterval 获取采集间隔
 func (here *Db) GetCollectInterval() int {
 	var system System
 	db := here.db.Select("collect_interval").Find(&system)
