@@ -1,7 +1,8 @@
-package db
+package gormDb
 
 import (
 	"io/ioutil"
+	"movie/db/struct"
 	"net/http"
 
 	"github.com/tidwall/gjson"
@@ -9,7 +10,7 @@ import (
 
 // AddSource 添加source
 func (here *Db) AddSource(name string, url string) (uint, bool) {
-	source := &Source{
+	source := &_struct.Source{
 		Name: name,
 		Url:  url,
 	}
@@ -23,19 +24,19 @@ func (here *Db) AddSource(name string, url string) (uint, bool) {
 
 // UpdateSourceName 更新资源库名字
 func (here *Db) UpdateSourceName(oldName string, newName string) error {
-	db := here.db.Model(&Source{}).Where("name = ?", oldName).Update("name", newName)
+	db := here.db.Model(&_struct.Source{}).Where("name = ?", oldName).Update("name", newName)
 	return db.Error
 }
 
 // UpdateSourceUrl 更新资源库的地址
 func (here *Db) UpdateSourceUrl(oldUrl string, newUrl string) error {
-	db := here.db.Model(&Source{}).Where("url = ?", oldUrl).Update("url", newUrl)
+	db := here.db.Model(&_struct.Source{}).Where("url = ?", oldUrl).Update("url", newUrl)
 	return db.Error
 }
 
 // DelSource 删除资源库
 func (here *Db) DelSource(id uint) error {
-	db := here.db.Select("Class", "Content").Delete(&Source{
+	db := here.db.Select("Class", "Content").Delete(&_struct.Source{
 		ID: id,
 	})
 	return db.Error
@@ -43,22 +44,22 @@ func (here *Db) DelSource(id uint) error {
 
 // UpdateSourceOk 更新source的ok状态
 func (here *Db) UpdateSourceOk(id uint, status bool) error {
-	db := here.db.Model(&Source{
+	db := here.db.Model(&_struct.Source{
 		ID: id,
 	}).Update("ok", status)
 	return db.Error
 }
 
 // AllSource 获取所有的source
-func (here *Db) AllSource() ([]Source, error) {
-	var sources []Source
+func (here *Db) AllSource() ([]_struct.Source, error) {
+	var sources []_struct.Source
 	db := here.db.Find(&sources)
 	return sources, db.Error
 }
 
 // UpdateSourcePg 更新source采集的页数
 func (here *Db) UpdateSourcePg(id uint, pg int) error {
-	db := here.db.Model(&Source{
+	db := here.db.Model(&_struct.Source{
 		ID: id,
 	}).Update("pg", pg)
 	return db.Error
@@ -66,7 +67,7 @@ func (here *Db) UpdateSourcePg(id uint, pg int) error {
 
 // SourceMovieNum 获取该采集源下影片数目
 func (here *Db) SourceMovieNum(sourceId uint) int {
-	result := here.db.Model(&Source{
+	result := here.db.Model(&_struct.Source{
 		ID: sourceId,
 	}).Association("Content").Count()
 	return int(result)

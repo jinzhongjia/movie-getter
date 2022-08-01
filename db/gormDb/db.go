@@ -1,8 +1,10 @@
-package db
+package gormDb
 
 import (
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"movie/config"
+	"movie/db/struct"
 	"os"
 
 	"gorm.io/driver/mysql"
@@ -22,7 +24,7 @@ func NewDb() *Db {
 		fmt.Println("连接数据库失败！")
 		os.Exit(1)
 	}
-	err = db.AutoMigrate(&Source{}, &Content{}, &Category{}, &Class{}, &System{})
+	err = db.AutoMigrate(&_struct.Source{}, &_struct.Content{}, &_struct.Category{}, &_struct.Class{}, &_struct.System{})
 	if err != nil {
 		fmt.Println("数据库同步失败！")
 		os.Exit(1)
@@ -34,6 +36,12 @@ func NewDb() *Db {
 	return result
 }
 
+// DbGetGorm 获取gorm句柄
 func (here *Db) DbGetGorm() *gorm.DB {
 	return here.db
+}
+
+// DbGetRedis 获取redis句柄
+func (here *Db) DbGetRedis() *redis.Client {
+	return nil
 }

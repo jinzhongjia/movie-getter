@@ -2,7 +2,7 @@ package manager
 
 import (
 	"errors"
-	"movie/db"
+	"movie/db/struct"
 	"movie/getter"
 	"strconv"
 )
@@ -46,7 +46,7 @@ func (here *Manager) DelSource(id uint) error {
 	return here.db.DelSource(id)
 }
 
-func handleContents(contents []db.Content) []Movie {
+func handleContents(contents []_struct.Content) []Movie {
 	movies := []Movie{}
 	for _, content := range contents {
 		movies = append(movies, Movie{

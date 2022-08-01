@@ -1,4 +1,4 @@
-package db
+package _struct
 
 type Source struct {
 	ID      uint

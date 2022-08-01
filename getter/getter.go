@@ -9,9 +9,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var db *database.Db
+var db database.Db
 
-func SetDb(tmp *database.Db) map[uint]*Getter {
+func SetDb(tmp database.Db) map[uint]*Getter {
 	// 设置数据库
 	db = tmp
 	// 查询数据库获取所有的source

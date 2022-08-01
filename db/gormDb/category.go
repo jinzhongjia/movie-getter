@@ -1,12 +1,13 @@
-package db
+package gormDb
 
 import (
 	"gorm.io/gorm"
+	"movie/db/struct"
 )
 
 // AddCategory 添加分类
 func (here *Db) AddCategory(name string) (uint, error) {
-	category := &Category{
+	category := &_struct.Category{
 		Name: name,
 	}
 	db := here.db.Create(category)
@@ -15,7 +16,7 @@ func (here *Db) AddCategory(name string) (uint, error) {
 
 // UpdateCategoryName 更新分类名字
 func (here *Db) UpdateCategoryName(oldName string, newName string) error {
-	db := here.db.Model(&Category{}).Where("name = ?", oldName).Update("name", newName)
+	db := here.db.Model(&_struct.Category{}).Where("name = ?", oldName).Update("name", newName)
 	return db.Error
 }
 
@@ -26,7 +27,7 @@ func (here *Db) DelCategory(id uint) error {
 	// 创建事务
 	tx := here.db.Begin()
 	// 尝试删除关系
-	err := tx.Model(&Category{
+	err := tx.Model(&_struct.Category{
 		ID: id,
 	}).Association("Class").Clear()
 	if err != nil {
@@ -34,7 +35,7 @@ func (here *Db) DelCategory(id uint) error {
 		return err
 	}
 	// 尝试删除自建分类
-	db = tx.Delete(&Category{
+	db = tx.Delete(&_struct.Category{
 		ID: id,
 	})
 	if db.Error != nil {
@@ -47,8 +48,8 @@ func (here *Db) DelCategory(id uint) error {
 }
 
 // AllCategory 获取所有分类
-func (here *Db) AllCategory() ([]Category, error) {
-	var categories []Category
+func (here *Db) AllCategory() ([]_struct.Category, error) {
+	var categories []_struct.Category
 	db := here.db.Find(&categories)
 	return categories, db.Error
 }
@@ -56,7 +57,7 @@ func (here *Db) AllCategory() ([]Category, error) {
 // CategoryMovieCount 获取当前自建分类下所有的影片数目
 func (here *Db) CategoryMovieCount(categoryId uint) (int, error) {
 	var classIds []uint
-	err := here.db.Model(&Category{
+	err := here.db.Model(&_struct.Category{
 		ID: categoryId,
 	}).Select("id").Association("Class").Find(&classIds)
 	result := 0
@@ -68,7 +69,7 @@ func (here *Db) CategoryMovieCount(categoryId uint) (int, error) {
 
 func (here *Db) CategoryClassCount(categoryId uint) int {
 
-	result := here.db.Model(&Category{
+	result := here.db.Model(&_struct.Category{
 		ID: categoryId,
 	}).Association("Class").Count()
 	return int(result)
