@@ -1,8 +1,9 @@
 package manager
 
 import (
+	"gorm.io/gorm"
 	database "movie/db"
-	"movie/db/gormDb"
+	"movie/db/drive/gormDb"
 	"movie/getter"
 	ss "movie/session"
 
@@ -16,9 +17,9 @@ type Manager struct {
 }
 
 func NewManager() *Manager {
-	db := gormDb.NewDb()                     // 获取数据库db
-	getters := getter.SetDb(db)              // 从数据库获取所有的资源地址构建getter
-	session := ss.NewSession(db.DbGetGorm()) // 开始构建session
+	db := gormDb.NewDb()                            // 获取数据库db
+	getters := getter.SetDb(db)                     // 从数据库获取所有的资源地址构建getter
+	session := ss.NewSession(db.DbGet().(*gorm.DB)) // 开始构建session
 
 	newManager := &Manager{
 		db:      db,

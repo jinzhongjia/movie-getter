@@ -1,8 +1,6 @@
 package db
 
 import (
-	"github.com/go-redis/redis/v8"
-	"gorm.io/gorm"
 	"movie/db/struct"
 )
 
@@ -67,6 +65,6 @@ type Db interface {
 
 	// db 特性，使用时需要检验返回的是否为nil空指针
 
-	DbGetGorm() *gorm.DB       // 获取gorm句柄
-	DbGetRedis() *redis.Client // 获取redis句柄
+	DbGet() interface{} // 获取数据库句柄
+	DbType() int        // 获取数据库类型
 }
