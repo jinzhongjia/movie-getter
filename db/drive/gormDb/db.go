@@ -2,9 +2,9 @@ package gormDb
 
 import (
 	"fmt"
-	"github.com/go-redis/redis/v8"
 	"movie/config"
 	"movie/db/struct"
+	_type "movie/db/type"
 	"os"
 
 	"gorm.io/driver/mysql"
@@ -36,12 +36,12 @@ func NewDb() *Db {
 	return result
 }
 
-// DbGetGorm 获取gorm句柄
-func (here *Db) DbGetGorm() *gorm.DB {
+// DbGet 获取gorm句柄
+func (here *Db) DbGet() interface{} {
 	return here.db
 }
 
-// DbGetRedis 获取redis句柄
-func (here *Db) DbGetRedis() *redis.Client {
-	return nil
+// DbType 获取数据库类型
+func (here *Db) DbType() int {
+	return _type.Gorm
 }
