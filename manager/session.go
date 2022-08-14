@@ -2,55 +2,24 @@ package manager
 
 import (
 	"net/http"
-
-	"github.com/sirupsen/logrus"
 )
 
-// get 操作
-func (here *Manager) Session_Get(r *http.Request, key string) interface{} {
-	session, err := here.session.Get(r, "data")
-	if err != nil {
-		logrus.Error(err)
-	}
-	return session.Values[key]
+// SessionGet get 操作
+func (here *Manager) SessionGet(r *http.Request, key string) interface{} {
+	return here.session.Get(r, key)
 }
 
-// 登陆后进行的session初始化操作
+// SessionInit 登陆后进行的session初始化操作
 func (here *Manager) SessionInit(w http.ResponseWriter, r *http.Request, long bool, kv map[interface{}]interface{}) {
-	session, err := here.session.Get(r, "data")
-	if err != nil {
-		logrus.Error(err)
-	}
-	session.Options.SameSite = http.SameSiteNoneMode
-	session.Options.Secure = true
-	if long {
-		session.Options.MaxAge = 2592000
-	}
-	for k, v := range kv {
-		session.Values[k] = v
-	}
-	session.Save(r, w)
+	here.session.Init(w, r, long, kv)
 }
 
-// set 操作
-func (here *Manager) Session_Set(w http.ResponseWriter, r *http.Request, kv map[interface{}]interface{}) {
-	session, err := here.session.Get(r, "data")
-	if err != nil {
-		logrus.Error(err)
-	}
-	for k, v := range kv {
-		session.Values[k] = v
-	}
-	session.Save(r, w)
+// SessionSet set 操作
+func (here *Manager) SessionSet(w http.ResponseWriter, r *http.Request, kv map[interface{}]interface{}) {
+	here.session.Set(w, r, kv)
 }
 
-// destroy 操作
-func (here *Manager) Session_Destroy(w http.ResponseWriter, r *http.Request) {
-	session, err := here.session.Get(r, "data")
-	if err != nil {
-		logrus.Error(err)
-	}
-	session.Options.MaxAge = -1
-	session.Save(r, w)
-	here.session.Cleanup()
+// SessionDestroy destroy 操作
+func (here *Manager) SessionDestroy(w http.ResponseWriter, r *http.Request) {
+	here.session.Destroy(w, r)
 }

@@ -16,7 +16,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		account := c.PostForm("account")
 		password := c.PostForm("password")
 		long := c.PostForm("long") // 获取参数是否要长时间无需登录
-		if manager.Session_Get(c.Request, "login") == nil {
+		if manager.SessionGet(c.Request, "login") == nil {
 			// 验证登录
 			if !manager.Login(account, password) {
 				c.Status(http.StatusForbidden)
@@ -38,7 +38,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 
 	// 路由组中间件，用于鉴权
 	user.Use(func(c *gin.Context) {
-		err := manager.Session_Get(c.Request, "login")
+		err := manager.SessionGet(c.Request, "login")
 		if err == nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
@@ -560,14 +560,14 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				c.Status(http.StatusBadRequest)
 				return
 			}
-			oldAccount := manager.Session_Get(c.Request, "account").(string)
+			oldAccount := manager.SessionGet(c.Request, "account").(string)
 			if manager.UpdateAccount(oldAccount, account) != nil {
 				c.Status(http.StatusInternalServerError)
 				return
 			}
 			kv := make(map[interface{}]interface{})
 			kv["account"] = account
-			manager.Session_Set(c.Writer, c.Request, kv)
+			manager.SessionSet(c.Writer, c.Request, kv)
 			c.Status(http.StatusOK)
 		})
 
@@ -578,7 +578,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				c.Status(http.StatusBadRequest)
 				return
 			}
-			account := manager.Session_Get(c.Request, "account").(string)
+			account := manager.SessionGet(c.Request, "account").(string)
 			if manager.UpdatePassword(account, password) != nil {
 				c.Status(http.StatusInternalServerError)
 				return
@@ -613,7 +613,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 
 		// 登出操作
 		user.GET("/logout", func(c *gin.Context) {
-			manager.Session_Destroy(c.Writer, c.Request)
+			manager.SessionDestroy(c.Writer, c.Request)
 			c.Status(http.StatusOK)
 		})
 
