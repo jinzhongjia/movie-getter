@@ -1,6 +1,8 @@
 package gormDb
 
 import (
+	"crypto/tls"
+	"fmt"
 	"io/ioutil"
 	"movie/db/struct"
 	"net/http"
@@ -18,6 +20,7 @@ func (here *Db) AddSource(name string, url string) (uint, bool) {
 	if db.Error != nil {
 		return source.ID, false
 	}
+	// todo 这里需要增加判断初始化是否正常！
 	here.sourceInit(url, source.ID)
 	return source.ID, true
 }
@@ -75,8 +78,16 @@ func (here *Db) SourceMovieNum(sourceId uint) int {
 
 // 资源库初始化
 func (here *Db) sourceInit(url string, sourceId uint) error {
-	res, err := http.Get(url)
+	c := &http.Client{
+
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
+
+	res, err := c.Get(url)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 	defer res.Body.Close()
