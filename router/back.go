@@ -3,6 +3,7 @@ package router
 import (
 	"log"
 	mm "movie/manager"
+	"movie/util"
 	"net/http"
 	"strconv"
 
@@ -31,6 +32,10 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		}
 
 		c.Status(http.StatusOK)
+	})
+
+	r.GET("/system/version", func(c *gin.Context) {
+		c.String(http.StatusOK, util.Version)
 	})
 
 	// 路由组定义
