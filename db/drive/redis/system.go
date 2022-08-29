@@ -44,19 +44,19 @@ func (here *Db) Login(account string, password string) bool {
 	return (user == account) && (bcrypt.CompareHashAndPassword([]byte(passwd), []byte(password)) == nil)
 }
 
-// 更新后台账户
+// UpdateAccount 更新后台账户
 func (here *Db) UpdateAccount(_ string, newAccount string) error {
 	client := here.client
 	return client.Set(context.Background(), systemPrefix+userFiled, newAccount, 0).Err()
 }
 
-// 更新后台密码
+// UpdatePassword 更新后台密码
 func (here *Db) UpdatePassword(_ string, newPassword string) error {
 	client := here.client
 	return client.Set(context.Background(), systemPrefix+passwordFiled, newPassword, 0).Err()
 }
 
-// 修改采集间隔
+// ChangeCollectInterval 修改采集间隔
 func (here *Db) ChangeCollectInterval(interval int) error {
 	client := here.client
 	return client.Set(context.Background(), systemPrefix+collectIntervalFiled, interval, 0).Err()

@@ -67,8 +67,8 @@ func (here *Db) updateContent(
 	duration string,
 	description string,
 	url string,
-	//class_Id int, //所属类别
-	//sourceId uint, // source id
+	// class_Id int, //所属类别
+	// sourceId uint, // source id
 ) error {
 	content := &_struct.Content{
 
@@ -172,7 +172,7 @@ func (here *Db) SearchContent(keyword string, num int, pg int) ([]_struct.Conten
 func (here *Db) SearchContent_Category(categoryId uint, keyword string, num int, pg int) ([]_struct.Content, int, error) {
 	// 查询所属分类下的采集类
 	var class []int
-	here.db.Model(&_struct.Category{
+	_ = here.db.Model(&_struct.Category{
 		ID: categoryId,
 	}).Select("id").Association("Class").Find(&class)
 
@@ -234,7 +234,7 @@ func (here *Db) ContentList(num int, pg int) ([]_struct.Content, int, error) {
 func (here *Db) ContentList_Category(categoryId uint, num int, pg int) ([]_struct.Content, int, error) {
 	// 查询所属分类下的采集类
 	var class []int
-	here.db.Model(&_struct.Category{
+	_ = here.db.Model(&_struct.Category{
 		ID: categoryId,
 	}).Select("id").Association("Class").Find(&class)
 
@@ -289,7 +289,7 @@ func (here *Db) GetContent(id uint) (_struct.Content, error) {
 func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]_struct.Content, int, error) {
 	// 查询所属分类下的采集类
 	var class []int
-	here.db.Model(&_struct.Category{
+	_ = here.db.Model(&_struct.Category{
 		ID: categoryId,
 	}).Select("id").Association("Class").Find(&class)
 

@@ -38,7 +38,7 @@ type Getter struct {
 	cancel context.CancelFunc // 取消函数
 }
 
-// 构造函数
+// NewGetter 构造函数
 func NewGetter(id uint, name string, url string, ok bool, pg int) *Getter {
 	if db == nil {
 		logrus.Errorln("the db is nil!")
@@ -60,7 +60,7 @@ func NewGetter(id uint, name string, url string, ok bool, pg int) *Getter {
 	return get
 }
 
-// 开启采集
+// StartGet 开启采集
 func (here *Getter) StartGet() {
 	if !here.run.Load().(bool) {
 		here.ctx, here.cancel = context.WithCancel(context.Background())
@@ -80,7 +80,7 @@ func (here *Getter) StartGet() {
 	// }
 }
 
-// 关闭采集
+// StopGet 关闭采集
 func (here *Getter) StopGet() {
 	here.cancel()
 }
@@ -90,9 +90,15 @@ func (here *Getter) ReGet() {
 	for here.JudgeGetting() {
 		// 进入一个自旋
 	}
-	db.UpdateSourcePg(here.id, 1)     // 数据库中采集页数更新到1页
-	db.UpdateSourceOk(here.id, false) // 更新数据库中的采集进度未false
-	here.pg = 1                       // getter本身也更新为1页
-	here.ok = false                   // 采集进度调整为false，即未采集完成
+	err := db.UpdateSourcePg(here.id, 1) // 数据库中采集页数更新到1页
+	if err != nil {
+		logrus.Error("update the page error", err)
+	}
+	err = db.UpdateSourceOk(here.id, false) // 更新数据库中的采集进度未false
+	if err != nil {
+		logrus.Error("update the source ok error", err)
+	}
+	here.pg = 1     // getter本身也更新为1页
+	here.ok = false // 采集进度调整为false，即未采集完成
 	here.StartGet()
 }

@@ -57,7 +57,7 @@ func (here *Db) JudgeClass(SourceId uint, class_Id uint) bool {
 // 通过source和class_id获取classId
 func (here *Db) getClassIdBySourceId(sourceId uint, class_Id int) uint {
 	var class _struct.Class
-	here.db.Model(&_struct.Source{
+	_ = here.db.Model(&_struct.Source{
 		ID: sourceId,
 	}).Where("class_id = ?", class_Id).Association("Class").Find(&class)
 	return class.ID

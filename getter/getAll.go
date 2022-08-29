@@ -2,6 +2,7 @@ package getter
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"strconv"
 
@@ -14,7 +15,10 @@ func (here *Getter) getAll() {
 	pgCount := here.getPgCount()
 	if here.pg >= pgCount {
 		here.ok = true
-		db.UpdateSourceOk(here.id, here.ok)
+		err := db.UpdateSourceOk(here.id, here.ok)
+		if err != nil {
+			logrus.Error("update the page error", err)
+		}
 		return
 	}
 
@@ -41,7 +45,10 @@ func (here *Getter) getAll() {
 // 更新页数
 func (here *Getter) updatePg() {
 	here.pg++
-	db.UpdateSourcePg(here.id, here.pg)
+	err := db.UpdateSourcePg(here.id, here.pg)
+	if err != nil {
+		logrus.Error("update the page error", err)
+	}
 }
 
 // 获取所有采集页数

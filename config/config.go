@@ -8,11 +8,11 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-var MysqlAddr string                // 数据库的地址
-var RedisAddr string                // redis的地址
-var RedisPassword string            // redis的密码
-var Addr string = "127.0.0.1:8000"  // 监听的地址
-var SessionSecret string = "secret" // session加密的秘钥
+var MysqlAddr string         // 数据库的地址
+var RedisAddr string         // redis的地址
+var RedisPassword string     // redis的密码
+var Addr = "127.0.0.1:8000"  // 监听的地址
+var SessionSecret = "secret" // session加密的秘钥
 
 func init() {
 	env()    // 读取环境变量

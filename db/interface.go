@@ -20,7 +20,7 @@ type Db interface {
 	AddClass(sourceId uint, name string, class_Id int) error // 添加采集类
 	DistributeClass(classId uint, categoryId uint) error     // 分配采集类
 	JudgeClass(SourceId uint, class_Id uint) bool            // 判断采集类是否允许采集
-	//getClassIdBySourceId(sourceId uint, class_Id int) uint   // 通过采集源id获取采集类id
+	// GetClass getClassIdBySourceId(sourceId uint, class_Id int) uint   // 通过采集源id获取采集类id
 	GetClass(sourceId uint) ([]_struct.Class, error) // 通过采集源id获取其下所有采集类
 	ChangeClassGet(classId uint, get bool) error     // 改变采集状态
 	ClassMovieNum(classId uint) int                  // 获得某个采集类下所有影片

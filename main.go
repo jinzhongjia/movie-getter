@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"movie/config"
 	"movie/manager"
 	"movie/router"
@@ -28,6 +29,9 @@ func main() {
 
 	fmt.Println("运行正常，开始监听端口！")
 	//监听端口默认为8080
-	r.Run(config.Addr)
+	err := r.Run(config.Addr)
+	if err != nil {
+		logrus.Error("the error not handled", err)
+	}
 
 }

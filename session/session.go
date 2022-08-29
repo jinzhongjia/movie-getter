@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// 构造函数
+// NewSession 构造函数
 func NewSession(db *gorm.DB) *gormstore.Store {
 	store := gormstore.New(db, []byte(config.SessionSecret))
 	store.MaxAge(25200)                         // 设置session存活时间

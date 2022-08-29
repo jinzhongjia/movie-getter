@@ -3,6 +3,7 @@ package gormDb
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"movie/db/struct"
 	"net/http"
@@ -98,7 +99,10 @@ func (here *Db) sourceInit(url string, sourceId uint) error {
 		v := vv.Value().(map[string]interface{})
 		name := v["type_name"].(string)
 		class_Id := int(v["type_id"].(float64))
-		here.AddClass(sourceId, name, class_Id)
+		err := here.AddClass(sourceId, name, class_Id)
+		if err != nil {
+			logrus.Error("add class failed", err)
+		}
 	}
 	return nil
 }
