@@ -1,6 +1,7 @@
 package getter
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -16,7 +17,8 @@ import (
 
 // 采集content
 func (here *Getter) getContent(id int) {
-	res, err := http.Get(here.url + "?ac=detail&ids=" + strconv.Itoa(id))
+	c := newHttpHandle()
+	res, err := c.Get(here.url + "?ac=detail&ids=" + strconv.Itoa(id))
 	if err != nil {
 		panic("采集资源库" + here.name + "获取json信息错误")
 		// panic后通过外部的recover来重新获取json
@@ -87,4 +89,12 @@ func newAtomicBool() *atomic.Value {
 	var value atomic.Value
 	value.Store(false)
 	return &value
+}
+
+func newHttpHandle() *http.Client {
+	return &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
 }

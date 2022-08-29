@@ -79,7 +79,6 @@ func (here *Db) SourceMovieNum(sourceId uint) int {
 // 资源库初始化
 func (here *Db) sourceInit(url string, sourceId uint) error {
 	c := &http.Client{
-
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},

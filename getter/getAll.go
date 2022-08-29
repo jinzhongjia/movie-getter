@@ -3,7 +3,6 @@ package getter
 import (
 	"fmt"
 	"io/ioutil"
-	"net/http"
 	"strconv"
 
 	"github.com/tidwall/gjson"
@@ -47,9 +46,10 @@ func (here *Getter) updatePg() {
 
 // 获取所有采集页数
 func (here *Getter) getPgCount() int {
-	res, err := http.Get(here.url + "?ac=list")
+	c := newHttpHandle()
+	res, err := c.Get(here.url + "?ac=list")
 	if err != nil {
-		panic("采集资源站“" + here.name + "获取采集页数失败")
+		panic("采集资源站“" + here.name + "“获取采集页数失败")
 	}
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
@@ -60,9 +60,10 @@ func (here *Getter) getPgCount() int {
 // 获取list
 func (here *Getter) getList(pgCount int) []gjson.Result {
 	fmt.Println("采集资源站“", here.name, "”，第", here.pg, "页")
-	res, err := http.Get(here.url + "?ac=list&pg=" + strconv.Itoa(pgCount-here.pg))
+	c := newHttpHandle()
+	res, err := c.Get(here.url + "?ac=list&pg=" + strconv.Itoa(pgCount-here.pg))
 	if err != nil {
-		panic("采集资源站“" + here.name + "获取采集页数失败")
+		panic("采集资源站“" + here.name + "“获取采集页数失败")
 	}
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)

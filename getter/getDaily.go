@@ -2,7 +2,6 @@ package getter
 
 import (
 	"io/ioutil"
-	"net/http"
 	"strconv"
 
 	"github.com/tidwall/gjson"
@@ -39,7 +38,8 @@ func (here *Getter) getDaily() {
 
 // 获取最近更新内容页数
 func (here *Getter) getPgCountDaily() int {
-	res, err := http.Get(here.url + "?ac=list&h=" + strconv.Itoa(GetInterval()))
+	c := newHttpHandle()
+	res, err := c.Get(here.url + "?ac=list&h=" + strconv.Itoa(GetInterval()))
 	if err != nil {
 		panic("采集资源站“" + here.name + "获取采集页数失败")
 	}
@@ -51,7 +51,8 @@ func (here *Getter) getPgCountDaily() int {
 
 // 请求最近列表
 func (here *Getter) getListDaily(pg int) []gjson.Result {
-	res, err := http.Get(here.url + "?ac=list&h=" + strconv.Itoa(GetInterval()) + "&pg=" + strconv.Itoa(pg))
+	c := newHttpHandle()
+	res, err := c.Get(here.url + "?ac=list&h=" + strconv.Itoa(GetInterval()) + "&pg=" + strconv.Itoa(pg))
 	if err != nil {
 		panic("采集资源站“" + here.name + "获取采集页数失败")
 	}
