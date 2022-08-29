@@ -8,7 +8,7 @@ import (
 )
 
 func (here *Manager) GetSource() ([]Source, error) {
-	var sources []Source
+	sources := make([]Source, 0)
 	v, err := here.db.AllSource()
 	for _, v := range v {
 		sources = append(sources, Source{
@@ -47,7 +47,7 @@ func (here *Manager) DelSource(id uint) error {
 }
 
 func handleContents(contents []_struct.Content) []Movie {
-	var movies []Movie
+	movies := make([]Movie, 0)
 	for _, content := range contents {
 		movies = append(movies, Movie{
 			Id:          int(content.ID),
@@ -66,7 +66,7 @@ func handleContents(contents []_struct.Content) []Movie {
 // SearchContent 前台接口，搜索所有影片
 func (here *Manager) SearchContent(keyword string, num int, pg int) ([]Movie, int, error) {
 	contents, pgCount, err := here.db.SearchContent(keyword, num, pg)
-	var movies []Movie
+	movies := make([]Movie, 0)
 	for _, content := range contents {
 		movies = append(movies, Movie{
 			Id:          int(content.ID),
@@ -210,7 +210,7 @@ func (here *Manager) UpdateCategory(oldName string, newName string) error {
 func (here *Manager) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Movie, int, error) {
 	contents, pgCount, err := here.db.BrowseContentByCategory(categoryId, num, pg)
 
-	var movies []Movie
+	movies := make([]Movie, 0)
 
 	for _, content := range contents {
 		movies = append(movies, Movie{
@@ -229,7 +229,7 @@ func (here *Manager) BrowseContentByCategory(categoryId uint, num int, pg int) (
 
 func (here *Manager) GetClass(sourceId uint) ([]Class, error) {
 	v, err := here.db.GetClass(sourceId)
-	var classes []Class
+	classes := make([]Class, 0)
 	for _, v := range v {
 		classes = append(classes, Class{
 			ID:         v.ID,
