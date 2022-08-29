@@ -21,7 +21,9 @@ func (here *Db) AddSource(name string, url string) (uint, bool) {
 		return source.ID, false
 	}
 	// todo 这里需要增加判断初始化是否正常！
-	here.sourceInit(url, source.ID)
+	if here.sourceInit(url, source.ID) != nil {
+		return 0, false
+	}
 	return source.ID, true
 }
 
