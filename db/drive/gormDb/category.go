@@ -15,8 +15,10 @@ func (here *Db) AddCategory(name string) (uint, error) {
 }
 
 // UpdateCategoryName 更新分类名字
-func (here *Db) UpdateCategoryName(oldName string, newName string) error {
-	db := here.db.Model(&_struct.Category{}).Where("name = ?", oldName).Update("name", newName)
+func (here *Db) UpdateCategoryName(id uint, newName string) error {
+	db := here.db.Model(&_struct.Category{
+		ID: id,
+	}).Update("name", newName)
 	return db.Error
 }
 
@@ -49,7 +51,7 @@ func (here *Db) DelCategory(id uint) error {
 
 // AllCategory 获取所有分类
 func (here *Db) AllCategory() ([]_struct.Category, error) {
-	var categories []_struct.Category
+	categories := make([]_struct.Category, 0)
 	db := here.db.Find(&categories)
 	return categories, db.Error
 }

@@ -29,14 +29,18 @@ func (here *Db) AddSource(name string, url string) (uint, bool) {
 }
 
 // UpdateSourceName 更新资源库名字
-func (here *Db) UpdateSourceName(oldName string, newName string) error {
-	db := here.db.Model(&_struct.Source{}).Where("name = ?", oldName).Update("name", newName)
+func (here *Db) UpdateSourceName(id uint, newName string) error {
+	db := here.db.Model(&_struct.Source{
+		ID: id,
+	}).Update("name", newName)
 	return db.Error
 }
 
 // UpdateSourceUrl 更新资源库的地址
-func (here *Db) UpdateSourceUrl(oldUrl string, newUrl string) error {
-	db := here.db.Model(&_struct.Source{}).Where("url = ?", oldUrl).Update("url", newUrl)
+func (here *Db) UpdateSourceUrl(id uint, newUrl string) error {
+	db := here.db.Model(&_struct.Source{
+		ID: id,
+	}).Update("url", newUrl)
 	return db.Error
 }
 

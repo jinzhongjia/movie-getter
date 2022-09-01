@@ -159,13 +159,13 @@ func (here *Manager) DelContent(id uint) error {
 }
 
 // UpdateSourceName 更新采集源名字
-func (here *Manager) UpdateSourceName(oldName string, newName string) error {
-	return here.db.UpdateSourceName(oldName, newName)
+func (here *Manager) UpdateSourceName(id uint, newName string) error {
+	return here.db.UpdateSourceName(id, newName)
 }
 
 // UpdateSourceUrl 更新采集源地址
-func (here *Manager) UpdateSourceUrl(oldUrl string, newUrl string) error {
-	return here.db.UpdateSourceUrl(oldUrl, newUrl)
+func (here *Manager) UpdateSourceUrl(id uint, newUrl string) error {
+	return here.db.UpdateSourceUrl(id, newUrl)
 }
 
 // AddCategory 增加自定义分类
@@ -202,8 +202,8 @@ func (here *Manager) DelCategory(id uint) error {
 }
 
 // UpdateCategory 更新分类
-func (here *Manager) UpdateCategory(oldName string, newName string) error {
-	return here.db.UpdateCategoryName(oldName, newName)
+func (here *Manager) UpdateCategory(id uint, newName string) error {
+	return here.db.UpdateCategoryName(id, newName)
 }
 
 // BrowseContentByCategory 获取分类下影片
