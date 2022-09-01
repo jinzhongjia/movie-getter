@@ -21,7 +21,7 @@ func (here *Db) AddSource(name string, url string) (uint, bool) {
 	if db.Error != nil {
 		return source.ID, false
 	}
-	// todo 这里需要增加判断初始化是否正常！
+
 	if here.sourceInit(url, source.ID) != nil {
 		return 0, false
 	}
@@ -58,7 +58,7 @@ func (here *Db) UpdateSourceOk(id uint, status bool) error {
 
 // AllSource 获取所有的source
 func (here *Db) AllSource() ([]_struct.Source, error) {
-	var sources []_struct.Source
+	sources := make([]_struct.Source, 0)
 	db := here.db.Find(&sources)
 	return sources, db.Error
 }
