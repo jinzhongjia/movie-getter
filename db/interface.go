@@ -8,12 +8,12 @@ type Db interface {
 
 	// Category 分类接口
 
-	AddCategory(name string) (uint, error)                   // 添加分类
-	UpdateCategoryName(oldName string, newName string) error // 更改分类名字
-	DelCategory(id uint) error                               // 删除分类
-	AllCategory() ([]_struct.Category, error)                // 获取所有分类
-	CategoryMovieCount(categoryId uint) (int, error)         // 获取分类下影片数目
-	CategoryClassCount(categoryId uint) int                  // 获取分类下采集类数目
+	AddCategory(name string) (uint, error)            // 添加分类
+	UpdateCategoryName(id uint, newName string) error // 更改分类名字
+	DelCategory(id uint) error                        // 删除分类
+	AllCategory() ([]_struct.Category, error)         // 获取所有分类
+	CategoryMovieCount(categoryId uint) (int, error)  // 获取分类下影片数目
+	CategoryClassCount(categoryId uint) int           // 获取分类下采集类数目
 
 	// Class 采集类接口
 
@@ -46,14 +46,14 @@ type Db interface {
 
 	// Source 采集源接口
 
-	AddSource(name string, url string) (uint, bool)        // 添加采集源
-	UpdateSourceName(oldName string, newName string) error // 更新资源库名字
-	UpdateSourceUrl(oldUrl string, newUrl string) error    // 更新资源库地址
-	DelSource(id uint) error                               // 删除资源库
-	UpdateSourceOk(id uint, status bool) error             // 资源库采集状态（是否完成）
-	AllSource() ([]_struct.Source, error)                  // 获取所有采集源
-	UpdateSourcePg(id uint, pg int) error                  // 更新采集页数
-	SourceMovieNum(sourceId uint) int                      // 获取采集源下影片数目
+	AddSource(name string, url string) (uint, bool) // 添加采集源
+	UpdateSourceName(id uint, newName string) error // 更新资源库名字
+	UpdateSourceUrl(id uint, newUrl string) error   // 更新资源库地址
+	DelSource(id uint) error                        // 删除资源库
+	UpdateSourceOk(id uint, status bool) error      // 资源库采集状态（是否完成）
+	AllSource() ([]_struct.Source, error)           // 获取所有采集源
+	UpdateSourcePg(id uint, pg int) error           // 更新采集页数
+	SourceMovieNum(sourceId uint) int               // 获取采集源下影片数目
 
 	// System 系统接口
 
