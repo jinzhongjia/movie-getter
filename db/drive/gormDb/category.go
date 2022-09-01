@@ -58,7 +58,7 @@ func (here *Db) AllCategory() ([]_struct.Category, error) {
 
 // CategoryMovieCount 获取当前自建分类下所有的影片数目
 func (here *Db) CategoryMovieCount(categoryId uint) (int, error) {
-	var classIds []uint
+	classIds := make([]uint, 0)
 	err := here.db.Model(&_struct.Category{
 		ID: categoryId,
 	}).Select("id").Association("Class").Find(&classIds)
