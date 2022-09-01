@@ -172,7 +172,7 @@ func (here *Db) AllSource() ([]_struct.Source, error) {
 			ID:   uint(id),
 			Name: source[sourceNameKey],
 			Url:  source[sourceUrlKey],
-			Ok:   source[sourceOkKey] == "1", // todo 这里需要验证是否正确
+			Ok:   source[sourceOkKey] == "1",
 			Pg:   pg,
 		})
 	}
