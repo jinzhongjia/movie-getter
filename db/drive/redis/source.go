@@ -130,6 +130,7 @@ func (here *Db) DelSource(id uint) error {
 	client.HDel(ctx, sourceNameToId, value[sourceNameKey])
 	client.HDel(ctx, sourceUrlToId, value[sourceUrlKey])
 	client.HDel(ctx, sourcePrefix+strID) // 删除哈希
+	client.Del(ctx, aSourceClassPrefix+strID)
 	return err
 }
 
@@ -218,6 +219,35 @@ func (here *Db) sourceInit(url string, sourceId uint) error {
 		}
 	}
 	return nil
+}
+
+func (here *Db) sourceAddClass(sourceID uint, classId uint) error {
+	client := here.client
+	_, err := client.SAdd(ctx, aSourceClassPrefix+strconv.Itoa(int(sourceID)), classId).Result()
+	if err != nil {
+		logrus.Error("redis sourceAddClass failed", err)
+		return err
+	}
+	return nil
+}
+
+func (here *Db) sourceDelClass(sourceID uint, classId uint) error {
+	client := here.client
+	_, err := client.SRem(ctx, aSourceClassPrefix+strconv.Itoa(int(sourceID)), classId).Result()
+	if err != nil {
+		logrus.Error("redis sourceAddClass failed", err)
+		return err
+	}
+	return nil
+}
+
+func (here *Db) getSourceAllClass(sourceID uint) []string {
+	client := here.client
+	values, err := client.SMembers(ctx, aSourceClassPrefix+strconv.Itoa(int(sourceID))).Result()
+	if err != nil {
+		logrus.Error("redis get source all class", err)
+	}
+	return values
 }
 
 // 通知redis生成新的sourceId
