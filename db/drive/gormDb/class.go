@@ -80,7 +80,7 @@ func (here *Db) ChangeClassGet(classId uint, get bool) error {
 	return db.Error
 }
 
-// ClassMovieNum 获取某个采集分类下的所有影片
+// ClassMovieNum 获取某个采集分类下的所有影片数目
 func (here *Db) ClassMovieNum(classId uint) int {
 	result := here.db.Model(&_struct.Class{
 		ID: classId,
