@@ -65,7 +65,7 @@ func (here *Db) getClassIdBySourceId(sourceId uint, class_Id int) uint {
 
 // GetClass 获取某资源库下所有采集类
 func (here *Db) GetClass(sourceId uint) ([]_struct.Class, error) {
-	var classes []_struct.Class
+	classes := make([]_struct.Class, 0)
 	err := here.db.Model(&_struct.Source{
 		ID: sourceId,
 	}).Select("id", "name", "get", "category_id").Association("Class").Find(&classes)
