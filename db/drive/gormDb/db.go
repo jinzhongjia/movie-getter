@@ -24,7 +24,7 @@ func NewDb() *Db {
 		fmt.Println("连接数据库失败！")
 		os.Exit(1)
 	}
-	err = db.AutoMigrate(&_struct.Source{}, &_struct.Content{}, &_struct.Category{}, &_struct.Class{}, &_struct.System{})
+	err = db.AutoMigrate(&_struct.System{}, &_struct.Source{}, &_struct.Category{}, &_struct.Class{}, &_struct.Content{})
 	if err != nil {
 		fmt.Println("数据库同步失败！")
 		os.Exit(1)
