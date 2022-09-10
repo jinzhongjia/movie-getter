@@ -192,6 +192,12 @@ func (here *Db) UpdateSourcePg(id uint, pg int) error {
 	return nil
 }
 
+// SourceMovieNum 获取该采集源下影片数目
+func (here *Db) SourceMovieNum(sourceId uint) int {
+	// todo
+	return 0
+}
+
 // 初始化数据库
 func (here *Db) sourceInit(url string, sourceId uint) error {
 	c := &http.Client{

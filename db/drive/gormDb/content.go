@@ -157,7 +157,7 @@ func (here *Db) DelContent(id uint) error {
 // SearchContent 全局搜索影片
 func (here *Db) SearchContent(keyword string, num int, pg int) ([]_struct.Content, int, error) {
 	// 尝试进行搜索操作
-	var contents []_struct.Content
+	contents := make([]_struct.Content, 0)
 	db := here.db.Select("id", "name", "pic", "actor", "director", "duration", "description", "url").Where("name LIKE ?", "%"+keyword+"%").Offset(num * (pg - 1)).Limit(num).Find(&contents)
 
 	// 尝试进行计数操作
