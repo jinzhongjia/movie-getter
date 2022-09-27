@@ -3,7 +3,7 @@ package gormDb
 import (
 	"fmt"
 	"movie/config"
-	"movie/db/struct"
+	_struct "movie/db/struct"
 	_type "movie/db/type"
 	"os"
 
