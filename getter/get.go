@@ -12,13 +12,12 @@ func (here *Getter) get() {
 		default:
 			here.getAll()
 		}
-
 	}
 
 	t := time.NewTicker(time.Duration(GetInterval()) * time.Hour)
 	defer t.Stop()
 
-	//此处使用一个自执行匿名函数
+	// 此处使用一个自执行匿名函数
 	func() {
 		here.getDaily()
 	}()
@@ -37,11 +36,5 @@ func (here *Getter) get() {
 
 // JudgeGetting 判断是否在采集中
 func (here *Getter) JudgeGetting() bool {
-	// select {
-	// case <-here.ctx.Done():
-	// 	return false
-	// default:
-	// 	return true
-	// }
 	return here.run.Load().(bool)
 }

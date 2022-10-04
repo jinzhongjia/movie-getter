@@ -2,9 +2,10 @@ package getter
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"strconv"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/tidwall/gjson"
 )
@@ -22,7 +23,7 @@ func (here *Getter) getAll() {
 		return
 	}
 
-	//获取页数
+	// 获取页数
 	list := here.getList(pgCount)
 
 	for _, v := range list {
@@ -32,7 +33,6 @@ func (here *Getter) getAll() {
 			// 被取消了，返回
 			return
 		default:
-			// fmt.Println("666")
 			id := int(v.Value().(float64))
 			here.getContent(id)
 		}
