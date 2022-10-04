@@ -11,8 +11,6 @@ import (
 var (
 	SqliteAddr    string             // sqlite 的地质
 	MysqlAddr     string             // 数据库的地址
-	RedisAddr     string             // redis的地址
-	RedisPassword string             // redis的密码
 	Addr          = "127.0.0.1:8000" // 监听的地址
 	SessionSecret = "secret"         // session加密的秘钥
 )
@@ -38,12 +36,6 @@ func env() {
 		databaseName := os.Getenv("DATABASE_NAME")
 		MysqlAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
 
-	}
-
-	{
-		// redis配置
-		RedisAddr = os.Getenv("REDIS_HOST")
-		RedisPassword = os.Getenv("REDIS_PASSWD")
 	}
 
 	listenAddr := os.Getenv("LISTEN_ADDR") // 监听地址
@@ -79,13 +71,6 @@ func config() {
 		MysqlAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
 	}
 
-	{
-		// redis配置
-		redis := cfg.Section("redis")
-		RedisAddr = redis.Key("host").String()
-		RedisPassword = redis.Key("password").String()
-	}
-
 	listenAddr := cfg.Section("").Key("listen_addr").String()
 
 	if listenAddr != "" {
@@ -107,10 +92,6 @@ func cli() {
 	user := flag.String("MYSQL_USER", "", "the user of mysql")
 	password := flag.String("MYSQL_PASSWORD", "", "the password of mysql")
 	databaseName := flag.String("DATABASE_NAME", "movie", "the database name of mysql")
-
-	// redis配置
-	RedisAddr = *(flag.String("REDIS_HOST", "", "the host of redis"))
-	RedisPassword = *(flag.String("REDIS_PASSWORD", "", "the password of redis"))
 
 	addr := flag.String("LISTEN_ADDR", "", "the program listen addr")
 	sessionSecret := flag.String("SESSION_SECRET", "", "the secret of session")
