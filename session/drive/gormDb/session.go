@@ -1,9 +1,10 @@
 package gormDb
 
 import (
+	"net/http"
+
 	"github.com/sirupsen/logrus"
 	"github.com/wader/gormstore/v2"
-	"net/http"
 )
 
 type Session struct {
@@ -15,8 +16,8 @@ func (s *Session) Init(w http.ResponseWriter, r *http.Request, long bool, kv map
 	if err != nil {
 		logrus.Error(err)
 	}
-	//session.Options.SameSite = http.SameSiteNoneMode // 设置cookie的策略
-	//session.Options.Secure = true                    // 设置cookie策略
+	// session.Options.SameSite = http.SameSiteNoneMode // 设置cookie的策略
+	// session.Options.Secure = true                    // 设置cookie策略
 	if long {
 		session.Options.MaxAge = 2592000 // 设置存活时间
 	}
@@ -47,7 +48,6 @@ func (s *Session) Get(r *http.Request, key string) interface{} {
 	session, err := s.ss.Get(r, "data")
 	if err != nil {
 		logrus.Error(err)
-
 	}
 
 	return session.Values[key]
