@@ -21,7 +21,7 @@ type Manager struct {
 */
 
 func NewManager() *Manager {
-	db := gormDb.NewDb()                         // 获取数据库db  todo ！！！！
+	db := gormDb.NewDb()                         // 获取数据库db  TODO:！！！！
 	getters := getter.SetDb(db)                  // 从数据库获取所有的资源地址构建getter
 	session := drive.NewSession(db, db.DbType()) // 开始构建session
 

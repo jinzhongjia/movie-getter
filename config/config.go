@@ -8,11 +8,14 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-var MysqlAddr string         // 数据库的地址
-var RedisAddr string         // redis的地址
-var RedisPassword string     // redis的密码
-var Addr = "127.0.0.1:8000"  // 监听的地址
-var SessionSecret = "secret" // session加密的秘钥
+var (
+	SqliteAddr    string             // sqlite 的地质
+	MysqlAddr     string             // 数据库的地址
+	RedisAddr     string             // redis的地址
+	RedisPassword string             // redis的密码
+	Addr          = "127.0.0.1:8000" // 监听的地址
+	SessionSecret = "secret"         // session加密的秘钥
+)
 
 func init() {
 	env()    // 读取环境变量
@@ -22,6 +25,11 @@ func init() {
 
 // 读取环境变量
 func env() {
+	{
+		host := os.Getenv("SQLITE")
+		SqliteAddr = host
+	}
+
 	{
 		// mysql配置
 		host := os.Getenv("MYSQL_HOST")
@@ -33,10 +41,11 @@ func env() {
 	}
 
 	{
-		//redis配置
+		// redis配置
 		RedisAddr = os.Getenv("REDIS_HOST")
 		RedisPassword = os.Getenv("REDIS_PASSWD")
 	}
+
 	listenAddr := os.Getenv("LISTEN_ADDR") // 监听地址
 
 	if listenAddr != "" {
@@ -57,6 +66,10 @@ func config() {
 		return
 	}
 	{
+		sqlite := cfg.Section("sqlite")
+		SqliteAddr = sqlite.Key("addr").String()
+	}
+	{
 		// mysql配置
 		mysql := cfg.Section("mysql")
 		host := mysql.Key("host").String()
@@ -67,7 +80,7 @@ func config() {
 	}
 
 	{
-		//redis配置
+		// redis配置
 		redis := cfg.Section("redis")
 		RedisAddr = redis.Key("host").String()
 		RedisPassword = redis.Key("password").String()
@@ -88,6 +101,7 @@ func config() {
 
 // 尝试读取命令行配置
 func cli() {
+	SqliteAddr = *flag.String("SQLITE", "data.db", "the sqlite file name!")
 	// mysql配置
 	host := flag.String("MYSQL_HOST", "", "the host of mysql")
 	user := flag.String("MYSQL_USER", "", "the user of mysql")

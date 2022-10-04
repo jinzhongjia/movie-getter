@@ -11,7 +11,6 @@ import (
 )
 
 func back(r *gin.Engine, manager *mm.Manager) {
-
 	// 登录函数处理
 	r.POST("/user/login", func(c *gin.Context) {
 		account := c.PostForm("account")
@@ -34,6 +33,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		c.Status(http.StatusOK)
 	})
 
+	// 获取版本号
 	r.GET("/system/version", func(c *gin.Context) {
 		c.String(http.StatusOK, util.Version)
 	})
@@ -85,7 +85,6 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			}
 			manager.GetStartById(uint(id))
 			c.Status(http.StatusOK)
-
 		})
 
 		// 全局影片列表
@@ -159,7 +158,6 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			// 获取contentId
 			idV := c.PostForm("id")
 			id, err := strconv.Atoi(idV)
-
 			if err != nil {
 				c.Status(http.StatusBadRequest)
 				return
@@ -181,7 +179,6 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			// 获取sourceId
 			idV := c.PostForm("id")
 			id, err := strconv.Atoi(idV)
-
 			if err != nil {
 				c.Status(http.StatusBadRequest)
 				return
