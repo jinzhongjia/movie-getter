@@ -34,8 +34,9 @@ func env() {
 		user := os.Getenv("MYSQL_USER")
 		password := os.Getenv("MYSQL_PASSWORD")
 		databaseName := os.Getenv("DATABASE_NAME")
-		MysqlAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
-
+		if host != "" {
+			MysqlAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
+		}
 	}
 
 	listenAddr := os.Getenv("LISTEN_ADDR") // 监听地址
@@ -68,7 +69,9 @@ func config() {
 		user := mysql.Key("user").String()
 		password := mysql.Key("password").String()
 		databaseName := mysql.Key("database_name").String()
-		MysqlAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
+		if host != "" {
+			MysqlAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
+		}
 	}
 
 	listenAddr := cfg.Section("").Key("listen_addr").String()
@@ -112,5 +115,7 @@ func cli() {
 		SessionSecret = *sessionSecret
 	}
 
-	MysqlAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
+	if *host != "" {
+		MysqlAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
+	}
 }

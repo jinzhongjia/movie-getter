@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -17,7 +18,14 @@ type Db struct {
 
 // NewDb 构造函数
 func NewDb() *Db {
-	db, err := gorm.Open(mysql.Open(config.MysqlAddr), &gorm.Config{
+	var dialector gorm.Dialector
+	fmt.Println(config.MysqlAddr, config.SqliteAddr)
+	if config.MysqlAddr != "" {
+		dialector = mysql.Open(config.MysqlAddr)
+	} else if config.SqliteAddr != "" {
+		dialector = sqlite.Open(config.SqliteAddr)
+	}
+	db, err := gorm.Open(dialector, &gorm.Config{
 		SkipDefaultTransaction: true, // 关闭事务
 	})
 	if err != nil {
