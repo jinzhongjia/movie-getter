@@ -8,7 +8,9 @@ ENV GOPROXY https://goproxy.cn,direct
 WORKDIR /build
 
 COPY . .
-RUN go build -ldflags="-s -w" -o /app/movie .
+RUN apk update \
+    && apk add --no-cache gcc g++ \
+    && go build -ldflags="-s -w" -o /app/movie .
 
 # 第二阶段构建
 FROM alpine
