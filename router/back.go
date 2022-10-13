@@ -27,7 +27,12 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				kv["login"] = true
 				kv["account"] = account
 			}
-			manager.SessionInit(c.Writer, c.Request, long == "true", kv) // 进行相关的初始化操作，并且判断是否需要cookie长期有效
+			manager.SessionInit(
+				c.Writer,
+				c.Request,
+				long == "true",
+				kv,
+			) // 进行相关的初始化操作，并且判断是否需要cookie长期有效
 		}
 
 		c.Status(http.StatusOK)
