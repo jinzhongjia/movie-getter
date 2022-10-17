@@ -2,7 +2,7 @@ package manager
 
 import (
 	"errors"
-	"movie/db/struct"
+	_struct "movie/db/struct"
 	"movie/getter"
 	"strconv"
 )
@@ -41,7 +41,6 @@ func (here *Manager) DelSource(id uint) error {
 	}
 	getter.StopGet()
 	for getter.JudgeGetting() {
-
 	}
 	return here.db.DelSource(id)
 }
@@ -89,21 +88,36 @@ func (here *Manager) SearchContent_bk(keyword string, num int, pg int) ([]Movie,
 }
 
 // SearchContent_bk_Category 后台接口，搜索自建分类下影片
-func (here *Manager) SearchContent_bk_Category(categoryId uint, keyword string, num int, pg int) ([]Movie, int, error) {
+func (here *Manager) SearchContent_bk_Category(
+	categoryId uint,
+	keyword string,
+	num int,
+	pg int,
+) ([]Movie, int, error) {
 	contents, pgCount, err := here.db.SearchContent_Category(categoryId, keyword, num, pg)
 	movies := handleContents(contents)
 	return movies, pgCount, err
 }
 
 // SearchContent_bk_Class 后台接口，搜索采集类下影片
-func (here *Manager) SearchContent_bk_Class(classId uint, keyword string, num int, pg int) ([]Movie, int, error) {
+func (here *Manager) SearchContent_bk_Class(
+	classId uint,
+	keyword string,
+	num int,
+	pg int,
+) ([]Movie, int, error) {
 	contents, pgCount, err := here.db.SearchContent_Class(classId, keyword, num, pg)
 	movies := handleContents(contents)
 	return movies, pgCount, err
 }
 
 // SearchContent_bk_Source 后台接口，根据采集源搜索影片
-func (here *Manager) SearchContent_bk_Source(sourceId uint, keyword string, num int, pg int) ([]Movie, int, error) {
+func (here *Manager) SearchContent_bk_Source(
+	sourceId uint,
+	keyword string,
+	num int,
+	pg int,
+) ([]Movie, int, error) {
 	contents, pgCount, err := here.db.SearchContent_Source(sourceId, keyword, num, pg)
 	movies := handleContents(contents)
 	return movies, pgCount, err
@@ -176,15 +190,15 @@ func (here *Manager) AddCategory(name string) bool {
 
 // GetCategory 获取所有分类
 func (here *Manager) GetCategory() ([]Category, error) {
-	var categories []Category
+	categories := make([]Category, 0)
 	tmp, err := here.db.AllCategory()
 	if err != nil {
-		return []Category{}, err
+		return categories, err
 	}
 	for _, v := range tmp {
 		num, err := here.db.CategoryMovieCount(v.ID)
 		if err != nil {
-			return []Category{}, err
+			return categories, err
 		}
 		categories = append(categories, Category{
 			ID:       v.ID,
@@ -194,6 +208,25 @@ func (here *Manager) GetCategory() ([]Category, error) {
 		})
 	}
 	return categories, nil
+}
+
+// GetMainCategory 获取主分类（也就是应该在主页显示的分类）
+func (here *Manager) GetMainCategory() ([]Category, error) {
+	res := make([]Category, 0)
+	arr, err := here.db.AllCategory()
+	if err != nil {
+		return res, err
+	}
+	for _, v := range arr {
+		if v.Main {
+			res = append(res, Category{
+				ID:   v.ID,
+				Name: v.Name,
+				Main: v.Main,
+			})
+		}
+	}
+	return res, nil
 }
 
 // DelCategory 删除分类
@@ -207,7 +240,11 @@ func (here *Manager) UpdateCategory(id uint, newName string) error {
 }
 
 // BrowseContentByCategory 获取分类下影片
-func (here *Manager) BrowseContentByCategory(categoryId uint, num int, pg int) ([]Movie, int, error) {
+func (here *Manager) BrowseContentByCategory(
+	categoryId uint,
+	num int,
+	pg int,
+) ([]Movie, int, error) {
 	contents, pgCount, err := here.db.BrowseContentByCategory(categoryId, num, pg)
 
 	movies := make([]Movie, 0)
@@ -340,6 +377,7 @@ type Class struct {
 type Category struct {
 	ID       uint   `json:"id"`
 	Name     string `json:"name"`
+	Main     bool   `json:"main"`
 	ClassNum int    `json:"classNum"`
 	MovieNum int    `json:"movieNum"`
 }

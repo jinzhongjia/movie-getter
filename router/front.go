@@ -91,4 +91,37 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		c.JSON(http.StatusOK, movie)
 	})
 
+	// 获取分类列表
+	r.GET("/allCategory", func(c *gin.Context) {
+		categories, err := manager.GetCategory()
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		type Category struct {
+			ID       uint   `json:"id"`
+			Name     string `json:"name"`
+			MovieNum int    `json:"movieNum"`
+		}
+		res := make([]Category, 0)
+
+		for _, v := range categories {
+			res = append(res, Category{
+				ID:       v.ID,
+				Name:     v.Name,
+				MovieNum: v.MovieNum,
+			})
+		}
+		c.JSON(http.StatusOK, res)
+	})
+
+	// 获取在首页显示的分类
+	r.GET("/mainCategory", func(c *gin.Context) {
+		categories, err := manager.GetMainCategory()
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		c.JSON(http.StatusOK, categories)
+	})
 }
