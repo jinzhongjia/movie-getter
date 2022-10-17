@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"log"
 	mm "movie/manager"
 	"movie/util"
@@ -594,7 +595,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		})
 
 		// 获取采集间隔
-		user.GET("getCollectInterval", func(c *gin.Context) {
+		user.GET("/getCollectInterval", func(c *gin.Context) {
 			c.String(http.StatusOK, strconv.Itoa(manager.GetCollectInterval()))
 		})
 
@@ -613,6 +614,24 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			if err != nil {
 				c.Status(http.StatusInternalServerError)
 				log.Println("update collect interval failed!", err)
+				return
+			}
+			c.Status(http.StatusOK)
+		})
+
+		user.POST("/setCategoryMain", func(c *gin.Context) {
+			idV := c.PostForm("id")
+			id, err := strconv.Atoi(idV)
+			if err != nil {
+				c.Status(http.StatusBadRequest)
+				return
+			}
+
+			mainV := c.PostForm("main")
+
+			fmt.Println(mainV)
+			if manager.SetCategoryMain(uint(id), mainV == "true") != nil {
+				c.Status(http.StatusInternalServerError)
 				return
 			}
 			c.Status(http.StatusOK)

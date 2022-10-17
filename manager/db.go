@@ -5,6 +5,8 @@ import (
 	_struct "movie/db/struct"
 	"movie/getter"
 	"strconv"
+
+	"github.com/sirupsen/logrus"
 )
 
 func (here *Manager) GetSource() ([]Source, error) {
@@ -186,6 +188,15 @@ func (here *Manager) UpdateSourceUrl(id uint, newUrl string) error {
 func (here *Manager) AddCategory(name string) bool {
 	_, ok := here.db.AddCategory(name)
 	return ok == nil
+}
+
+// SetCategoryMain 设置采集分类是否显示在首页
+func (here *Manager) SetCategoryMain(id uint, main bool) error {
+	err := here.db.SetCategoryMain(id, main)
+	if err != nil {
+		logrus.Warn("set category main error:", err)
+	}
+	return err
 }
 
 // GetCategory 获取所有分类

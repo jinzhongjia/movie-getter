@@ -1,8 +1,9 @@
 package gormDb
 
 import (
+	_struct "movie/db/struct"
+
 	"gorm.io/gorm"
-	"movie/db/struct"
 )
 
 // AddCategory 添加分类
@@ -69,10 +70,17 @@ func (here *Db) CategoryMovieCount(categoryId uint) (int, error) {
 	return result, err
 }
 
+// CategoryClassCount 获取采集类的影片数
 func (here *Db) CategoryClassCount(categoryId uint) int {
-
 	result := here.db.Model(&_struct.Category{
 		ID: categoryId,
 	}).Association("Class").Count()
 	return int(result)
+}
+
+func (here *Db) SetCategoryMain(id uint, main bool) error {
+	db := here.db.Model(&_struct.Category{
+		ID: id,
+	}).Update("main", main)
+	return db.Error
 }

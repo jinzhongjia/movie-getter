@@ -1,11 +1,8 @@
 package db
 
-import (
-	"movie/db/struct"
-)
+import _struct "movie/db/struct"
 
 type Db interface {
-
 	// Category 分类接口
 
 	AddCategory(name string) (uint, error)            // 添加分类
@@ -14,6 +11,7 @@ type Db interface {
 	AllCategory() ([]_struct.Category, error)         // 获取所有分类
 	CategoryMovieCount(categoryId uint) (int, error)  // 获取分类下影片数目
 	CategoryClassCount(categoryId uint) int           // 获取分类下采集类数目
+	SetCategoryMain(id uint, main bool) error         // 设置采集分类为main
 
 	// Class 采集类接口
 
@@ -31,18 +29,60 @@ type Db interface {
 		content_Id int, name string, pic string, actor string, director string,
 		duration string, description string, url string, class_Id int, sourceId uint,
 	) error // 添加影片
-	DelContent(id uint) error                                                                                // 删除影片
-	SearchContent(keyword string, num int, pg int) ([]_struct.Content, int, error)                           // 全局搜索影片
-	SearchContent_Category(categoryId uint, keyword string, num int, pg int) ([]_struct.Content, int, error) // 搜索自建分类下影片
-	SearchContent_Class(classId uint, keyword string, num int, pg int) ([]_struct.Content, int, error)       // 搜索采集分类下影片
-	SearchContent_Source(sourceId uint, keyword string, num int, pg int) ([]_struct.Content, int, error)     // 搜索某个采集源下的影片
-	ContentList(num int, pg int) ([]_struct.Content, int, error)                                             // 全局影片列表
-	ContentList_Category(categoryId uint, num int, pg int) ([]_struct.Content, int, error)                   // 自建分类影片列表
-	ContentList_Class(classId uint, num int, pg int) ([]_struct.Content, int, error)                         // 采集类影片列表
-	ContentList_Source(sourceId uint, num int, pg int) ([]_struct.Content, int, error)                       // 采集源影片列表
-	GetContent(id uint) (_struct.Content, error)                                                             // 获取影片
-	BrowseContentByCategory(categoryId uint, num int, pg int) ([]_struct.Content, int, error)                // 分类下的影片
-	ContentCount() int                                                                                       // 获取全部影片的数目
+	DelContent(
+		id uint,
+	) error // 删除影片
+	SearchContent(
+		keyword string,
+		num int,
+		pg int,
+	) ([]_struct.Content, int, error) // 全局搜索影片
+	SearchContent_Category(
+		categoryId uint,
+		keyword string,
+		num int,
+		pg int,
+	) ([]_struct.Content, int, error) // 搜索自建分类下影片
+	SearchContent_Class(
+		classId uint,
+		keyword string,
+		num int,
+		pg int,
+	) ([]_struct.Content, int, error) // 搜索采集分类下影片
+	SearchContent_Source(
+		sourceId uint,
+		keyword string,
+		num int,
+		pg int,
+	) ([]_struct.Content, int, error) // 搜索某个采集源下的影片
+	ContentList(
+		num int,
+		pg int,
+	) ([]_struct.Content, int, error) // 全局影片列表
+	ContentList_Category(
+		categoryId uint,
+		num int,
+		pg int,
+	) ([]_struct.Content, int, error) // 自建分类影片列表
+	ContentList_Class(
+		classId uint,
+		num int,
+		pg int,
+	) ([]_struct.Content, int, error) // 采集类影片列表
+	ContentList_Source(
+		sourceId uint,
+		num int,
+		pg int,
+	) ([]_struct.Content, int, error) // 采集源影片列表
+	GetContent(
+		id uint,
+	) (_struct.Content, error) // 获取影片
+	BrowseContentByCategory(
+		categoryId uint,
+		num int,
+		pg int,
+	) ([]_struct.Content, int, error) // 分类下的影片
+	ContentCount() int // 获取全部影片的数目
 
 	// Source 采集源接口
 
