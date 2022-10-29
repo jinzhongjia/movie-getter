@@ -13,7 +13,7 @@ RUN apk update \
     && go build -ldflags="-s -w" -o /app/movie .
 
 # 第二阶段构建
-FROM alpine
+FROM alpine:latest
 
 WORKDIR /app
 COPY --from=builder /app/movie /app/movie
