@@ -7,3 +7,4 @@ json
 *.db
 .idea
 movie
+movie-getter
