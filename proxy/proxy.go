@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	"crypto/tls"
 	"net/http"
 	"strings"
 
@@ -21,8 +22,16 @@ func Proxy(c *gin.Context) {
 		return
 	}
 
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true,
+		},
+	}
+
+	client := &http.Client{Transport: tr}
+
 	// 进行请求
-	resp, err := http.Get(url)
+	resp, err := client.Get(url)
 	if err != nil {
 		logrus.Warn("proxy request source failed!", err)
 		c.Status(http.StatusBadGateway)
