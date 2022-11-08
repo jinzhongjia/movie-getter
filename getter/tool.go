@@ -3,7 +3,7 @@ package getter
 import (
 	"crypto/tls"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -25,7 +25,7 @@ func (here *Getter) getContent(id int) {
 	}
 	defer res.Body.Close()
 	// 获取body
-	body, _ := ioutil.ReadAll(res.Body)
+	body, _ := io.ReadAll(res.Body)
 
 	// 获取所属采集类号
 	class := int(gjson.Get(string(body), "list.0.type_id").Value().(float64))

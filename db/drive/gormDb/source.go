@@ -3,10 +3,11 @@ package gormDb
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"io/ioutil"
-	"movie/db/struct"
+	"io"
+	_struct "movie/db/struct"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/tidwall/gjson"
 )
@@ -97,7 +98,7 @@ func (here *Db) sourceInit(url string, sourceId uint) error {
 		return err
 	}
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	body, _ := io.ReadAll(res.Body)
 	classes := gjson.Get(string(body), "class").Array()
 	for _, vv := range classes {
 		v := vv.Value().(map[string]interface{})

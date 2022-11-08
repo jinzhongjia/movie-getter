@@ -2,7 +2,7 @@ package getter
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"strconv"
 
 	"github.com/sirupsen/logrus"
@@ -59,7 +59,7 @@ func (here *Getter) getPgCount() int {
 		panic("采集资源站“" + here.name + "“获取采集页数失败")
 	}
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	body, _ := io.ReadAll(res.Body)
 	pageCount := gjson.Get(string(body), "pagecount").Value()
 	return int(pageCount.(float64))
 }
@@ -73,7 +73,7 @@ func (here *Getter) getList(pgCount int) []gjson.Result {
 		panic("采集资源站“" + here.name + "“获取采集页数失败")
 	}
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	body, _ := io.ReadAll(res.Body)
 	list := gjson.Get(string(body), "list.#.vod_id").Array()
 	return list
 }

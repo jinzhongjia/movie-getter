@@ -1,7 +1,7 @@
 package getter
 
 import (
-	"io/ioutil"
+	"io"
 	"strconv"
 
 	"github.com/tidwall/gjson"
@@ -28,7 +28,6 @@ func (here *Getter) getDaily() {
 				id := int(v.Value().(float64))
 				here.getContent(id)
 			}
-
 		}
 		// 再次请求进行更新页数
 		pgCount = here.getPgCountDaily()
@@ -44,7 +43,7 @@ func (here *Getter) getPgCountDaily() int {
 		panic("采集资源站“" + here.name + "获取采集页数失败")
 	}
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	body, _ := io.ReadAll(res.Body)
 	pageCount := gjson.Get(string(body), "pagecount").Value()
 	return int(pageCount.(float64))
 }
@@ -52,12 +51,14 @@ func (here *Getter) getPgCountDaily() int {
 // 请求最近列表
 func (here *Getter) getListDaily(pg int) []gjson.Result {
 	c := newHttpHandle()
-	res, err := c.Get(here.url + "?ac=list&h=" + strconv.Itoa(GetInterval()) + "&pg=" + strconv.Itoa(pg))
+	res, err := c.Get(
+		here.url + "?ac=list&h=" + strconv.Itoa(GetInterval()) + "&pg=" + strconv.Itoa(pg),
+	)
 	if err != nil {
 		panic("采集资源站“" + here.name + "获取采集页数失败")
 	}
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
+	body, _ := io.ReadAll(res.Body)
 	list := gjson.Get(string(body), "list.#.vod_id").Array()
 	return list
 }
