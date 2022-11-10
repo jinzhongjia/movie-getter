@@ -42,7 +42,7 @@ type Class struct {
 type Category struct {
 	ID    uint    `json:"id"`
 	Name  string  `json:"name"       gorm:"unique;not null;index"` // 自建分类名
-	Main  bool    `json:"main"       gorm:"default:false"`
+	Main  bool    `json:"main"       gorm:"default:true"`
 	Class []Class `json:",omitempty" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 } // 自建分类
 
