@@ -3,6 +3,7 @@ package router
 import (
 	mm "movie/manager"
 	"net/http"
+	"sort"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -122,6 +123,9 @@ func front(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusInternalServerError)
 			return
 		}
+		sort.Slice(categories, func(i, j int) bool {
+			return categories[i].ID < categories[j].ID
+		})
 		c.JSON(http.StatusOK, categories)
 	})
 }

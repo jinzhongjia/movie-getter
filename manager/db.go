@@ -233,7 +233,7 @@ func (here *Manager) GetMainCategory() ([]Category, error) {
 			res = append(res, Category{
 				ID:   v.ID,
 				Name: v.Name,
-				Main: v.Main,
+				// Main: v.Main,
 			})
 		}
 	}
@@ -388,7 +388,7 @@ type Class struct {
 type Category struct {
 	ID       uint   `json:"id"`
 	Name     string `json:"name"`
-	Main     bool   `json:"main"`
-	ClassNum int    `json:"classNum"`
-	MovieNum int    `json:"movieNum"`
+	Main     bool   `json:"main,omitempty"`
+	ClassNum int    `json:"classNum,omitempty"`
+	MovieNum int    `json:"movieNum,omitempty"`
 }
