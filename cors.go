@@ -13,7 +13,7 @@ func cors() gin.HandlerFunc {
 
 		if origin != "" {
 
-			c.Header("Access-Control-Allow-Origin", "*") // 这是允许访问所有域
+			c.Header("Access-Control-Allow-Origin", origin) // 这是允许访问所有域
 
 			c.Header(
 				"Access-Control-Allow-Methods",
