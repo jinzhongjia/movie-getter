@@ -69,15 +69,6 @@ func (here *Getter) StartGet() {
 	} else {
 		fmt.Println("采集处于开启状态")
 	}
-	// select {
-	// case _, result_all := <-here.ctx.Done():
-	// 	if !result_all {
-	// 		here.ctx, here.cancel = context.WithCancel(context.Background())
-	// 		go here.get()
-	// 	}
-	// default:
-	// 	fmt.Println("采集处于开启状态")
-	// }
 }
 
 // StopGet 关闭采集

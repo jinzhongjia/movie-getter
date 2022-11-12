@@ -47,6 +47,7 @@ func (here *Manager) DelSource(id uint) error {
 	return here.db.DelSource(id)
 }
 
+// Copy main information
 func handleContents(contents []_struct.Content) []Movie {
 	movies := make([]Movie, 0)
 	for _, content := range contents {
