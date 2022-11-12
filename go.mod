@@ -9,7 +9,7 @@ require (
 	github.com/wader/gormstore/v2 v2.0.3
 	golang.org/x/crypto v0.2.0
 	gopkg.in/ini.v1 v1.67.0
-	gorm.io/driver/mysql v1.4.3
+	gorm.io/driver/mysql v1.4.4
 	gorm.io/driver/sqlite v1.4.3
 	gorm.io/gorm v1.24.1
 )
