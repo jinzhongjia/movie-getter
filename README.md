@@ -12,8 +12,11 @@
 ### demo
 
 [GO MOVIE](http://movie.jinzh.me/)
+
 后台地址:[here](http://movie.jinzh.me/admin)
+
 账户:admin
+
 密码:admin888
 
 ## 功能
