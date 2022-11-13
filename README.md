@@ -12,9 +12,9 @@
 ### demo
 
 [GO MOVIE](http://movie.jinzh.me/)
-后台地址：[here](http://movie.jinzh.me/admin)
-账户：admin
-密码：admin888
+后台地址:[here](http://movie.jinzh.me/admin)
+账户:admin
+密码:admin888
 
 ## 功能
 
@@ -33,7 +33,7 @@
 ### 待实现
 
 - 热点数据缓存
-- 更多数据库支持（MongoDB）
+- 更多数据库支持(MongoDB)
 - 流量统计
 - 日志系统
 - 数据库管理(导出导入)
@@ -51,15 +51,16 @@ gjson、gorm、gin、vue、naive-ui
 所需环境：
 
 > Golang >= 1.18
-> Gcc/Clang，（sqlite 需要）
+>
+> Gcc/Clang,(sqlite 需要)
 
 步骤：
 
-git clone 本仓库的 master 分支至本地，cd 至项目根目录，执行`go build`即可！
+git clone 本仓库的 master 分支至本地,cd 至项目根目录，执行`go build`即可！
 
 ### Docker 构建
 
-git clone 本仓库的 master 分支至本地，cd 至项目根目录，执行以下命令
+git clone 本仓库的 master 分支至本地,cd 至项目根目录，执行以下命令
 
 ```bash
 docker build --network=host -t yunyizhiying/movie .
@@ -76,11 +77,11 @@ docker-compose -p movie up -d
 
 ---
 
-后台地址：www.example.com/admin/
+后台地址:www.example.com/admin/
 
-默认管理员账户：admin
+默认管理员账户:admin
 
-默认密码：admin888
+默认密码:admin888
 
 ## 贡献代码
 
