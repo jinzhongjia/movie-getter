@@ -2,6 +2,7 @@ package router
 
 import (
 	mm "movie/manager"
+	"movie/router/MiddleWare"
 	"net/http"
 	"sort"
 	"strconv"
@@ -11,7 +12,7 @@ import (
 
 func front(r *gin.Engine, manager *mm.Manager) {
 	// 搜索功能
-	r.POST("/search", func(c *gin.Context) {
+	r.POST("/search", MiddleWare.Cache(), func(c *gin.Context) {
 		// 获取关键字
 		keyword := c.PostForm("keyword")
 		if keyword == "" {
@@ -45,7 +46,7 @@ func front(r *gin.Engine, manager *mm.Manager) {
 	})
 
 	// 获取影片信息
-	r.GET("/play/:id", func(c *gin.Context) {
+	r.GET("/play/:id", MiddleWare.Cache(), func(c *gin.Context) {
 		idV := c.Param("id")
 		id, err := strconv.Atoi(idV)
 		if err != nil {
@@ -61,7 +62,7 @@ func front(r *gin.Engine, manager *mm.Manager) {
 	})
 
 	// 获取某个分类下最新的影片
-	r.POST("/category/:id", func(c *gin.Context) {
+	r.POST("/category/:id", MiddleWare.Cache(), func(c *gin.Context) {
 		idV := c.Param("id")
 		id, err := strconv.Atoi(idV)
 		if err != nil {
@@ -93,7 +94,7 @@ func front(r *gin.Engine, manager *mm.Manager) {
 	})
 
 	// 获取分类列表
-	r.GET("/allCategory", func(c *gin.Context) {
+	r.GET("/allCategory", MiddleWare.Cache(), func(c *gin.Context) {
 		categories, err := manager.GetCategory()
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
@@ -117,7 +118,7 @@ func front(r *gin.Engine, manager *mm.Manager) {
 	})
 
 	// 获取在首页显示的分类
-	r.GET("/mainCategory", func(c *gin.Context) {
+	r.GET("/mainCategory", MiddleWare.Cache(), func(c *gin.Context) {
 		categories, err := manager.GetMainCategory()
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
