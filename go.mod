@@ -3,6 +3,7 @@ module movie
 go 1.17
 
 require (
+	github.com/bluele/gcache v0.0.2
 	github.com/gin-gonic/gin v1.8.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/tidwall/gjson v1.14.3
@@ -15,7 +16,6 @@ require (
 )
 
 require (
-	github.com/bluele/gcache v0.0.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
