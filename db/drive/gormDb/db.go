@@ -19,7 +19,6 @@ type Db struct {
 // NewDb 构造函数
 func NewDb() *Db {
 	var dialector gorm.Dialector
-	fmt.Println(config.MysqlAddr, config.SqliteAddr)
 	if config.MysqlAddr != "" {
 		dialector = mysql.Open(config.MysqlAddr)
 	} else if config.SqliteAddr != "" {

@@ -6,8 +6,7 @@ import (
 	"movie/manager"
 	"movie/router"
 	"movie/router/MiddleWare"
-
-	"github.com/sirupsen/logrus"
+	"movie/util"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,10 +27,12 @@ func main() {
 		router.Router(r, manager)
 	}
 
-	fmt.Printf("状态正常,开始监听,http://%s/", config.Addr)
+	fmt.Println("Version:", util.Version)
+	util.Logger.Info("Status is OK, listen to ", config.Addr)
+
 	// 监听端口默认为localhost:8080
 	err := r.Run(config.Addr)
 	if err != nil {
-		logrus.Error("the error not handled", err)
+		util.Logger.Fatal("Listen port failed", config.Addr)
 	}
 }

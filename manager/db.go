@@ -186,9 +186,9 @@ func (here *Manager) UpdateSourceUrl(id uint, newUrl string) error {
 }
 
 // AddCategory 增加自定义分类
-func (here *Manager) AddCategory(name string) bool {
+func (here *Manager) AddCategory(name string) error {
 	_, ok := here.db.AddCategory(name)
-	return ok == nil
+	return ok 
 }
 
 // SetCategoryMain 设置采集分类是否显示在首页
