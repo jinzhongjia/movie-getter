@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"io"
 	_struct "movie/db/struct"
+	"movie/util"
 	"net/http"
-
-	"github.com/sirupsen/logrus"
 
 	"github.com/tidwall/gjson"
 )
@@ -106,7 +105,7 @@ func (here *Db) sourceInit(url string, sourceId uint) error {
 		class_Id := int(v["type_id"].(float64))
 		err := here.AddClass(sourceId, name, class_Id)
 		if err != nil {
-			logrus.Error("add class failed", err)
+			util.Logger.Error("when sourceInit, add class failed, err:", err)
 		}
 	}
 	return nil
