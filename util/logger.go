@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"movie/config"
 	"os"
 
@@ -19,7 +18,6 @@ func init() {
 
 	// 设置将日志输出到标准输出（默认的输出为stderr,标准错误）
 	// 日志消息输出可以是任意的io.writer类型
-	fmt.Printf("config.LogPut: %v\n", config.LogPut)
 	if config.LogPut == "" {
 		Logger.SetOutput(os.Stdout)
 	} else {
