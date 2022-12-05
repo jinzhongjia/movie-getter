@@ -2,6 +2,7 @@ package getter
 
 import (
 	"io"
+	"movie/util"
 	"strconv"
 
 	"github.com/tidwall/gjson"
@@ -40,7 +41,8 @@ func (here *Getter) getPgCountDaily() int {
 	c := newHttpHandle()
 	res, err := c.Get(here.url + "?ac=list&h=" + strconv.Itoa(GetInterval()))
 	if err != nil {
-		panic("采集资源站“" + here.name + "获取采集页数失败")
+		util.Logger.Panic("getter get recent the resource station called", here.name, "getting page failed, err:", err)
+		// panic("采集资源站“" + here.name + "获取采集页数失败")
 	}
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)
@@ -55,7 +57,8 @@ func (here *Getter) getListDaily(pg int) []gjson.Result {
 		here.url + "?ac=list&h=" + strconv.Itoa(GetInterval()) + "&pg=" + strconv.Itoa(pg),
 	)
 	if err != nil {
-		panic("采集资源站“" + here.name + "获取采集页数失败")
+		util.Logger.Panic("getter get recent the resource station called", here.name, "list failed, err:", err)
+		// panic("采集资源站“" + here.name + "获取采集页数失败")
 	}
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)

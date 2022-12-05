@@ -2,8 +2,8 @@ package getter
 
 import (
 	"crypto/tls"
-	"fmt"
 	"io"
+	"movie/util"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -11,7 +11,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 )
 
@@ -20,7 +19,7 @@ func (here *Getter) getContent(id int) {
 	c := newHttpHandle()
 	res, err := c.Get(here.url + "?ac=detail&ids=" + strconv.Itoa(id))
 	if err != nil {
-		panic("采集资源库" + here.name + "获取json信息错误")
+		util.Logger.Panic("getter get content failed, err:", err)
 		// panic后通过外部的recover来重新获取json
 	}
 	defer res.Body.Close()
@@ -60,10 +59,10 @@ func (here *Getter) getContent(id int) {
 
 	// 获取属于的source
 	belong := here.id
-	fmt.Println("采集资源库", here.name, "获取影片：", name)
+	util.Logger.Info("collect resource station called ", here.name, "get a film called", name)
 	err = db.AddContent(id, name, pic, actor, director, duration, description, url, class, belong)
 	if err != nil {
-		logrus.Error("add content failed", err)
+		util.Logger.Error("getter get content, store the data to database failed, err:", err)
 	}
 	// 每当获取完一条信息后就尝试休眠一秒
 	time.Sleep(1 * time.Second)
@@ -78,7 +77,7 @@ func urlHandle(s string) string {
 func protect() {
 	err := recover()
 	if err != nil {
-		logrus.Error("采集发生错误：", err)
+		util.Logger.Error("some error occurred when get, err:", err)
 	}
 }
 

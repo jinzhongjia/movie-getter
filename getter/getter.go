@@ -2,11 +2,9 @@ package getter
 
 import (
 	"context"
-	"fmt"
 	database "movie/db"
+	"movie/util"
 	"sync/atomic"
-
-	"github.com/sirupsen/logrus"
 )
 
 var db database.Db
@@ -17,7 +15,7 @@ func SetDb(tmp database.Db) map[uint]*Getter {
 	// 查询数据库获取所有的source
 	sources, err := db.AllSource()
 	if err != nil {
-		panic("查询数据库失败！")
+		util.Logger.Panic("SetDb failed because query database failed, err:", err)
 	}
 	getters := make(map[uint]*Getter)
 	for _, v := range sources {
@@ -41,7 +39,7 @@ type Getter struct {
 // NewGetter 构造函数
 func NewGetter(id uint, name string, url string, ok bool, pg int) *Getter {
 	if db == nil {
-		logrus.Errorln("the db is nil!")
+		util.Logger.Panic("the db handle is nil!")
 	}
 	// 初始化采集所用的ctx
 	ctx, cancel := context.WithCancel(context.Background())
@@ -67,7 +65,7 @@ func (here *Getter) StartGet() {
 		here.run.Store(true)
 		go here.get()
 	} else {
-		fmt.Println("采集处于开启状态")
+		util.Logger.Info("all getters have started")
 	}
 }
 
@@ -83,11 +81,11 @@ func (here *Getter) ReGet() {
 	}
 	err := db.UpdateSourcePg(here.id, 1) // 数据库中采集页数更新到1页
 	if err != nil {
-		logrus.Error("update the page error", err)
+		util.Logger.Error("getter reget source failed, because update the page failed, err:", err)
 	}
 	err = db.UpdateSourceOk(here.id, false) // 更新数据库中的采集进度未false
 	if err != nil {
-		logrus.Error("update the source ok error", err)
+		util.Logger.Error("getter reget source failed, because update the status failed, err:", err)
 	}
 	here.pg = 1     // getter本身也更新为1页
 	here.ok = false // 采集进度调整为false，即未采集完成
