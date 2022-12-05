@@ -20,7 +20,8 @@ func main() {
 	// 构造manager
 	manager := manager.NewManager()
 
-	r := gin.Default()
+	r := gin.New()
+  r.Use(gin.Recovery())
 	{
 		// 处理跨域
 		r.Use(MiddleWare.Cors())
@@ -30,7 +31,7 @@ func main() {
 	}
 
 	fmt.Println("Version:", util.Version)
-	util.Logger.Info("Status is OK, listen to ", config.Addr)
+	fmt.Println("Status is OK, listen to ", config.Addr)
 
 	// 监听端口默认为localhost:8080
 	err := r.Run(config.Addr)
