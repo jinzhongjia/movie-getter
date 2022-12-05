@@ -11,9 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// TODO manager add Logger
 // TODO db add Logger
-// TODO getter add logger
 
 func main() {
 	// 调整为生产模式
