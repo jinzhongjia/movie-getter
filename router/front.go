@@ -3,6 +3,7 @@ package router
 import (
 	mm "movie/manager"
 	"movie/router/MiddleWare"
+	"movie/util"
 	"net/http"
 	"sort"
 	"strconv"
@@ -16,6 +17,7 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		// 获取关键字
 		keyword := c.PostForm("keyword")
 		if keyword == "" {
+			util.Logger.Warn("search movie failed, the keyword is blank")
 			c.Status(http.StatusBadRequest)
 			return
 		}
@@ -23,6 +25,7 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		pgV := c.PostForm("pg")
 		pg, err := strconv.Atoi(pgV)
 		if err != nil {
+			util.Logger.Warn("search movie failed, the pg is not a integer")
 			c.Status(http.StatusBadRequest)
 			return
 		}
@@ -30,11 +33,13 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		numV := c.PostForm("num")
 		num, err := strconv.Atoi(numV)
 		if err != nil {
+			util.Logger.Warn("search movie failed, the num is not a integer")
 			c.Status(http.StatusBadRequest)
 			return
 		}
 		movies, pgCount, err := manager.SearchContent(keyword, num, pg)
 		if err != nil {
+			util.Logger.Error("search movie from database failed,keyword:", keyword, " err:", err)
 			c.Status(http.StatusInternalServerError)
 			return
 		}
@@ -42,6 +47,7 @@ func front(r *gin.Engine, manager *mm.Manager) {
 			Movies:  movies,
 			PgCount: pgCount,
 		}
+		util.Logger.Info("search movie, keyword is ", keyword)
 		c.JSON(http.StatusOK, movie)
 	})
 
@@ -50,11 +56,13 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		idV := c.Param("id")
 		id, err := strconv.Atoi(idV)
 		if err != nil {
+			util.Logger.Warn("get movie info failed, the id is not a integer")
 			c.Status(http.StatusBadRequest)
 			return
 		}
 		movie, err := manager.GetContent(uint(id))
 		if err != nil {
+			util.Logger.Error("get movie info failed, err:", err)
 			c.Status(http.StatusInternalServerError)
 			return
 		}
@@ -66,6 +74,7 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		idV := c.Param("id")
 		id, err := strconv.Atoi(idV)
 		if err != nil {
+			util.Logger.Warn("get category movie list fialed, the category id is not a integer")
 			c.Status(http.StatusBadRequest)
 			return
 		}
@@ -73,23 +82,28 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		pg, err := strconv.Atoi(pgV)
 		// pg--
 		if err != nil {
+			util.Logger.Warn("get category movie list failed, the pg is not a integer")
+
 			c.Status(http.StatusBadRequest)
 			return
 		}
 		numV := c.PostForm("num")
 		num, err := strconv.Atoi(numV)
 		if err != nil {
+			util.Logger.Warn("get category movie list failed, the num is not a integer")
 			c.Status(http.StatusBadRequest)
 			return
 		}
 		movies, pgCount, err := manager.BrowseContentByCategory(uint(id), num, pg)
 		if err != nil {
+			util.Logger.Error("get category movie list failed, err:", err)
 			c.Status(http.StatusInternalServerError)
 		}
 		movie := Movie{
 			Movies:  movies,
 			PgCount: pgCount,
 		}
+		util.Logger.Info("get category movie list, category id:", id)
 		c.JSON(http.StatusOK, movie)
 	})
 
@@ -97,6 +111,7 @@ func front(r *gin.Engine, manager *mm.Manager) {
 	r.GET("/allCategory", MiddleWare.Cache(), func(c *gin.Context) {
 		categories, err := manager.GetCategory()
 		if err != nil {
+			util.Logger.Error("get all category failed, err:", err)
 			c.Status(http.StatusInternalServerError)
 			return
 		}
@@ -114,6 +129,7 @@ func front(r *gin.Engine, manager *mm.Manager) {
 				MovieNum: v.MovieNum,
 			})
 		}
+		util.Logger.Info("get all category")
 		c.JSON(http.StatusOK, res)
 	})
 
@@ -121,12 +137,14 @@ func front(r *gin.Engine, manager *mm.Manager) {
 	r.GET("/mainCategory", MiddleWare.Cache(), func(c *gin.Context) {
 		categories, err := manager.GetMainCategory()
 		if err != nil {
+			util.Logger.Error("get main category from database failed, err:", err)
 			c.Status(http.StatusInternalServerError)
 			return
 		}
 		sort.Slice(categories, func(i, j int) bool {
 			return categories[i].ID < categories[j].ID
 		})
+		util.Logger.Info("get main category")
 		c.JSON(http.StatusOK, categories)
 	})
 }
