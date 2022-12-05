@@ -40,10 +40,8 @@ func Cache() gin.HandlerFunc {
 				res := value.(CacheStruct)
 				c.Data(res.status, res.contentType, res.data)
 				c.Abort()
-				// fmt.Println("命中缓存")
 				return
 			}
-			// fmt.Println("没命中缓存")
 			blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
 			c.Writer = blw
 			c.Next()
