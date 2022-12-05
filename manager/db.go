@@ -5,8 +5,6 @@ import (
 	_struct "movie/db/struct"
 	"movie/getter"
 	"strconv"
-
-	"github.com/sirupsen/logrus"
 )
 
 func (here *Manager) GetSource() ([]Source, error) {
@@ -39,7 +37,7 @@ func (here *Manager) AddSource(name string, url string) bool {
 func (here *Manager) DelSource(id uint) error {
 	getter, ok := here.getters[id]
 	if !ok {
-		return errors.New("the source which id is" + strconv.Itoa(int(id)) + " is not")
+		return errors.New("the source which id is" + strconv.Itoa(int(id)) + " is not a integer")
 	}
 	getter.StopGet()
 	for getter.JudgeGetting() {
@@ -188,15 +186,12 @@ func (here *Manager) UpdateSourceUrl(id uint, newUrl string) error {
 // AddCategory 增加自定义分类
 func (here *Manager) AddCategory(name string) error {
 	_, ok := here.db.AddCategory(name)
-	return ok 
+	return ok
 }
 
 // SetCategoryMain 设置采集分类是否显示在首页
 func (here *Manager) SetCategoryMain(id uint, main bool) error {
 	err := here.db.SetCategoryMain(id, main)
-	if err != nil {
-		logrus.Warn("set category main error:", err)
-	}
 	return err
 }
 
@@ -235,6 +230,7 @@ func (here *Manager) GetMainCategory() ([]Category, error) {
 				ID:   v.ID,
 				Name: v.Name,
 				// Main: v.Main,
+				// should not return the info of main
 			})
 		}
 	}
@@ -353,7 +349,7 @@ func (here *Manager) GetCollectInterval() int {
 func (here *Manager) ReGet(SourceId uint) error {
 	getter, ok := here.getters[SourceId]
 	if !ok {
-		return errors.New("not exist the source which id is" + strconv.Itoa(int(SourceId)))
+		return errors.New("the source which id is not exist" + strconv.Itoa(int(SourceId)))
 	}
 	getter.ReGet()
 	return nil
