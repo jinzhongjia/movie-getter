@@ -13,6 +13,8 @@ var (
 	MysqlAddr     string             // 数据库的地址
 	Addr          = "127.0.0.1:8000" // 监听的地址
 	SessionSecret = "secret"         // session加密的秘钥
+	LogPut        string             // 日志输出位置
+	LogLevel      string
 )
 
 func init() {
@@ -50,6 +52,18 @@ func env() {
 	if sessionSecret != "" {
 		SessionSecret = sessionSecret
 	}
+
+	logput := os.Getenv("OUTPUT")
+
+	if logput != "" {
+		LogPut = logput
+	}
+
+	loglevel := os.Getenv("LOGLEVEL")
+
+	if loglevel != "" {
+		LogLevel = loglevel
+	}
 }
 
 // 尝试读取配置文件
@@ -85,6 +99,18 @@ func config() {
 	if sessionSecret != "" {
 		SessionSecret = sessionSecret
 	}
+
+	logput := cfg.Section("").Key("log_put").String()
+
+	if logput != "" {
+		LogPut = logput
+	}
+
+	loglevel := cfg.Section("").Key("log_level").String()
+
+	if loglevel != "" {
+		LogLevel = loglevel
+	}
 }
 
 // 尝试读取命令行配置
@@ -98,13 +124,21 @@ func cli() {
 
 	addr := flag.String("LISTEN_ADDR", "", "the program listen addr")
 	sessionSecret := flag.String("SESSION_SECRET", "", "the secret of session")
+	logput := flag.String("LOG_PUT", "", "the location of log put")
+	loglevel := flag.String("LOG_LEVEL", "error", "the log level")
+
 	flag.Parse()
+
 	if *host == "" || *user == "" || *password == "" {
 		if *host != "" || *user != "" || *password != "" {
 			fmt.Println("the params is not enough")
 			os.Exit(1) // 出现错误的状态码
 		}
 		return
+	}
+
+	if *host != "" {
+		MysqlAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
 	}
 
 	if *addr != "" {
@@ -115,7 +149,11 @@ func cli() {
 		SessionSecret = *sessionSecret
 	}
 
-	if *host != "" {
-		MysqlAddr = fmt.Sprintf("%v:%v@tcp(%v)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, databaseName)
+	if *logput != "" {
+		LogPut = *logput
+	}
+
+	if *loglevel != "" {
+		LogLevel = *loglevel
 	}
 }
