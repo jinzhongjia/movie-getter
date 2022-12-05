@@ -2,11 +2,11 @@ package proxy
 
 import (
 	"crypto/tls"
+	"movie/util"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 func Proxy(c *gin.Context) {
@@ -33,7 +33,7 @@ func Proxy(c *gin.Context) {
 	// 进行请求
 	resp, err := client.Get(url)
 	if err != nil {
-		logrus.Warn("proxy request source failed!", err)
+		util.Logger.Error("client get server source failed, err:", err)
 		c.Status(http.StatusBadGateway)
 		return
 	}
