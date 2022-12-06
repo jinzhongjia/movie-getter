@@ -11,8 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// TODO db add Logger
-
 func main() {
 	// 调整为生产模式
 	gin.SetMode(gin.ReleaseMode)
