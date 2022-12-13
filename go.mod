@@ -8,7 +8,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/tidwall/gjson v1.14.4
 	github.com/wader/gormstore/v2 v2.0.3
-	golang.org/x/crypto v0.3.0
+	golang.org/x/crypto v0.4.0
 	gopkg.in/ini.v1 v1.67.0
 	gorm.io/driver/mysql v1.4.4
 	gorm.io/driver/sqlite v1.4.3
@@ -37,7 +37,7 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
-	golang.org/x/net v0.3.0 // indirect
+	golang.org/x/net v0.4.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/text v0.5.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
