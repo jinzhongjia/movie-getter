@@ -2,6 +2,7 @@ package router
 
 import (
 	mm "movie/manager"
+	"movie/router/MiddleWare"
 	"movie/util"
 	"net/http"
 	"strconv"
@@ -736,6 +737,11 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				return
 			}
 			util.Logger.Info("set category main, category id is ", id)
+			c.Status(http.StatusOK)
+		})
+
+		user.GET("/cachePurge", func(c *gin.Context) {
+			MiddleWare.Pruge()
 			c.Status(http.StatusOK)
 		})
 

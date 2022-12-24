@@ -34,7 +34,7 @@ func (w bodyLogWriter) Write(b []byte) (int, error) {
 func Cache() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Method == "POST" || c.Request.Method == "GET" {
-			hash := URL_hash(c)
+			hash := url_hash(c)
 			value, err := gc.Get(hash)
 			if err == nil {
 				res := value.(CacheStruct)
@@ -54,7 +54,11 @@ func Cache() gin.HandlerFunc {
 	}
 }
 
-func URL_hash(c *gin.Context) string {
+func Pruge() {
+	gc.Purge()
+}
+
+func url_hash(c *gin.Context) string {
 	c.Request.ParseForm()
 	URL := c.Request.URL.Path + "?" + c.Request.Form.Encode()
 	c1 := md5.Sum([]byte(URL))
