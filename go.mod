@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/bluele/gcache v0.0.2
-	github.com/gin-gonic/gin v1.8.1
+	github.com/gin-gonic/gin v1.8.2
 	github.com/sirupsen/logrus v1.9.0
 	github.com/tidwall/gjson v1.14.4
 	github.com/wader/gormstore/v2 v2.0.3
