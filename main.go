@@ -19,7 +19,7 @@ func main() {
 	manager := manager.NewManager()
 
 	r := gin.New()
-  r.Use(gin.Recovery())
+	r.Use(gin.Recovery())
 	{
 		// 处理跨域
 		r.Use(MiddleWare.Cors())
