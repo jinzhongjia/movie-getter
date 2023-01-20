@@ -56,6 +56,7 @@ gjson、gorm、gin、vue、naive-ui
 > Golang >= 1.18
 >
 > Gcc/Clang,(sqlite 需要)
+> free-cgo 版本可以查看 free-cgo-sqlite 分支，该版本 sqlite 使用 pure go 实现，性能较不如 cgo 版本
 
 步骤：
 
@@ -73,6 +74,8 @@ docker build --network=host -t yunyizhiying/movie .
 ### Docker-compose 部署（推荐）
 
 下载本仓库的 master 分支的`docker-compose.yml`文件，运行以下命令
+
+注意:docker-compose 预构建的镜像是 cgo 版本的 sqlite
 
 ```bash
 docker-compose -p movie up -d
