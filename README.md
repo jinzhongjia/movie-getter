@@ -11,9 +11,9 @@
 
 ### demo
 
-[GO MOVIE](http://movie.jinzh.me/)
+[GO MOVIE](http://movie.demo.nvimer.org/)
 
-后台地址:[here](http://movie.jinzh.me/admin)
+后台地址:[here](http://movie.demo.nvimer.org/admin)
 
 账户:admin
 
