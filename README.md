@@ -39,7 +39,7 @@
 
 - 流量统计
 - 数据库管理(导出导入)
-- 前端后台页面重构
+- 前端后台页面重构(正在重构,[here](https://github.com/jinzhongjia/newMovieAdmin))
 - 采集逻辑抽象化，方便支持更多类型的采集接口
 - 对外api提供
 
