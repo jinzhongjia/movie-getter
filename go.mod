@@ -8,11 +8,11 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/tidwall/gjson v1.14.4
 	github.com/wader/gormstore/v2 v2.0.3
-	golang.org/x/crypto v0.5.0
+	golang.org/x/crypto v0.6.0
 	gopkg.in/ini.v1 v1.67.0
-	gorm.io/driver/mysql v1.4.5
+	gorm.io/driver/mysql v1.4.6
 	gorm.io/driver/sqlite v1.4.4
-	gorm.io/gorm v1.24.3
+	gorm.io/gorm v1.24.5
 )
 
 require (
@@ -36,10 +36,10 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	github.com/ugorji/go/codec v1.2.8 // indirect
-	golang.org/x/net v0.5.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	github.com/ugorji/go/codec v1.2.9 // indirect
+	golang.org/x/net v0.6.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
