@@ -42,7 +42,9 @@ func (here *Manager) DelSource(id uint) error {
 	getter.StopGet()
 	for getter.JudgeGetting() {
 	}
-	return here.db.DelSource(id)
+	err := here.db.DelSource(id)
+	delete(here.getters, id)
+	return err
 }
 
 // Copy main information
