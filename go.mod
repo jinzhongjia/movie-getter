@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/bluele/gcache v0.0.2
-	github.com/gin-gonic/gin v1.9.0
+	github.com/gin-gonic/gin v1.9.1
 	github.com/glebarez/sqlite v1.8.0
 	github.com/sirupsen/logrus v1.9.2
 	github.com/tidwall/gjson v1.14.4
@@ -16,7 +16,7 @@ require (
 )
 
 require (
-	github.com/bytedance/sonic v1.8.10 // indirect
+	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
