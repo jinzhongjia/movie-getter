@@ -720,6 +720,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusOK)
 		})
 
+		// 设置当前分类为首页分类
 		user.POST("/setCategoryMain", func(c *gin.Context) {
 			idV := c.PostForm("id")
 			id, err := strconv.Atoi(idV)
@@ -740,6 +741,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			c.Status(http.StatusOK)
 		})
 
+		// 清除缓存
 		user.GET("/cachePurge", func(c *gin.Context) {
 			MiddleWare.Pruge()
 			c.Status(http.StatusOK)
