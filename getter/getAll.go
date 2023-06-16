@@ -66,12 +66,12 @@ func (here *Getter) getPgCount() int {
 // 获取list
 func (here *Getter) getList(pgCount int) []gjson.Result {
 	// fmt.Println("采集资源站“", here.name, "”，第", here.pg, "页")
-	util.Logger.Info("getter get the resource station", here.name, "page is", here.pg)
+	util.Logger.Info("getter get the resource station ", here.name, " page is ", here.pg)
 	c := newHttpHandle()
 	res, err := c.Get(here.url + "?ac=list&pg=" + strconv.Itoa(pgCount-here.pg))
 	if err != nil {
 		// panic("采集资源站“" + here.name + "“获取采集页数失败")
-		util.Logger.Panic("getter get the resource station called", here.name, "getting page failed, err:", err)
+		util.Logger.Panic("getter get the resource station called ", here.name, " getting page failed, err:", err)
 	}
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)

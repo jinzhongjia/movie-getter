@@ -59,7 +59,7 @@ func (here *Getter) getContent(id int) {
 
 	// 获取属于的source
 	belong := here.id
-	util.Logger.Info("collect resource station called ", here.name, "get a film called", name)
+	util.Logger.Info("collect resource station called ", here.name, " get a film called ", name)
 	err = db.AddContent(id, name, pic, actor, director, duration, description, url, class, belong)
 	if err != nil {
 		util.Logger.Error("getter get content, store the data to database failed, err:", err)

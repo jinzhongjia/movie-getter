@@ -45,6 +45,13 @@ func back(r *gin.Engine, manager *mm.Manager) {
 
 	// 获取版本号
 	r.GET("/system/version", func(c *gin.Context) {
+		err := manager.SessionGet(c.Request, "login")
+		if err == nil {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		c.Next()
+	}, func(c *gin.Context) {
 		c.String(http.StatusOK, util.Version)
 	})
 
@@ -336,7 +343,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				c.Status(http.StatusInternalServerError)
 				return
 			}
-			util.Logger.Info("Rget source success, id is", id)
+			util.Logger.Info("Rget source success, id is ", id)
 			c.Status(http.StatusOK)
 		})
 
@@ -370,11 +377,11 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			}
 			classes, err := manager.GetClass(uint(id))
 			if err != nil {
-				util.Logger.Error("Get source's all class failed, err:", err)
+				util.Logger.Error("Get source's all class failed, err: ", err)
 				c.Status(http.StatusInternalServerError)
 				return
 			}
-			util.Logger.Info("Get all class of source that id is", id)
+			util.Logger.Info("Get all class of source that id is ", id)
 			c.JSON(http.StatusOK, classes)
 		})
 
@@ -407,7 +414,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			// 执行检索
 			movies, pgCount, err := manager.ContentList_Category(uint(id), num, pg)
 			if err != nil {
-				util.Logger.Error("get category list failed, err:", err)
+				util.Logger.Error("get category list failed, err: ", err)
 				c.Status(http.StatusInternalServerError)
 				return
 			}
@@ -456,7 +463,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			// 执行搜索操作
 			movies, pgCount, err := manager.SearchContent_bk_Category(uint(id), keyword, num, pg)
 			if err != nil {
-				util.Logger.Errorf("search movie from category failed, id: ", id, "err:", err)
+				util.Logger.Error("search movie from category failed, id: ", id, "err: ", err)
 				c.Status(http.StatusInternalServerError)
 				return
 			}
@@ -473,7 +480,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		user.GET("/category/all", func(c *gin.Context) {
 			categories, err := manager.GetCategory()
 			if err != nil {
-				util.Logger.Error("get all category failed, err:", err)
+				util.Logger.Error("get all category failed, err: ", err)
 				c.Status(http.StatusInternalServerError)
 				return
 			}
@@ -551,7 +558,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				PgCount: pgCount,
 			}
 			// 编码json
-			util.Logger.Info("get class list of category id:", id)
+			util.Logger.Info("get class list of category id: ", id)
 			c.JSON(http.StatusOK, movie)
 		})
 
@@ -591,7 +598,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			// 执行搜索操作
 			movies, pgCount, err := manager.SearchContent_bk_Class(uint(id), keyword, num, pg)
 			if err != nil {
-				util.Logger.Error("search in class failed, err:", err)
+				util.Logger.Error("search in class failed, err: ", err)
 				c.Status(http.StatusInternalServerError)
 				return
 			}
@@ -599,7 +606,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				Movies:  movies,
 				PgCount: pgCount,
 			}
-			util.Logger.Info("search in class,id:", id, "keyword:", keyword)
+			util.Logger.Info("search in class,id: ", id, " keyword: ", keyword)
 			// 编码json
 			c.JSON(http.StatusOK, movie)
 		})
@@ -662,14 +669,14 @@ func back(r *gin.Engine, manager *mm.Manager) {
 			oldAccount := manager.SessionGet(c.Request, "account").(string)
 			err := manager.UpdateAccount(oldAccount, account)
 			if err != nil {
-				util.Logger.Error("update account failed, the oldAccount:", oldAccount, "newAccount:", account)
+				util.Logger.Error("update account failed, the oldAccount: ", oldAccount, " newAccount: ", account)
 				c.Status(http.StatusInternalServerError)
 				return
 			}
 			kv := make(map[interface{}]interface{})
 			kv["account"] = account
 			manager.SessionSet(c.Writer, c.Request, kv)
-			util.Logger.Info("update account ", account, "success")
+			util.Logger.Info("update account ", account, " success")
 			c.Status(http.StatusOK)
 		})
 
@@ -688,7 +695,7 @@ func back(r *gin.Engine, manager *mm.Manager) {
 				c.Status(http.StatusInternalServerError)
 				return
 			}
-			util.Logger.Infof("update password success, account %s new password is %s", password)
+			util.Logger.Infof("update password success, account %s new password is %s", account, password)
 			c.Status(http.StatusOK)
 		})
 
