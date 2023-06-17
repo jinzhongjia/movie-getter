@@ -34,12 +34,12 @@
 - 支持 mysql、sqlite
 - 热点数据缓存(LRU 算法)
 - 日志系统
+- 全新的[后台管理系统](https://github.com/jinzhongjia/newMovieAdmin)，功能更完善（前后端适配）
 
 ### 待实现(完成)
 
 - 流量统计
 - 数据库管理(导出导入)
-- 前端后台页面重构(正在重构,[here](https://github.com/jinzhongjia/newMovieAdmin))
 - 采集逻辑抽象化，方便支持更多类型的采集接口
 - 对外api提供
 
