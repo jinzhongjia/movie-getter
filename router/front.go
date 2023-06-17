@@ -123,11 +123,13 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		res := make([]Category, 0)
 
 		for _, v := range categories {
-			res = append(res, Category{
-				ID:       v.ID,
-				Name:     v.Name,
-				MovieNum: v.MovieNum,
-			})
+			if v.Main {
+				res = append(res, Category{
+					ID:       v.ID,
+					Name:     v.Name,
+					MovieNum: v.MovieNum,
+				})
+			}
 		}
 		util.Logger.Info("get all category")
 		c.JSON(http.StatusOK, res)

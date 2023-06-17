@@ -213,6 +213,7 @@ func (here *Manager) GetCategory() ([]Category, error) {
 			ID:       v.ID,
 			Name:     v.Name,
 			ClassNum: here.db.CategoryClassCount(v.ID),
+			Main:     v.Main,
 			MovieNum: num,
 		})
 	}
