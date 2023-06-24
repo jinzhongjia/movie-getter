@@ -323,7 +323,12 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		user.POST("/source/add", func(c *gin.Context) {
 			name := c.PostForm("name")
 			url := c.PostForm("url")
-			manager.AddSource(name, url)
+			res := manager.AddSource(name, url)
+			if !res {
+				util.Logger.Errorln("add source failed, name:", name, "url:", url)
+				c.Status(http.StatusInternalServerError)
+				return
+			}
 			util.Logger.Info("Add source, name:", name, "url:", url)
 			c.Status(http.StatusOK)
 		})
