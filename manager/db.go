@@ -10,6 +10,7 @@ import (
 func (here *Manager) GetSource() ([]Source, error) {
 	sources := make([]Source, 0)
 	v, err := here.db.AllSource()
+	here.getters_mutex.Lock()
 	for _, v := range v {
 		sources = append(sources, Source{
 			ID:   v.ID,
@@ -20,6 +21,7 @@ func (here *Manager) GetSource() ([]Source, error) {
 			Pg:   v.Pg,
 		})
 	}
+	here.getters_mutex.Unlock()
 	return sources, err
 }
 
@@ -29,21 +31,28 @@ func (here *Manager) AddSource(name string, url string) bool {
 	if !ok {
 		return ok
 	}
+	here.getters_mutex.Lock()
 	here.getters[id] = getter.NewGetter(id, name, url, false, 1)
+	here.getters_mutex.Unlock()
 	return ok
 }
 
 // DelSource 删除采集源
 func (here *Manager) DelSource(id uint) error {
+	here.getters_mutex.Lock()
 	getter, ok := here.getters[id]
+	here.getters_mutex.Unlock()
 	if !ok {
 		return errors.New("the source which id is" + strconv.Itoa(int(id)) + " is not a integer")
 	}
 	getter.StopGet()
+	// 直到采集停下前，会一直阻塞，应该采取一个定时任务（例如context定时）防止任务超时 TODO
 	for getter.JudgeGetting() {
 	}
 	err := here.db.DelSource(id)
+	here.getters_mutex.Lock()
 	delete(here.getters, id)
+	here.getters_mutex.Unlock()
 	return err
 }
 
@@ -323,6 +332,7 @@ func (here *Manager) UpdatePassword(account string, newPassword string) error {
 func (here *Manager) UpdateCollectInterval(interval int) error {
 	getters := make([]*getter.Getter, 0) // 创建一个切片存储当前正在采集的采集源
 	// 尝试关闭所有正在进行的采集源
+	here.getters_mutex.Lock()
 	for _, getter := range here.getters {
 		if getter.JudgeGetting() {
 			getters = append(getters, getter) // 存储
@@ -332,6 +342,7 @@ func (here *Manager) UpdateCollectInterval(interval int) error {
 			}
 		}
 	}
+	here.getters_mutex.Unlock()
 	err := here.db.ChangeCollectInterval(interval)
 	if err == nil {
 		// 数据库更改成功后才会修改内存中的值
@@ -350,7 +361,9 @@ func (here *Manager) GetCollectInterval() int {
 }
 
 func (here *Manager) ReGet(SourceId uint) error {
+	here.getters_mutex.Lock()
 	getter, ok := here.getters[SourceId]
+	here.getters_mutex.Unlock()
 	if !ok {
 		return errors.New("the source which id is not exist" + strconv.Itoa(int(SourceId)))
 	}

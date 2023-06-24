@@ -19,7 +19,7 @@ func (here *Getter) getContent(id int) {
 	c := newHttpHandle()
 	res, err := c.Get(here.url + "?ac=detail&ids=" + strconv.Itoa(id))
 	if err != nil {
-		util.Logger.Panic("getter get content failed, err:", err)
+		util.Logger.Panicf("getter get content failed, err is %s\n", err)
 		// panic后通过外部的recover来重新获取json
 	}
 	defer res.Body.Close()
@@ -59,10 +59,10 @@ func (here *Getter) getContent(id int) {
 
 	// 获取属于的source
 	belong := here.id
-	util.Logger.Info("collect resource station called ", here.name, " get a film called ", name)
+	util.Logger.Infof("collect resource station called %s, get a film called %s\n", here.name, name)
 	err = db.AddContent(id, name, pic, actor, director, duration, description, url, class, belong)
 	if err != nil {
-		util.Logger.Error("getter get content, store the data to database failed, err:", err)
+		util.Logger.Errorf("getter get content, store the data to database failed, err is %s\n", err)
 	}
 	// 每当获取完一条信息后就尝试休眠一秒
 	time.Sleep(1 * time.Second)
@@ -77,7 +77,7 @@ func urlHandle(s string) string {
 func protect() {
 	err := recover()
 	if err != nil {
-		util.Logger.Error("some error occurred when get, err:", err)
+		util.Logger.Errorf("some error occurred when get, err is %s\n", err)
 	}
 }
 

@@ -11,8 +11,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// TODO 该文件log函数未替换
+
+// 总front函数
 func front(r *gin.Engine, manager *mm.Manager) {
 	// 搜索功能
+	search(r, manager)
+
+	// 获取影片信息
+	play(r, manager)
+
+	// 获取某个分类下最新的影片
+	category(r, manager)
+
+	// 获取在首页显示的分类
+	mainCategory(r, manager)
+}
+
+// 搜索功能
+func search(r *gin.Engine, manager *mm.Manager) {
 	r.POST("/search", MiddleWare.Cache(), func(c *gin.Context) {
 		// 获取关键字
 		keyword := c.PostForm("keyword")
@@ -50,8 +67,10 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		util.Logger.Info("search movie, keyword is ", keyword)
 		c.JSON(http.StatusOK, movie)
 	})
+}
 
-	// 获取影片信息
+// 获取影片信息
+func play(r *gin.Engine, manager *mm.Manager) {
 	r.GET("/play/:id", MiddleWare.Cache(), func(c *gin.Context) {
 		idV := c.Param("id")
 		id, err := strconv.Atoi(idV)
@@ -68,8 +87,10 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		}
 		c.JSON(http.StatusOK, movie)
 	})
+}
 
-	// 获取某个分类下最新的影片
+// 获取某个分类下最新的影片
+func category(r *gin.Engine, manager *mm.Manager) {
 	r.POST("/category/:id", MiddleWare.Cache(), func(c *gin.Context) {
 		idV := c.Param("id")
 		id, err := strconv.Atoi(idV)
@@ -106,36 +127,10 @@ func front(r *gin.Engine, manager *mm.Manager) {
 		util.Logger.Info("get category movie list, category id:", id)
 		c.JSON(http.StatusOK, movie)
 	})
+}
 
-	// 获取分类列表
-	r.GET("/allCategory", MiddleWare.Cache(), func(c *gin.Context) {
-		categories, err := manager.GetCategory()
-		if err != nil {
-			util.Logger.Error("get all category failed, err:", err)
-			c.Status(http.StatusInternalServerError)
-			return
-		}
-		type Category struct {
-			ID       uint   `json:"id"`
-			Name     string `json:"name"`
-			MovieNum int    `json:"movieNum"`
-		}
-		res := make([]Category, 0)
-
-		for _, v := range categories {
-			if v.Main {
-				res = append(res, Category{
-					ID:       v.ID,
-					Name:     v.Name,
-					MovieNum: v.MovieNum,
-				})
-			}
-		}
-		util.Logger.Info("get all category")
-		c.JSON(http.StatusOK, res)
-	})
-
-	// 获取在首页显示的分类
+// 获取在首页显示的分类
+func mainCategory(r *gin.Engine, manager *mm.Manager) {
 	r.GET("/mainCategory", MiddleWare.Cache(), func(c *gin.Context) {
 		categories, err := manager.GetMainCategory()
 		if err != nil {

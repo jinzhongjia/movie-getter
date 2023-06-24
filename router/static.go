@@ -1,46 +1,32 @@
 package router
 
 import (
-	admin "movie/admin-dist"              // 后台资源
-	adminAssets "movie/admin-dist/assets" // 后台资源
-	"movie/dist"                          // 前台资源
-	"movie/dist/assets"                   // 前台资源
+	"io/fs"
+	"movie/dist"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Static(r *gin.Engine) {
-
 	// 前台
-	{
-		// 处理首页
-		r.GET("/", func(c *gin.Context) {
-			c.Header("content-type", "text/html;charset=utf-8")
-			c.String(200, dist.Index)
-		})
-		// 处理ico
-		r.GET("/logo.ico", func(c *gin.Context) {
-			c.Header("Content-Type", "image/vnd.microsoft.icon")
-			c.String(200, string(dist.Icon))
-		})
-		// 处理静态文件
-		r.StaticFS("/assets", http.FS(assets.Assets))
 
+	{
+		front,_ := fs.Sub(dist.Front,"front")
+		// 映射index
+		r.GET("/", func(c *gin.Context) {
+			data, _ := fs.ReadFile(front, "index.html")
+			c.Data(http.StatusOK, "text/html;charset=utf-8", data)
+		})
+		// 映射logo
+		r.StaticFileFS("/logo.ico", "logo.ico", http.FS(front))
+		assest_tmp, _ := fs.Sub(front, "assets")
+		// 映射assets
+		r.StaticFS("/assets", http.FS(assest_tmp))
 	}
 	// 后台
 	{
-		// 处理首页
-		r.GET("/admin/", func(c *gin.Context) {
-			c.Header("content-type", "text/html;charset=utf-8")
-			c.String(200, admin.Index)
-		})
-		// 处理ico
-		r.GET("/admin/logo.ico", func(c *gin.Context) {
-			c.Header("Content-Type", "image/vnd.microsoft.icon")
-			c.String(200, string(admin.Icon))
-		})
-		// 处理静态文件
-		r.StaticFS("/admin/assets", http.FS(adminAssets.Assets))
+		admin,_ := fs.Sub(dist.Admin,"admin")
+		r.StaticFS("/admin", http.FS(admin))
 	}
 }

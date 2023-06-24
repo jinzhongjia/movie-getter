@@ -8,3 +8,6 @@ json
 .idea
 movie
 movie-getter
+dist/front
+dist/admin
+src
