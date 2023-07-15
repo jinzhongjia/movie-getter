@@ -56,8 +56,11 @@ gjson、gorm、gin、vue、naive-ui
 所需环境：
 
 > Golang >= 1.18
+> 
 > nodejs
+> 
 > pnpm
+> 
 > make(构建工具)
 
 步骤：
