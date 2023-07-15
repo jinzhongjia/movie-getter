@@ -56,12 +56,21 @@ gjson、gorm、gin、vue、naive-ui
 所需环境：
 
 > Golang >= 1.18
+> nodejs
+> pnpm
+> make(构建工具)
 
 步骤：
 
-git clone 本仓库的 master 分支至本地,cd 至项目根目录，执行`go build`即可！
-
-详细信息可以参阅`build.sh`和`Makefile`文件
+```sh
+git clone https://github.com/jinzhongjia/movie-getter.git
+cd movie-getter
+make get
+# 构建linux版本
+make linux
+# 构建windows版本
+make windows
+```
 
 ### Docker-compose 部署（推荐）
 

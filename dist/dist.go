@@ -1,10 +1,9 @@
 package dist
 
-import _ "embed"
+import embed "embed"
 
-//go:embed index.html
-var Index string
+//go:embed front
+var Front embed.FS
 
-//go:embed logo.ico
-
-var Icon []byte
+//go:embed admin
+var Admin embed.FS
