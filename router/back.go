@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -64,8 +65,14 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		// 添加source
 		add_source(user, manager)
 
-		// 重新采集
+		// 重新采集source
 		source_reget(user, manager)
+
+		// 改名source
+		source_rename(user, manager)
+
+		// 修改sourceurl
+		source_reurl(user, manager)
 
 		// 删除source
 		source_delete(user, manager)
@@ -84,6 +91,9 @@ func back(r *gin.Engine, manager *mm.Manager) {
 
 		// 创建一个分类
 		category_add(user, manager)
+
+		// 改名分类
+		category_rename(user, manager)
 
 		// 删除分类
 		category_delete(user, manager)
@@ -447,6 +457,10 @@ func add_source(user *gin.RouterGroup, manager *mm.Manager) {
 	user.POST("/source/add", func(c *gin.Context) {
 		name := c.PostForm("name")
 		url := c.PostForm("url")
+		if !govalidator.IsURL(url) {
+			c.Status(http.StatusBadRequest)
+			return
+		}
 		res := manager.AddSource(name, url)
 		if !res {
 			util.Logger.Errorln("add source failed, name:", name, "url:", url)
@@ -457,6 +471,8 @@ func add_source(user *gin.RouterGroup, manager *mm.Manager) {
 		c.Status(http.StatusOK)
 	})
 }
+
+// TODO:back的source相关函数需要过滤名字和url
 
 // 重新采集
 func source_reget(user *gin.RouterGroup, manager *mm.Manager) {
@@ -479,6 +495,57 @@ func source_reget(user *gin.RouterGroup, manager *mm.Manager) {
 	})
 }
 
+// 修改source名字
+func source_rename(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/source/reName", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		name := c.PostForm("name")
+
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Rget source failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.RenameSource(uint(id), name)
+		if err != nil {
+			util.Logger.Error("Rename source failed, id is ", id, "err: ", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+
+		util.Logger.Info("Rename source success, id is ", id)
+		c.Status(http.StatusOK)
+	})
+}
+
+// 修改source的地址
+func source_reurl(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/source/reUrl", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		url := c.PostForm("url")
+		if !govalidator.IsURL(url) {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Rget source failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.ReurlSource(uint(id), url)
+		if err != nil {
+			util.Logger.Error("Reurl source failed, id is ", id, "err: ", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Info("Reurl source success, id is ", id)
+		c.Status(http.StatusOK)
+	})
+}
+
+// 删除source
 func source_delete(user *gin.RouterGroup, manager *mm.Manager) {
 	user.POST("/source/del", func(c *gin.Context) {
 		idV := c.PostForm("id")
@@ -639,6 +706,28 @@ func category_add(user *gin.RouterGroup, manager *mm.Manager) {
 		}
 		util.Logger.Error("create category failed, err:", err)
 		c.Status(http.StatusBadRequest)
+	})
+}
+
+// 重命名分类
+func category_rename(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/category/reName", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		name := c.PostForm("name")
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Del category failed, the id is not a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.UpdateCategory(uint(id), name)
+		if err != nil {
+			util.Logger.Errorf("Rename category failed, err:%s", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Info("Rename category, id is ", id)
+		c.Status(http.StatusOK)
 	})
 }
 

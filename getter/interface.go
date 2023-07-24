@@ -5,4 +5,5 @@ type getter interface {
 	ReGet()
 	StartGet()
 	StopGet()
+	Rename()
 }

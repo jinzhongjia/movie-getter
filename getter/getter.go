@@ -15,7 +15,7 @@ func SetDb(tmp database.Db) map[uint]*Getter {
 	// 查询数据库获取所有的source
 	sources, err := db.AllSource()
 	if err != nil {
-		util.Logger.Panicf("SetDb failed because query database failed, err is %s\n", err)
+		util.Logger.Panicf("SetDb failed because query database failed, err is %s", err)
 	}
 	getters := make(map[uint]*Getter)
 	for _, v := range sources {
@@ -39,7 +39,7 @@ type Getter struct {
 // NewGetter 构造函数
 func NewGetter(id uint, name string, url string, ok bool, pg int) *Getter {
 	if db == nil {
-		util.Logger.Panicf("the db handle is nil!\n")
+		util.Logger.Panicf("the db handle is nil!")
 	}
 	// 初始化采集所用的ctx
 	ctx, cancel := context.WithCancel(context.Background())
@@ -65,7 +65,7 @@ func (here *Getter) StartGet() {
 		here.run.Store(true)
 		go here.get()
 	} else {
-		util.Logger.Infof("all getters have started!\n")
+		util.Logger.Infof("all getters have started!")
 	}
 }
 
@@ -81,11 +81,11 @@ func (here *Getter) ReGet() {
 	}
 	err := db.UpdateSourcePg(here.id, 1) // 数据库中采集页数更新到1页
 	if err != nil {
-		util.Logger.Errorf("getter reget source failed, because update the page failed, err is %s\n", err)
+		util.Logger.Errorf("getter reget source failed, because update the page failed, err is %s", err)
 	}
 	err = db.UpdateSourceOk(here.id, false) // 更新数据库中的采集进度未false
 	if err != nil {
-		util.Logger.Errorf("getter reget source failed, because update the status failed, err is %s\n", err)
+		util.Logger.Errorf("getter reget source failed, because update the status failed, err is %s", err)
 	}
 	here.pg = 1     // getter本身也更新为1页
 	here.ok = false // 采集进度调整为false，即未采集完成

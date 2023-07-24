@@ -1,10 +1,11 @@
 package gormDb
 
 import (
-	"gorm.io/gorm"
 	"math"
-	"movie/db/struct"
+	_struct "movie/db/struct"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 func (here *Db) AddContent(
@@ -302,7 +303,6 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]_st
 	// 查询计数
 	var count int64
 	here.db.Model(&_struct.Content{}).Where("class_id IN ?", class).Count(&count)
-	// fmt.Printf("count: %v\n", count)
 
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }

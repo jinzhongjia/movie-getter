@@ -14,7 +14,7 @@ func (here *Db) systemInit() {
 	if num == 0 {
 		hash, err := bcrypt.GenerateFromPassword([]byte("admin888"), bcrypt.DefaultCost)
 		if err != nil {
-			util.Logger.Panicf("systemInit passwd encrypt failed, err is %s\n", err)
+			util.Logger.Panicf("systemInit passwd encrypt failed, err is %s", err)
 		}
 		here.db.Create(&_struct.System{
 			Account:  "admin",
@@ -40,7 +40,7 @@ func (here *Db) UpdateAccount(oldAccount string, newAccount string) error {
 func (here *Db) UpdatePassword(account string, newPassword string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 	if err != nil {
-		util.Logger.Errorf("when db UpdatePassword, passwd encrypt failed!\n")
+		util.Logger.Errorf("when db UpdatePassword, passwd encrypt failed!")
 		return err
 	}
 	db := here.db.Model(&_struct.System{}).Where("account = ?", account).Update("password", string(hash))
@@ -58,7 +58,7 @@ func (here *Db) GetCollectInterval() int {
 	var system _struct.System
 	db := here.db.Select("collect_interval").Find(&system)
 	if db.Error != nil {
-		util.Logger.Errorf("get collect interval failed, err is %s\n", db.Error)
+		util.Logger.Errorf("get collect interval failed, err is %s", db.Error)
 	}
 	if system.CollectInterval == 0 {
 		return 24

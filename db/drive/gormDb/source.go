@@ -88,7 +88,7 @@ func (here *Db) sourceInit(url string, source *_struct.Source) (uint, error) {
 
 	res, err := c.Get(url)
 	if err != nil {
-		util.Logger.Errorf("get source's classes failed when add source, err is %s\n", err)
+		util.Logger.Errorf("get source's classes failed when add source, err is %s", err)
 		return 0, err
 	}
 	defer res.Body.Close()
@@ -96,7 +96,7 @@ func (here *Db) sourceInit(url string, source *_struct.Source) (uint, error) {
 	classes := gjson.Get(string(body), "class").Array()
 	db := here.db.Create(source)
 	if db.Error != nil {
-		util.Logger.Errorf("Create source in database failed when add source, err is %s\n", err)
+		util.Logger.Errorf("Create source in database failed when add source, err is %s", err)
 		return 0, nil
 	}
 	for _, vv := range classes {
@@ -105,7 +105,7 @@ func (here *Db) sourceInit(url string, source *_struct.Source) (uint, error) {
 		class_Id := int(v["type_id"].(float64))
 		err := here.AddClass(source.ID, name, class_Id)
 		if err != nil {
-			util.Logger.Errorf("when sourceInit, add class failed, err is %s\n", err)
+			util.Logger.Errorf("when sourceInit, add class failed, err is %s", err)
 		}
 	}
 	return source.ID, nil
