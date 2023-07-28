@@ -406,6 +406,34 @@ func (here *Manager) ReGet(SourceId uint) error {
 	return nil
 }
 
+func (here *Manager) Rename_content(id uint, name string) error {
+	return here.db.Rename(id, name)
+}
+
+func (here *Manager) Repic_content(id uint, pic string) error {
+	return here.db.Repic(id, pic)
+}
+
+func (here *Manager) Reactor_content(id uint, actor string) error {
+	return here.db.Reactor(id, actor)
+}
+
+func (here *Manager) Redirector_content(id uint, director string) error {
+	return here.db.Redirector(id, director)
+}
+
+func (here *Manager) Reduration_content(id uint, duration string) error {
+	return here.db.Reduration(id, duration)
+}
+
+func (here *Manager) Redesc_content(id uint, desc string) error {
+	return here.db.Redesc(id, desc)
+}
+
+func (here *Manager) Reurl_content(id uint, url string) error {
+	return here.db.Reurl(id, url)
+}
+
 type Source struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`

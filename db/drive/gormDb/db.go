@@ -7,8 +7,8 @@ import (
 	_type "movie/db/type"
 	"os"
 
-	"gorm.io/driver/mysql"
 	"github.com/glebarez/sqlite"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 

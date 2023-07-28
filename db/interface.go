@@ -32,6 +32,14 @@ type Db interface {
 	DelContent(
 		id uint,
 	) error // 删除影片
+	Rename(id uint, name string) error         // 重命名影片名
+	Repic(id uint, pic string) error           // 重命名影片海报地址
+	Reactor(id uint, actor string) error       // 重命名影片演员
+	Redirector(id uint, director string) error //重命名影片导演
+	Reduration(id uint, duration string) error // 重命名影片时长
+	Redesc(id uint, desc string) error         //重命名影片的简介
+	Reurl(id uint, url string) error           // 重命名影片的播放地址
+
 	SearchContent(
 		keyword string,
 		num int,

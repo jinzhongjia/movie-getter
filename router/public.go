@@ -8,4 +8,3 @@ type Movie struct {
 	Movies  []mm.Movie `json:"movies"`
 	PgCount int        `json:"pgCount"`
 }
-
