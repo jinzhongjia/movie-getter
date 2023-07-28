@@ -58,6 +58,7 @@ dpush:
 clean:
 	rm -rf dist/front
 	rm -rf dist/admin
+	rm $(OUT_NAME).exe $(OUT_NAME)_windows.exe $(OUT_NAME) $(OUT_NAME)_linux
 
 runl:
 	./$(OUT_NAME)
@@ -67,3 +68,7 @@ runw:
 
 format:
 	gofmt -w -l .
+
+release:
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o $(OUT_NAME)_windows.exe
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o $(OUT_NAME)_linux
