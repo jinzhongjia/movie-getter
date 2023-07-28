@@ -19,6 +19,11 @@
 
 密码:admin888
 
+### 前端
+
+前台源码：[Go](https://github.com/jinzhongjia/newMovie)
+后台源码：[Go](https://github.com/jinzhongjia/newMovieAdmin)
+
 ## 功能
 
 ### 已实现
@@ -47,7 +52,7 @@
 
 gjson、gorm、gin、vue、naive-ui
 
-后端 api 文档：[here](https://console-docs.apipost.cn/preview/ec88e3cf21948a37/480c3d77eff01465)
+后端 api 文档：请查看`router/back.go`和`router/front.go`两个文件，其中定义了所有api
 
 ## 使用
 
@@ -73,6 +78,8 @@ make get
 make linux
 # 构建windows版本
 make windows
+# 同时构建windows和linux，release版本
+make release
 ```
 
 ### Docker-compose 部署（推荐）
