@@ -49,7 +49,7 @@ w:
 .PHONY: dbuild
 dbuild: build-admin build-front
 	rm -rf src
-	docker build --network=host -t yunyizhiying/movie:latest .
+	docker buildx build --network=host -t yunyizhiying/movie:latest .
 
 .PHONY: dpush
 dpush:
