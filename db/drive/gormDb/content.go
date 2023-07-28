@@ -1,10 +1,11 @@
 package gormDb
 
 import (
-	"gorm.io/gorm"
 	"math"
-	"movie/db/struct"
+	_struct "movie/db/struct"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 func (here *Db) AddContent(
@@ -16,7 +17,7 @@ func (here *Db) AddContent(
 	duration string,
 	description string,
 	url string,
-	class_Id int, //所属类别
+	class_Id int, // 所属类别
 	sourceId uint, // source id
 ) error {
 	id, ok := here.existContent(content_Id, sourceId)
@@ -30,8 +31,8 @@ func (here *Db) AddContent(
 			duration,
 			description,
 			url,
-			//class_Id,
-			//sourceId,
+			// class_Id,
+			// sourceId,
 		)
 	}
 	return here.addContent(
@@ -71,7 +72,6 @@ func (here *Db) updateContent(
 	// sourceId uint, // source id
 ) error {
 	content := &_struct.Content{
-
 		ContentId:   content_Id,
 		Name:        name,
 		Pic:         pic,
@@ -97,7 +97,7 @@ func (here *Db) addContent(
 	duration string,
 	description string,
 	url string,
-	class_Id int, //所属类别
+	class_Id int, // 所属类别
 	sourceId uint, // source id
 ) error {
 	var db *gorm.DB
@@ -302,7 +302,6 @@ func (here *Db) BrowseContentByCategory(categoryId uint, num int, pg int) ([]_st
 	// 查询计数
 	var count int64
 	here.db.Model(&_struct.Content{}).Where("class_id IN ?", class).Count(&count)
-	// fmt.Printf("count: %v\n", count)
 
 	return contents, int(math.Ceil(float64(count) / float64(num))), db.Error
 }
@@ -312,4 +311,53 @@ func (here *Db) ContentCount() int {
 	var result int64
 	here.db.Model(&_struct.Content{}).Count(&result)
 	return int(result)
+}
+
+func (here *Db) Rename(id uint, name string) error {
+	db := here.db.Model(&_struct.Content{
+		ID: id,
+	}).Update("name", name)
+	return db.Error
+}
+
+func (here *Db) Repic(id uint, pic string) error {
+	db := here.db.Model(&_struct.Content{
+		ID: id,
+	}).Update("pic", pic)
+	return db.Error
+}
+
+func (here *Db) Reactor(id uint, actor string) error {
+	db := here.db.Model(&_struct.Content{
+		ID: id,
+	}).Update("actor", actor)
+	return db.Error
+}
+
+func (here *Db) Redirector(id uint, director string) error {
+	db := here.db.Model(&_struct.Content{
+		ID: id,
+	}).Update("director", director)
+	return db.Error
+}
+
+func (here *Db) Reduration(id uint, duration string) error {
+	db := here.db.Model(&_struct.Content{
+		ID: id,
+	}).Update("duration", duration)
+	return db.Error
+}
+
+func (here *Db) Redesc(id uint, desc string) error {
+	db := here.db.Model(&_struct.Content{
+		ID: id,
+	}).Update("description", desc)
+	return db.Error
+}
+
+func (here *Db) Reurl(id uint, url string) error {
+	db := here.db.Model(&_struct.Content{
+		ID: id,
+	}).Update("url", url)
+	return db.Error
 }

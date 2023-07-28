@@ -33,7 +33,7 @@ func Proxy(c *gin.Context) {
 	// 进行请求
 	resp, err := client.Get(url)
 	if err != nil {
-		util.Logger.Errorf("client get server source failed, err is %s\n", err)
+		util.Logger.Errorf("client get server source failed, err is %s", err)
 		c.Status(http.StatusBadGateway)
 		return
 	}

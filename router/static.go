@@ -12,7 +12,7 @@ func Static(r *gin.Engine) {
 	// 前台
 
 	{
-		front,_ := fs.Sub(dist.Front,"front")
+		front, _ := fs.Sub(dist.Front, "front")
 		// 映射index
 		r.GET("/", func(c *gin.Context) {
 			data, _ := fs.ReadFile(front, "index.html")
@@ -26,7 +26,7 @@ func Static(r *gin.Engine) {
 	}
 	// 后台
 	{
-		admin,_ := fs.Sub(dist.Admin,"admin")
+		admin, _ := fs.Sub(dist.Admin, "admin")
 		r.StaticFS("/admin", http.FS(admin))
 	}
 }

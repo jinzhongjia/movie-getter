@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -46,6 +47,27 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		// 全局搜索影片
 		back_search(user, manager)
 
+		// 重命名影片名
+		content_rename(user, manager)
+
+		// 修改影片的海报地址
+		content_repic(user, manager)
+
+		// 修改影片的主演
+		content_reactor(user, manager)
+
+		// 修改影片的导演
+		content_redirector(user, manager)
+
+		// 修改影片的时长
+		content_reduration(user, manager)
+
+		// 修改影片的描述
+		content_redesc(user, manager)
+
+		// 修改影片的url
+		content_reurl(user, manager)
+
 		// 删除影片
 		delete(user, manager)
 
@@ -64,8 +86,14 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		// 添加source
 		add_source(user, manager)
 
-		// 重新采集
+		// 重新采集source
 		source_reget(user, manager)
+
+		// 改名source
+		source_rename(user, manager)
+
+		// 修改sourceurl
+		source_reurl(user, manager)
 
 		// 删除source
 		source_delete(user, manager)
@@ -84,6 +112,9 @@ func back(r *gin.Engine, manager *mm.Manager) {
 
 		// 创建一个分类
 		category_add(user, manager)
+
+		// 改名分类
+		category_rename(user, manager)
 
 		// 删除分类
 		category_delete(user, manager)
@@ -300,6 +331,166 @@ func back_search(user *gin.RouterGroup, manager *mm.Manager) {
 		c.JSON(http.StatusOK, movie)
 	})
 }
+// 重命名影片的名字
+func content_rename(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/content/rename", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		name := c.PostForm("name")
+
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Rename content failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.Rename_content(uint(id), name)
+		if err != nil {
+			util.Logger.Errorf("Rename content failed, id is %d, err is %s", id, err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Infof("Rename content success, id is %d", id)
+		c.Status(http.StatusOK)
+	})
+}
+
+// 修改影片的海报地址
+func content_repic(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/content/repic", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		pic := c.PostForm("pic")
+
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Repic content failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.Repic_content(uint(id), pic)
+		if err != nil {
+			util.Logger.Errorf("Repic content failed, id is %d, err is %s", id, err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Infof("Repic content success, id is %d", id)
+		c.Status(http.StatusOK)
+	})
+}
+
+// 修改影片的主演
+func content_reactor(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/content/reactor", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		actor := c.PostForm("actor")
+
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Reactor content failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.Reactor_content(uint(id), actor)
+		if err != nil {
+			util.Logger.Errorf("Reactor content failed, id is %d, err is %s", id, err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Infof("Reactor content success, id is %d", id)
+		c.Status(http.StatusOK)
+	})
+}
+
+// 修改影片的导演
+func content_redirector(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/content/redirector", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		director := c.PostForm("director")
+
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Redirector content failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.Redirector_content(uint(id), director)
+		if err != nil {
+			util.Logger.Errorf("Redirector content failed, id is %d, err is %s", id, err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Infof("Redirector content success, id is %d", id)
+		c.Status(http.StatusOK)
+	})
+}
+
+// 修改影片的时长
+func content_reduration(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/content/reduration", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		duration := c.PostForm("duration")
+
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Reduration content failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.Reduration_content(uint(id), duration)
+		if err != nil {
+			util.Logger.Errorf("Reduration content failed, id is %d, err is %s", id, err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Infof("Reduration content success, id is %d", id)
+		c.Status(http.StatusOK)
+	})
+}
+
+// 修改影片的描述
+func content_redesc(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/content/redesc", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		description := c.PostForm("description")
+
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Redesc content failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.Redesc_content(uint(id), description)
+		if err != nil {
+			util.Logger.Errorf("Redesc content failed, id is %d, err is %s", id, err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Infof("Redesc content success, id is %d", id)
+		c.Status(http.StatusOK)
+	})
+}
+
+// 修改影片url
+func content_reurl(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/content/reurl", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		url := c.PostForm("url")
+
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Reurl content failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.Reurl_content(uint(id), url)
+		if err != nil {
+			util.Logger.Errorf("Reurl content failed, id is %d, err is %s", id, err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Infof("Reurl content success, id is %d", id)
+		c.Status(http.StatusOK)
+	})
+}
 
 // 删除影片
 func delete(user *gin.RouterGroup, manager *mm.Manager) {
@@ -447,6 +638,10 @@ func add_source(user *gin.RouterGroup, manager *mm.Manager) {
 	user.POST("/source/add", func(c *gin.Context) {
 		name := c.PostForm("name")
 		url := c.PostForm("url")
+		if !govalidator.IsURL(url) {
+			c.Status(http.StatusBadRequest)
+			return
+		}
 		res := manager.AddSource(name, url)
 		if !res {
 			util.Logger.Errorln("add source failed, name:", name, "url:", url)
@@ -457,6 +652,8 @@ func add_source(user *gin.RouterGroup, manager *mm.Manager) {
 		c.Status(http.StatusOK)
 	})
 }
+
+// TODO:back的source相关函数需要过滤名字和url
 
 // 重新采集
 func source_reget(user *gin.RouterGroup, manager *mm.Manager) {
@@ -479,6 +676,57 @@ func source_reget(user *gin.RouterGroup, manager *mm.Manager) {
 	})
 }
 
+// 修改source名字
+func source_rename(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/source/reName", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		name := c.PostForm("name")
+
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Rget source failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.RenameSource(uint(id), name)
+		if err != nil {
+			util.Logger.Error("Rename source failed, id is ", id, "err: ", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+
+		util.Logger.Info("Rename source success, id is ", id)
+		c.Status(http.StatusOK)
+	})
+}
+
+// 修改source的地址
+func source_reurl(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/source/reUrl", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		url := c.PostForm("url")
+		if !govalidator.IsURL(url) {
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Rget source failed, the id isn't a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.ReurlSource(uint(id), url)
+		if err != nil {
+			util.Logger.Error("Reurl source failed, id is ", id, "err: ", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Info("Reurl source success, id is ", id)
+		c.Status(http.StatusOK)
+	})
+}
+
+// 删除source
 func source_delete(user *gin.RouterGroup, manager *mm.Manager) {
 	user.POST("/source/del", func(c *gin.Context) {
 		idV := c.PostForm("id")
@@ -639,6 +887,28 @@ func category_add(user *gin.RouterGroup, manager *mm.Manager) {
 		}
 		util.Logger.Error("create category failed, err:", err)
 		c.Status(http.StatusBadRequest)
+	})
+}
+
+// 重命名分类
+func category_rename(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/category/reName", func(c *gin.Context) {
+		idV := c.PostForm("id")
+		name := c.PostForm("name")
+		id, err := strconv.Atoi(idV)
+		if err != nil {
+			util.Logger.Warn("Rename category failed, the id is not a integer")
+			c.Status(http.StatusBadRequest)
+			return
+		}
+		err = manager.UpdateCategory(uint(id), name)
+		if err != nil {
+			util.Logger.Errorf("Rename category failed, err:%s", err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		util.Logger.Info("Rename category, id is ", id)
+		c.Status(http.StatusOK)
 	})
 }
 

@@ -64,3 +64,6 @@ runl:
 
 runw:
 	.\$(OUT_NAME)
+
+format:
+	gofmt -w -l .

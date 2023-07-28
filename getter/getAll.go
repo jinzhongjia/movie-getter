@@ -16,7 +16,7 @@ func (here *Getter) getAll() {
 		here.ok = true
 		err := db.UpdateSourceOk(here.id, here.ok)
 		if err != nil {
-			util.Logger.Errorf("sorrry, when getter change the source status it failed, err is %s\n", err)
+			util.Logger.Errorf("sorrry, when getter change the source status it failed, err is %s", err)
 		}
 		return
 	}
@@ -45,7 +45,7 @@ func (here *Getter) updatePg() {
 	here.pg++
 	err := db.UpdateSourcePg(here.id, here.pg)
 	if err != nil {
-		util.Logger.Errorf("getter update the source page failed, err is %s\n", err)
+		util.Logger.Errorf("getter update the source page failed, err is %s", err)
 	}
 }
 
@@ -55,7 +55,7 @@ func (here *Getter) getPgCount() int {
 	res, err := c.Get(here.url + "?ac=list")
 	if err != nil {
 		// panic("采集资源站“" + here.name + "“获取采集页数失败")
-		util.Logger.Panicf("getter get all the resource station called %s, getting page failed, err is %s\n", here.name, err)
+		util.Logger.Panicf("getter get all the resource station called %s, getting page failed, err is %s", here.name, err)
 	}
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)
@@ -66,12 +66,12 @@ func (here *Getter) getPgCount() int {
 // 获取list
 func (here *Getter) getList(pgCount int) []gjson.Result {
 	// fmt.Println("采集资源站“", here.name, "”，第", here.pg, "页")
-	util.Logger.Infof("getter get the resource station %s, page is %d\n", here.name, here.pg)
+	util.Logger.Infof("getter get the resource station %s, page is %d", here.name, here.pg)
 	c := newHttpHandle()
 	res, err := c.Get(here.url + "?ac=list&pg=" + strconv.Itoa(pgCount-here.pg))
 	if err != nil {
 		// panic("采集资源站“" + here.name + "“获取采集页数失败")
-		util.Logger.Panicf("getter get the resource station called %s, getting page failed, err is %s\n", here.name, err)
+		util.Logger.Panicf("getter get the resource station called %s, getting page failed, err is %s", here.name, err)
 	}
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)

@@ -39,6 +39,6 @@ func main() {
 	// 监听端口默认为localhost:8080
 	err := r.Run(config.Addr)
 	if err != nil {
-		util.Logger.Fatalf("Listen port failed, addr is %s\n", config.Addr)
+		util.Logger.Fatalf("Listen port failed, addr is %s", config.Addr)
 	}
 }

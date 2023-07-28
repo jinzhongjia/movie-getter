@@ -78,6 +78,7 @@ func (here *Db) CategoryClassCount(categoryId uint) int {
 	return int(result)
 }
 
+// SetCategoryMain 设置主分类
 func (here *Db) SetCategoryMain(id uint, main bool) error {
 	db := here.db.Model(&_struct.Category{
 		ID: id,

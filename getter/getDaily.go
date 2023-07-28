@@ -41,7 +41,7 @@ func (here *Getter) getPgCountDaily() int {
 	c := newHttpHandle()
 	res, err := c.Get(here.url + "?ac=list&h=" + strconv.Itoa(GetInterval()))
 	if err != nil {
-		util.Logger.Panicf("getter get recent the resource station called %s, getting page failed, err is %s\n", here.name, err)
+		util.Logger.Panicf("getter get recent the resource station called %s, getting page failed, err is %s", here.name, err)
 		// panic("采集资源站“" + here.name + "获取采集页数失败")
 	}
 	defer res.Body.Close()
@@ -57,7 +57,7 @@ func (here *Getter) getListDaily(pg int) []gjson.Result {
 		here.url + "?ac=list&h=" + strconv.Itoa(GetInterval()) + "&pg=" + strconv.Itoa(pg),
 	)
 	if err != nil {
-		util.Logger.Panicf("getter get recent the resource station called %s, list failed, err is %s\n", here.name, err)
+		util.Logger.Panicf("getter get recent the resource station called %s, list failed, err is %s", here.name, err)
 		// panic("采集资源站“" + here.name + "获取采集页数失败")
 	}
 	defer res.Body.Close()

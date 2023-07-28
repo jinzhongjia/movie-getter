@@ -4,6 +4,7 @@ import (
 	"errors"
 	_struct "movie/db/struct"
 	"movie/getter"
+	"movie/util"
 	"strconv"
 )
 
@@ -37,13 +38,47 @@ func (here *Manager) AddSource(name string, url string) bool {
 	return ok
 }
 
+// 重命名source名字
+func (here *Manager) RenameSource(id uint, name string) error {
+	err := here.db.UpdateSourceName(id, name)
+	if err != nil {
+		util.Logger.Warnf("rename source fialed, err: %s", err)
+		return err
+	}
+	here.getters_mutex.Lock()
+	getter, ok := here.getters[id]
+	if !ok {
+		return errors.New("the source which id is" + strconv.Itoa(int(id)) + " not exists")
+	}
+	getter.Rename(name)
+	here.getters_mutex.Unlock()
+	return nil
+}
+
+// 重命名source地址
+func (here *Manager) ReurlSource(id uint, url string) error {
+	err := here.db.UpdateSourceUrl(id, url)
+	if err != nil {
+		util.Logger.Warnf("rename source fialed, err: %s", err)
+		return err
+	}
+	here.getters_mutex.Lock()
+	getter, ok := here.getters[id]
+	if !ok {
+		return errors.New("the source which id is" + strconv.Itoa(int(id)) + " not exists")
+	}
+	getter.Reurl(url)
+	here.getters_mutex.Unlock()
+	return nil
+}
+
 // DelSource 删除采集源
 func (here *Manager) DelSource(id uint) error {
 	here.getters_mutex.Lock()
 	getter, ok := here.getters[id]
 	here.getters_mutex.Unlock()
 	if !ok {
-		return errors.New("the source which id is" + strconv.Itoa(int(id)) + " is not a integer")
+		return errors.New("the source which id is" + strconv.Itoa(int(id)) + " not exists")
 	}
 	getter.StopGet()
 	// 直到采集停下前，会一直阻塞，应该采取一个定时任务（例如context定时）防止任务超时 TODO
@@ -369,6 +404,34 @@ func (here *Manager) ReGet(SourceId uint) error {
 	}
 	getter.ReGet()
 	return nil
+}
+
+func (here *Manager) Rename_content(id uint, name string) error {
+	return here.db.Rename(id, name)
+}
+
+func (here *Manager) Repic_content(id uint, pic string) error {
+	return here.db.Repic(id, pic)
+}
+
+func (here *Manager) Reactor_content(id uint, actor string) error {
+	return here.db.Reactor(id, actor)
+}
+
+func (here *Manager) Redirector_content(id uint, director string) error {
+	return here.db.Redirector(id, director)
+}
+
+func (here *Manager) Reduration_content(id uint, duration string) error {
+	return here.db.Reduration(id, duration)
+}
+
+func (here *Manager) Redesc_content(id uint, desc string) error {
+	return here.db.Redesc(id, desc)
+}
+
+func (here *Manager) Reurl_content(id uint, url string) error {
+	return here.db.Reurl(id, url)
 }
 
 type Source struct {
