@@ -5,6 +5,7 @@ import (
 	_struct "movie/db/struct"
 	"movie/getter"
 	"movie/util"
+	"sort"
 	"strconv"
 )
 
@@ -23,6 +24,9 @@ func (here *Manager) GetSource() ([]Source, error) {
 		})
 	}
 	here.getters_mutex.Unlock()
+	sort.SliceStable(sources, func(i, j int) bool {
+		return sources[i].ID < sources[j].ID
+	})
 	return sources, err
 }
 

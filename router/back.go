@@ -492,6 +492,7 @@ func content_reurl(user *gin.RouterGroup, manager *mm.Manager) {
 	})
 }
 
+
 // 删除影片
 func delete(user *gin.RouterGroup, manager *mm.Manager) {
 	user.POST("/del", func(c *gin.Context) {
