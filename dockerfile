@@ -18,6 +18,6 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/movie /app/movie
 
-EXPOSE 8233
+EXPOSE 8000
 
 CMD ["/app/movie"]
