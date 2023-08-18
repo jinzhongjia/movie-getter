@@ -41,16 +41,32 @@ func (here *Getter) getContent(id int) {
 	pic = urlHandle(pic)
 
 	// 获取主演列表
-	actor := gjson.Get(string(body), "list.0.vod_actor").Value().(string)
+	actor := ""
+	actor_val := gjson.Get(string(body), "list.0.vod_actor").Value()
+	if actor_val != nil {
+		actor = actor_val.(string)
+	}
 
 	// 获取导演
-	director := gjson.Get(string(body), "list.0.vod_director").Value().(string)
+	director := ""
+	director_val := gjson.Get(string(body), "list.0.vod_director").Value()
+	if director_val != nil {
+		director = director_val.(string)
+	}
 
 	// 获取时长
-	duration := gjson.Get(string(body), "list.0.vod_duration").Value().(string)
+	duration := ""
+	duration_val := gjson.Get(string(body), "list.0.vod_duration").Value()
+	if duration_val != nil {
+		duration = duration_val.(string)
+	}
 
 	// 获取简介
-	description := gjson.Get(string(body), "list.0.vod_content").Value().(string)
+	description := ""
+	description_val := gjson.Get(string(body), "list.0.vod_content").Value()
+	if description_val != nil {
+		description = description_val.(string)
+	}
 	description = desHandle(description) // 净化功能
 
 	// 获取播放链接
