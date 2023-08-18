@@ -86,7 +86,7 @@ func (here *Db) sourceInit(url string, source *_struct.Source) (uint, error) {
 		},
 	}
 
-	res, err := c.Get(url)
+	res, err := c.Get(url + "?ac=list&t=1&pg=1")
 	if err != nil {
 		util.Logger.Errorf("get source's classes failed when add source, err is %s", err)
 		return 0, err
