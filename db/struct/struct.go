@@ -2,10 +2,10 @@ package _struct
 
 type Source struct {
 	ID      uint
-	Name    string    `gorm:"unique;not null;index"` // 资源库名字
-	Url     string    `gorm:"unique;not null;index"` // 资源库地址
-	Ok      bool      `gorm:"default:false"`         // 资源库是否采集完
-	Pg      int       `gorm:"default:1"`             // 资源库采集的页数
+	Name    string    `gorm:"unique;not null;index"`             // 资源库名字
+	Url     string    `gorm:"unique;not null;index"`             // 资源库地址
+	Ok      bool      `gorm:"default:false" json:"ok,omitempty"` // 资源库是否采集完
+	Pg      int       `gorm:"default:1" json:"pg,omitempty"`     // 资源库采集的页数
 	Class   []Class   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Content []Content `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 } // 资源库表定义
@@ -50,4 +50,10 @@ type System struct {
 	Account         string // 账户
 	Password        string // 密码
 	CollectInterval int    `gorm:"default:24"` // 采集间隔时间
+}
+
+type DATA struct {
+	Sources    []Source
+	Categories []Category
+	Classes    []Class
 }

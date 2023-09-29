@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"encoding/json"
 	"errors"
 	_struct "movie/db/struct"
 	"movie/getter"
@@ -436,6 +437,38 @@ func (here *Manager) Redesc_content(id uint, desc string) error {
 
 func (here *Manager) Reurl_content(id uint, url string) error {
 	return here.db.Reurl(id, url)
+}
+
+func (here *Manager) Exports() ([]byte, error) {
+	var res []byte
+
+	data, err := here.db.Exports()
+	if err != nil {
+		return res, err
+	}
+
+	res, err = json.Marshal(data)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+func (here *Manager) Imports(bytes []byte) error {
+	var data _struct.DATA
+	err := json.Unmarshal(bytes, &data)
+	if err != nil {
+		return err
+	}
+	//fmt.Println(data)
+	err = here.db.Imports(data)
+	if err != nil {
+		util.Logger.Errorf("An error occurred while importing data: %s", err)
+		return err
+	}
+
+	return nil
 }
 
 type Source struct {

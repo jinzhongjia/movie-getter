@@ -18,6 +18,12 @@ func main() {
 	// 构造manager
 	manager := manager.NewManager()
 
+	// {
+	//
+	// 	data, _ := manager.Exports()
+	// 	manager.Imports(data)
+	// }
+
 	// gin句柄构建
 	r := gin.New()
 
