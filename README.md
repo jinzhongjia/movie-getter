@@ -73,7 +73,7 @@ gjson、gorm、gin、vue、naive-ui
 ```sh
 git clone https://github.com/jinzhongjia/movie-getter.git
 cd movie-getter
-make get
+make get-src
 # 构建linux版本
 make linux
 # 构建windows版本
