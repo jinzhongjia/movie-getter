@@ -9,11 +9,11 @@ import (
 )
 
 var (
-	SqliteAddr    string             // sqlite 的地质
-	MysqlAddr     string             // 数据库的地址
+	SqliteAddr    string           // sqlite 的地质
+	MysqlAddr     string           // 数据库的地址
 	Addr          = "0.0.0.0:8000" // 监听的地址
-	SessionSecret = "secret"         // session加密的秘钥
-	LogPut        string             // 日志输出位置
+	SessionSecret = "secret"       // session加密的秘钥
+	LogPut        string           // 日志输出位置
 	LogLevel      string
 )
 

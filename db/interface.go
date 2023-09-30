@@ -115,4 +115,7 @@ type Db interface {
 
 	DbGet() interface{} // 获取数据库句柄
 	DbType() int        // 获取数据库类型
+
+	Exports() (_struct.DATA, error) //导出库
+	Imports(_struct.DATA) error
 }

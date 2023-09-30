@@ -1,6 +1,7 @@
 package router
 
 import (
+	"io"
 	mm "movie/manager"
 	"movie/router/MiddleWare"
 	"movie/util"
@@ -151,6 +152,12 @@ func back(r *gin.Engine, manager *mm.Manager) {
 
 		// 登出操作
 		logout(user, manager)
+
+		// 导出
+		exports(user, manager)
+
+		// 导入
+		imports(user, manager)
 
 	}
 }
@@ -331,6 +338,7 @@ func back_search(user *gin.RouterGroup, manager *mm.Manager) {
 		c.JSON(http.StatusOK, movie)
 	})
 }
+
 // 重命名影片的名字
 func content_rename(user *gin.RouterGroup, manager *mm.Manager) {
 	user.POST("/content/rename", func(c *gin.Context) {
@@ -491,7 +499,6 @@ func content_reurl(user *gin.RouterGroup, manager *mm.Manager) {
 		c.Status(http.StatusOK)
 	})
 }
-
 
 // 删除影片
 func delete(user *gin.RouterGroup, manager *mm.Manager) {
@@ -1180,7 +1187,7 @@ func set_category_main(user *gin.RouterGroup, manager *mm.Manager) {
 }
 
 // 清除缓存
-func cache_purge(user *gin.RouterGroup, manager *mm.Manager) {
+func cache_purge(user *gin.RouterGroup, _ *mm.Manager) {
 	user.GET("/cachePurge", func(c *gin.Context) {
 		MiddleWare.Pruge()
 		c.Status(http.StatusOK)
@@ -1195,6 +1202,58 @@ func logout(user *gin.RouterGroup, manager *mm.Manager) {
 		manager.SessionDestroy(c.Writer, c.Request)
 
 		util.Logger.Infof("account %s logout", account)
+		c.Status(http.StatusOK)
+	})
+}
+
+func exports(user *gin.RouterGroup, manager *mm.Manager) {
+	user.GET("/exports", func(c *gin.Context) {
+		data, err := manager.Exports()
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		c.Header("Content-Disposition", "attachment; filename=\"movie.data\"")
+		c.Data(http.StatusOK, "application/octet-stream", data)
+	})
+}
+
+func imports(user *gin.RouterGroup, manager *mm.Manager) {
+	user.POST("/imports", func(c *gin.Context) {
+		db, err := c.FormFile("db")
+		if err != nil {
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+
+		dst := "./" + db.Filename
+		// 上传文件至指定的完整文件路径
+		c.SaveUploadedFile(db, dst)
+
+		dfile, err := db.Open()
+		if err != nil {
+			util.Logger.Errorf("try open the upload dbfile fails,dbfile name: %s, err: %s", db.Filename, err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+
+		bytes, err := io.ReadAll(dfile)
+		//
+		if err != nil {
+			util.Logger.Errorf("try read the upload dbfile fails,dbfile name: %s, err: %s", db.Filename, err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+		//
+		// fmt.Println("文件内容:", string(bytes))
+		//
+		err = manager.Imports(bytes)
+		if err != nil {
+			util.Logger.Errorf("try restore db fails,dbfile name: %s, err: %s", db.Filename, err)
+			c.Status(http.StatusInternalServerError)
+			return
+		}
+
 		c.Status(http.StatusOK)
 	})
 }

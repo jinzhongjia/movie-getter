@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"encoding/json"
 	"errors"
 	_struct "movie/db/struct"
 	"movie/getter"
@@ -89,9 +90,15 @@ func (here *Manager) DelSource(id uint) error {
 	for getter.JudgeGetting() {
 	}
 	err := here.db.DelSource(id)
-	here.getters_mutex.Lock()
-	delete(here.getters, id)
-	here.getters_mutex.Unlock()
+	if err != nil {
+		return err
+	}
+	{
+
+		here.getters_mutex.Lock()
+		delete(here.getters, id)
+		here.getters_mutex.Unlock()
+	}
 	return err
 }
 
@@ -436,6 +443,49 @@ func (here *Manager) Redesc_content(id uint, desc string) error {
 
 func (here *Manager) Reurl_content(id uint, url string) error {
 	return here.db.Reurl(id, url)
+}
+
+func (here *Manager) Exports() ([]byte, error) {
+	var res []byte
+
+	data, err := here.db.Exports()
+	if err != nil {
+		return res, err
+	}
+
+	res, err = json.Marshal(data)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+func (here *Manager) Imports(bytes []byte) error {
+	var data _struct.DATA
+	err := json.Unmarshal(bytes, &data)
+	if err != nil {
+		return err
+	}
+
+	for i := 0; i < len(data.Sources); i++ {
+		data.Sources[i].Ok = false
+		data.Sources[i].Pg = 1
+	}
+
+	err = here.db.Imports(data)
+	if err != nil {
+		util.Logger.Errorf("An error occurred while importing data: %s", err)
+		return err
+	}
+
+	for _, source := range data.Sources {
+		here.getters_mutex.Lock()
+		here.getters[source.ID] = getter.NewGetter(source.ID, source.Name, source.Url, false, 1)
+		here.getters_mutex.Unlock()
+	}
+
+	return nil
 }
 
 type Source struct {
