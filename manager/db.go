@@ -90,9 +90,15 @@ func (here *Manager) DelSource(id uint) error {
 	for getter.JudgeGetting() {
 	}
 	err := here.db.DelSource(id)
-	here.getters_mutex.Lock()
-	delete(here.getters, id)
-	here.getters_mutex.Unlock()
+	if err != nil {
+		return err
+	}
+	{
+
+		here.getters_mutex.Lock()
+		delete(here.getters, id)
+		here.getters_mutex.Unlock()
+	}
 	return err
 }
 
@@ -461,11 +467,22 @@ func (here *Manager) Imports(bytes []byte) error {
 	if err != nil {
 		return err
 	}
-	//fmt.Println(data)
+
+	for i := 0; i < len(data.Sources); i++ {
+		data.Sources[i].Ok = false
+		data.Sources[i].Pg = 1
+	}
+
 	err = here.db.Imports(data)
 	if err != nil {
 		util.Logger.Errorf("An error occurred while importing data: %s", err)
 		return err
+	}
+
+	for _, source := range data.Sources {
+		here.getters_mutex.Lock()
+		here.getters[source.ID] = getter.NewGetter(source.ID, source.Name, source.Url, false, 1)
+		here.getters_mutex.Unlock()
 	}
 
 	return nil

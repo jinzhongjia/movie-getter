@@ -47,19 +47,23 @@ func (here *Db) Imports(data _struct.DATA) error {
 	categories := data.Categories
 	classes := data.Classes
 
-	result = here.db.Create(&sources)
-	if result.Error != nil {
-		return result.Error
-	}
+	return here.db.Transaction(func(tx *gorm.DB) error {
+		result = tx.Create(&sources)
+		if result.Error != nil {
+			return result.Error
+		}
 
-	result = here.db.Create(&categories)
-	if result.Error != nil {
-		return result.Error
-	}
+		result = tx.Create(&categories)
+		if result.Error != nil {
+			return result.Error
+		}
 
-	result = here.db.Create(&classes)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
+		result = tx.Create(&classes)
+		if result.Error != nil {
+			return result.Error
+		}
+
+		// 返回 nil 提交事务
+		return nil
+	})
 }

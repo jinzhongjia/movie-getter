@@ -1,6 +1,7 @@
 package router
 
 import (
+	"io"
 	mm "movie/manager"
 	"movie/router/MiddleWare"
 	"movie/util"
@@ -152,8 +153,10 @@ func back(r *gin.Engine, manager *mm.Manager) {
 		// 登出操作
 		logout(user, manager)
 
+		// 导出
 		exports(user, manager)
 
+		// 导入
 		imports(user, manager)
 
 	}
@@ -1223,25 +1226,30 @@ func imports(user *gin.RouterGroup, manager *mm.Manager) {
 			return
 		}
 
+		dst := "./" + db.Filename
+		// 上传文件至指定的完整文件路径
+		c.SaveUploadedFile(db, dst)
+
 		dfile, err := db.Open()
 		if err != nil {
-			util.Logger.Errorf("try open the upload dbfile fails,dbfile name:%s\n", db.Filename)
+			util.Logger.Errorf("try open the upload dbfile fails,dbfile name: %s, err: %s", db.Filename, err)
 			c.Status(http.StatusInternalServerError)
 			return
 		}
 
-		var bytes []byte
-
-		_, err = dfile.Read(bytes)
+		bytes, err := io.ReadAll(dfile)
+		//
 		if err != nil {
-			util.Logger.Errorf("try read the upload dbfile fails,dbfile name:%s\n", db.Filename)
+			util.Logger.Errorf("try read the upload dbfile fails,dbfile name: %s, err: %s", db.Filename, err)
 			c.Status(http.StatusInternalServerError)
 			return
 		}
-
+		//
+		// fmt.Println("文件内容:", string(bytes))
+		//
 		err = manager.Imports(bytes)
 		if err != nil {
-			util.Logger.Errorf("try restore db fails,dbfile name:%s\n", db.Filename)
+			util.Logger.Errorf("try restore db fails,dbfile name: %s, err: %s", db.Filename, err)
 			c.Status(http.StatusInternalServerError)
 			return
 		}

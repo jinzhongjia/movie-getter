@@ -22,8 +22,8 @@ type Content struct {
 	Description string `gorm:"type:longText"` // 简介
 	Url         string `gorm:"type:longText"` // 视频链接
 	Stamp       int64  `gorm:"index"`         // 创建时间戳
-	SourceID    uint   `gorm:"index;default:null"`
-	ClassID     uint   `gorm:"index;default:null"`
+	SourceID    uint   `gorm:"index;default:0"`
+	ClassID     uint   `gorm:"index;default:0"`
 	// 属于分类
 } // 资源内容
 
@@ -33,8 +33,8 @@ type Class struct {
 	ClassId    int       `gorm:"not null;index"` // 采集分类id
 	Get        bool      `gorm:"default:true"`   // 是否采集
 	Content    []Content `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	SourceID   uint      `gorm:"default:null"`
-	CategoryID uint      `gorm:"default:null"`
+	SourceID   uint      `gorm:"default:0"`
+	CategoryID uint      `gorm:"default:0"`
 	// 属于资源库
 	// 属于自建分类
 } // 采集资源分类
