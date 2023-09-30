@@ -7,10 +7,7 @@ on:
 jobs:
   build-go-binary:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        goos: [linux, windows] # 需要打包的系统
-        goarch: [amd64, arm64] # 需要打包的架构
+
     steps:
       - name: Node Setup
         uses: actions/setup-node@v3
@@ -21,6 +18,11 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 8
+
+      - name: Go setup 
+        uses: actions/setup-go@v4
+        with:
+          go-version: 'stable'
 
       - uses: actions/checkout@v3
 
@@ -38,17 +40,14 @@ jobs:
           cp -r src/admin/dist/ dist/admin
 
       - name: build
-        uses: actions/setup-go@v4
-        with:
-          go-version: 'stable'
         run: |
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o movie-${{ github.ref }}
-          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o movie-${{ github.ref }}.exe
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o movie-linux
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o movie-window.exe
 
       - name: Upload assets
         uses: softprops/action-gh-release@v1
         with:
-          files:
-            movie-${{ github.ref }}
-            movie-${{ github.ref }}.exe
           prerelease: false
+          files:
+            movie-linux
+            movie-window.exe
