@@ -12,7 +12,31 @@ jobs:
         goos: [linux, windows] # 需要打包的系统
         goarch: [amd64, arm64] # 需要打包的架构
     steps:
+      - name: Node Setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+
+      - name: Pnpm Setup
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - uses: actions/checkout@v3
+
+      - name: build front src
+        run: |
+          git clone https://github.com/jinzhongjia/newMovie.git --depth=1 src/front
+          cd src/front;pnpm install;pnpm build
+          cd ..
+          cd ..
+          cp -r src/front/dist/ dist/front
+          git clone https://github.com/jinzhongjia/newMovieAdmin.git --depth=1 src/admin
+          cd src/admin;pnpm install;pnpm build
+          cd ..
+          cd ..
+          cp -r src/admin/dist/ dist/admin
+
       - uses: wangyoucao577/go-release-action@v1.30
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }} # 一个默认的变量，用来实现往 Release 中添加文件
