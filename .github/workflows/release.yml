@@ -37,11 +37,18 @@ jobs:
           cd ..
           cp -r src/admin/dist/ dist/admin
 
-      - uses: wangyoucao577/go-release-action@v1.30
+      - name: build
+        uses: actions/setup-go@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # 一个默认的变量，用来实现往 Release 中添加文件
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
-          goversion: 1.21 # 可以指定编译使用的 Golang 版本
-          binary_name: "movie" # 可以指定二进制文件的名称
-          extra_files: README.md config.ini # 需要包含的额外文件
+          go-version: 'stable'
+        run: |
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o movie-${{ github.ref }}
+          CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o movie-${{ github.ref }}.exe
+
+      - name: Upload assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files:
+            movie-${{ github.ref }}
+            movie-${{ github.ref }}.exe
+          prerelease: false
