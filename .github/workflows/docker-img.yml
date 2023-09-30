@@ -55,7 +55,12 @@ jobs:
 
       - name: build front src
         run: |
-          make src && rm -rf src
+          git clone https://github.com/jinzhongjia/newMovie.git --depth=1 src/front
+          cd src/front;pnpm install;pnpm build
+          cp -r src/front/dist/ dist/front
+          git clone https://github.com/jinzhongjia/newMovieAdmin.git --depth=1 src/admin
+          cd src/admin;pnpm install;pnpm build
+          cp -r src/admin/dist/ dist/admin
 
       - name: Build and push
         uses: docker/build-push-action@v2
