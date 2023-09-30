@@ -48,6 +48,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           prerelease: false
-          files:
+          files: |
+            conf.ini
             movie-linux
             movie-window.exe
