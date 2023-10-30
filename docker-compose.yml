@@ -17,10 +17,15 @@ services:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: 123456 # 数据库root密码
       MYSQL_DATABASE: movie # 初始化的数据库名
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   movie:
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     image: "yunyizhiying/movie"
     container_name: movie
     ports:
