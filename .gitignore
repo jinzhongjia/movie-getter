@@ -11,3 +11,4 @@ movie-getter
 dist/front
 dist/admin
 src
+zig-cache
