@@ -15,3 +15,4 @@ zig-cache
 movie-getter_linux_arm
 movie-getter_linux_x86-64_musl
 movie-getter_windows_x86-64
+movie-getter_linux-arm64-musl
