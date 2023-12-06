@@ -82,6 +82,20 @@ make windows
 make release
 ```
 
+或者
+
+安装 zig nightly
+
+```sh
+git clone https://github.com/jinzhongjia/movie-getter.git
+cd movie-getter
+make get-src
+make get-admin
+make get-front
+zig build
+# 构建完成后会出现三个文件，分别是linux-arm64-musl、linux-x86-64-musl、windows-x86-64
+```
+
 ### Docker-compose 部署（推荐）
 
 下载本仓库的 master 分支的`docker-compose.yml`文件，运行以下命令
