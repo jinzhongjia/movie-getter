@@ -12,3 +12,6 @@ dist/front
 dist/admin
 src
 zig-cache
+movie-getter_linux_arm
+movie-getter_linux_x86-64_musl
+movie-getter_windows_x86-64
