@@ -9,16 +9,6 @@
 - 易用,api 接口语义化
 - 现代化,前后端分离
 
-### demo
-
-[GO MOVIE](http://movie.demo.nvimer.org/)
-
-后台地址:[here](http://movie.demo.nvimer.org/admin)
-
-账户:admin
-
-密码:admin888
-
 ### 前端
 
 前台源码：[Go](https://github.com/jinzhongjia/newMovie)
