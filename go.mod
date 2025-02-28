@@ -50,7 +50,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
-	golang.org/x/net v0.23.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gorm.io/driver/sqlite v1.5.4
 )
